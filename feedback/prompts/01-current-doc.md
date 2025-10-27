@@ -14,7 +14,7 @@ Read and save the current state of the Google Drive document as a markdown file.
 - Note the date of the last feedback entry for each person
 - Save as clean markdown in the current-doc.md file
 
-## Output
+## Expected Output
 - File: `feedback/dd-mm-yyyy/current-doc.md`
 - Contains: The entire current state of the feedback document
 

@@ -3,7 +3,7 @@
 ## Goal
 Generate individual Culture Amp 1-on-1 conversation reports for each team member by using Playwright to extract data from their Culture Amp pages. Playwright will control a browser that is already authenticated with Culture Amp.
 
-## Team Members with URLs
+## Team Members
 
 **Matt Ward** (matt.ward@envato.com)
 - URL: `https://envato.cultureamp.com/app/conversations/0190791e-94e3-7187-989b-72f60ea26a80?tab=history`
@@ -29,9 +29,10 @@ For each team member:
 5. Note any recent updates or completed actions
 
 ## Instructions
+Use the Playwright MCP browser tools to navigate and extract content. The browser is already authenticated with Culture Amp.
 
-### Using Playwright MCP Tools:
-1. For each person, navigate to their Culture Amp URL (with `?tab=history` parameter)
+**For each person:**
+1. Navigate to their Culture Amp URL (with `?tab=history` parameter)
 2. Wait for the page to load completely
 3. Execute JavaScript: `document.body.textContent`
 4. Extract and parse the text content to find:
@@ -41,7 +42,7 @@ For each team member:
    - Chronological conversation history
    - Key topics discussed
 
-### Analysis Points:
+**Analysis points:**
 - Topics covered in recent conversations
 - Frequency of 1-on-1s
 - Types of challenges or roadblocks mentioned
@@ -50,7 +51,7 @@ For each team member:
 - Feedback given and received
 - Overall engagement level and patterns
 
-### Content Extraction Example:
+**Content extraction:**
 ```javascript
 // Navigate to the URL
 browser_navigate(url)
@@ -60,6 +61,12 @@ const content = browser_evaluate(() => document.body.textContent)
 
 // Parse and analyze the content
 ```
+
+**Technical notes:**
+- Use the Playwright MCP browser tools to navigate and extract content
+- The History tab provides the most useful data for recent conversations
+- Page content includes conversation dates, topics, notes counts, and actions
+- Extract text content and parse for structured information
 
 ## Output Format
 For each person, create `feedback/dd-mm-yyyy/culture-{firstname}.md` with:
@@ -96,10 +103,4 @@ For each person, create `feedback/dd-mm-yyyy/culture-{firstname}.md` with:
 - `feedback/dd-mm-yyyy/culture-ai.md`
 - `feedback/dd-mm-yyyy/culture-niko.md`
 - `feedback/dd-mm-yyyy/culture-shannon.md`
-
-## Technical Notes
-- Use the Playwright MCP browser tools to navigate and extract content
-- The History tab provides the most useful data for recent conversations
-- Page content includes conversation dates, topics, notes counts, and actions
-- Extract text content and parse for structured information
 
