@@ -1,0 +1,33 @@
+I want to prepare a new entry for my document in gdrive called "Feedback To Reports"
+If you read it you will be able to see that I think about each of my reports in turn and look at their expectations, their trajectory, etc.
+
+Do this is by completing the following:
+
+# read the doc
+- Read the current document in google drive to get the most up to date information
+
+# look at slack
+- Gathering recent slack messages by that person
+- Looking at the sub set of those messages that were sent since the last feedback entry (usually 1 week)
+
+# look in jira
+- Search jira for recently completed work items in the ATH project
+
+# write a new entry
+- Thinking about what I can write in each section including feedback ideas
+- Note that Outcomes should be things the person seems to have done in response to previous feedback given
+- Note that the "Feedback given:" should remain blank as I will fill that in when I actually give them feedback
+
+# notes
+GDrive file details:
+1JRQS1rBc7XmNJkt28ZvKFB4oIY239vyv5HaOaGwjhiY Feedback To Reports (application/vnd.google-apps.document)
+
+People slack user IDs
+- Matt: "U04UDLK8ZB8" (matt.ward)
+- Ai: "U042DMWMLM6" (ai.bate)
+- Ana: "U5Z91JNS0" (ana.djordjevic)
+- Niko: "U02869QFPEY" (niko.pax)
+- Shannon: "UCZ4EM06B" (shannon.ryan)
+
+# output
+Please generate a new .md file in this directory with the new contents I can put in that google doc
