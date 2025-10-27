@@ -1,0 +1,156 @@
+# Synthesize Feedback Entry
+
+## Goal
+Generate a new feedback entry by synthesizing information from collected analysis files and adding it to the feedback document format.
+
+## Input Files
+
+Read all files from the most recent date-stamped directory in the `feedback/` folder (e.g., `feedback/27-10-2025/`):
+
+### Required Files for Each Team Member:
+- `current-doc.md` - Current state of the feedback document
+- `slack-{person}.md` - Slack activity analysis
+- `jira-{person}.md` - Jira work activity analysis
+- `culture-{person}.md` - Culture Amp conversation analysis
+
+Where `{person}` is: matt, ana, ai, niko, shannon
+
+## Team Members
+
+Generate feedback for:
+- Matt Ward
+- Ana Djordjevic
+- Ai Bate
+- Niko Pax
+- Shannon Ryan
+
+## Task
+
+Read all the collected analysis files and synthesize a new feedback entry in the exact format used in the current document.
+
+### For Each Team Member, Synthesize:
+
+**Expectations**
+- Review the last entry in `current-doc.md` for current expectations
+- Update if new expectations have emerged from recent work
+- Keep focused on specific, measurable goals
+
+**Trajectory**
+- Review the growth trajectory from previous entries
+- Look for evidence of progress toward trajectory goals
+- Identify what behaviours are helping or hindering growth
+
+**Behaviours**
+Synthesize from all sources (Slack, Jira, Culture Amp):
+- Recent work completed and its impact
+- Communication and collaboration patterns
+- Problem-solving approaches
+- Initiative and leadership demonstrated
+- Specific examples and patterns
+
+**Outcomes**
+- Compare current behaviours against previous feedback given
+- Note any changes or improvements observed
+- Highlight areas where feedback was acted upon
+
+**Feedback Ideas**
+Generate 3-4 actionable bullet points covering:
+- Recognition of strengths and specific achievements
+- Specific growth areas tied to their trajectory
+- Actionable suggestions for improvement
+- Strategic feedback for career development
+
+**Feedback Given**
+- Leave this section blank - it will be filled during the actual feedback session
+
+## Output Format
+
+Generate a new entry section in this exact format:
+
+```markdown
+### [Today's Date in format: Mmm DD, YYYY]
+
+* **Matt Ward**
+  * Expectations:
+    * [List of current expectations, carried forward or updated]
+  * Trajectory:
+    * [Growth trajectory and what would help]
+  * Behaviours:
+    * [Synthesized behaviours from all sources]
+    * [Specific examples and patterns]
+    * [Communication and collaboration notes]
+    * [Recent accomplishments and work]
+  * Outcomes:
+    * [Observed changes from previous feedback]
+  * **Feedback ideas:**
+    * [Actionable feedback suggestion 1]
+    * [Actionable feedback suggestion 2]
+    * [Actionable feedback suggestion 3]
+  * **Feedback given:**
+    * [leave blank]
+
+* **Ana Djordjevic**
+  * Expectations:
+    * [...]
+  * Trajectory:
+    * [...]
+  * Behaviours:
+    * [...]
+  * Outcomes:
+    * [...]
+  * **Feedback ideas:**
+    * [...]
+  * **Feedback given:**
+    * [leave blank]
+
+[... repeat for Niko, Ai, Shannon]
+```
+
+## Instructions
+
+1. Identify the most recent `feedback/dd-mm-yyyy/` directory
+2. Read all the analysis files in that directory
+3. Read `current-doc.md` to understand previous context
+4. For each team member, synthesize their information across all sources
+5. Generate the new entry in the exact format shown above
+6. Save the output as `feedback/dd-mm-yyyy/OUTPUT.md` (using the same date as the source directory)
+7. Include ONLY the new entry section (the date header and content)
+
+## Synthesis Guidelines
+
+### Expectations
+- Start with expectations from the most recent previous entry
+- Update if context has changed based on recent work
+- Keep expectations specific and measurable
+
+### Trajectory
+- Carry forward trajectory from last entry unless there's a strong reason to update
+- Focus on growth areas and behaviours that help/hinder
+
+### Behaviours
+Look for patterns across sources:
+- **From Slack**: Communication frequency, technical discussions, collaboration
+- **From Jira**: Types of work, complexity, consistency, technical contributions
+- **From Culture Amp**: Recent topics, action completion, engagement level
+
+Be specific with examples, dates, and numbers.
+
+### Outcomes
+- Note observable changes from previous feedback
+- Highlight improvements or continued challenges
+- Connect to specific behaviours identified in previous sessions
+
+### Feedback Ideas
+Make it:
+- **Actionable**: Specific behaviours to reinforce or change
+- **Relevant**: Tied to expectations and trajectory
+- **Concrete**: With examples and next steps
+- **Balanced**: Recognition + growth areas
+
+## Expected Output
+
+- File: `feedback/dd-mm-yyyy/OUTPUT.md` (where dd-mm-yyyy matches the source directory)
+- Format: Matches the entry structure from current-doc.md
+- Content: New entry for today's date with synthesized information for all 5 team members
+- Sections: Complete for Matt, Ana, Niko, Ai, and Shannon
+
