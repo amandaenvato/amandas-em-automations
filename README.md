@@ -1,54 +1,57 @@
 # Engineering Manager Automations
 
-Automation tools for engineering managers to streamline feedback collection, team management, and stakeholder communications.
+**AI Agent Prompts for Engineering Manager Workflows**
+
+Instruction prompts for AI agents with MCP access to automate feedback collection and communication logging for engineering managers.
+
+## Overview
+
+These are instruction files for AI agents (like Claude Code, Cursor or Goose). The agent reads the instructions, collects data from Slack, Jira, Culture Amp, and Google Drive, then generates ready-to-use outputs. Just tell your agent to follow the instructions in the files.
+
+## Prerequisites
+
+Your AI agent must have access to the following MCP servers:
+- **Slack** - Team messages and communications
+- **Google Drive** - Document storage and updates
+- **Atlassian** (Jira) - Work tracking and completed work
+- **Playwright** - Browser automation (for Culture Amp data extraction)
 
 ## Systems
 
 ### 1. Feedback Collection System
 Automates team feedback collection from Slack, Jira, and Culture Amp for 1-on-1 sessions.
 
-**Quick Start:**
-- `"Follow the instructions in feedback/collect-info.md"`
+**How to Use:**
+1. Ask your agent to follow the instructions in `feedback/collect-info.md`
+2. Once complete, ask your agent to follow the instructions in `feedback/synthesize-feedback.md`
 
-**Process:**
-1. Read current feedback document from Google Drive
-2. Collect data from Slack, Jira, and Culture Amp
-3. Synthesize comprehensive feedback entry ready to append
+**What the Agent Does:**
+1. Reads current feedback document from Google Drive
+2. Collects team member data from Slack, Jira, and Culture Amp
+3. Synthesizes comprehensive feedback entry ready to append
 
-**Documentation:** `feedback/README.md`
+**Output:** `feedback/dd-mm-yyyy/`
+- `current-doc.md` - Current state from Google Drive
+- `slack-[name].md` - Collected Slack activity per team member
+- `jira-[name].md` - Completed work per team member
+- `culture-[name].md` - Culture Amp analysis per team member
+- `OUTPUT.md` - **Final output**: Synthesized feedback ready to append
 
 ### 2. Communication Log System
 Automates the Communication Log section of the Stakeholder Communication Plan document.
 
-**Quick Start:**
-- `"Follow the instructions in communication-log/collect-communications.md"`
+**How to Use:**
+- Ask your agent to follow the instructions in `communication-log/collect-communications.md`
 
-**Process:**
-1. Read current Communication Log from Google Drive
-2. Collect Slack communications for the relevant period
-3. Synthesize new log entries ready to append
-
-**Target Document:**
-- ID: `1wrGqDXthhJ_pgHdPB_neJxbIYHT0YXRFfqk9JYOPV48`
-- Document: "Stakeholder Communication Plan"
-- Section: "Communication Log" table
+**What the Agent Does:**
+1. Reads current Communication Log from Google Drive
+2. Collects Slack communications for the relevant period
+3. Synthesizes new log entries ready to append
 
 **Output:** `communication-log/dd-mm-yyyy/`
 - `current-communication-log.md` - Current state from Google Drive
 - `slack-communications.md` - Collected communications
 - `OUTPUT.md` - **Final output**: New table rows ready to append
-
-**Stakeholder Groups Tracked:**
-Company-Wide, Technology Heads (Ray, Nick), Domain Leadership, Mark (Direct Manager), Author Product Trio, Technology team, Author Team, Tech People People, People Team, plus project-specific stakeholder groups.
-
-## Dependencies
-
-Required MCP servers:
-- **Slack** - Team messages and communications
-- **Jira** - Work tracking and completed work
-- **Google Drive** - Document storage and updates
-- **Playwright** - Culture Amp data extraction (browser automation)
-- **Atlassian** - Jira issue details
 
 ## Output Locations
 
