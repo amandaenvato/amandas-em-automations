@@ -11,6 +11,8 @@ Run these prompts in sequence:
 3. Execute `prompts/03-jira-analysis.md` to collect Jira work for each team member
 4. Execute `prompts/04-culture-amp.md` to collect Culture Amp 1-on-1 data for each team member
 
+If for whatever reason the task cannot be completed, explain the issue and ask if the user wants to retry those failures.
+
 ## Output Structure
 
 All output goes into `feedback/dd-mm-yyyy/`:
@@ -26,32 +28,14 @@ All output goes into `feedback/dd-mm-yyyy/`:
 - Document: "Feedback To Reports"
 - Contains: Historical feedback entries for each team member
 
-### Manager Information
-- **Name**: Jonathan Williams
-- **Email**: jonathan.williams@envato.com
-- **Role**: Engineering Manager, Author Domain
-- **Team**: Author Domain Engineering
-
-### Team Members
-1. **Matt Ward** (matt.ward@envato.com)
-   - Slack ID: `U04UDLK8ZB8`
-   - Jira account_id: `557058:78cd7ea5-4b4e-47b9-9090-be983700bf1e`
-
-2. **Ana Djordjevic** (ana.djordjevic@envato.com)
-   - Slack ID: `U5Z91JNS0`
-   - Jira account_id: `557058:c623601d-9856-44f0-8c27-007ae131cb73`
-
-3. **Ai Bate** (ai.bate@envato.com)
-   - Slack ID: `U042DMWMLM6`
-   - Jira account_id: `631fcc634395a525a710a793`
-
-4. **Niko Pax** (niko.pax@envato.com)
-   - Slack ID: `U02869QFPEY`
-   - Jira account_id: `60f4c3e78b1a9b006fc59ca9`
-
-5. **Shannon Ryan** (shannon.ryan@envato.com)
-   - Slack ID: `UCZ4EM06B`
-   - Jira account_id: `5bb702302d188519e0dbe3df`
+### Important: Read People Information First
+**Before starting**, read the `people-info.md` file in the workspace root to get information about:
+- Manager information (Jonathan Williams)
+- Team member details (Matt, Ana, Ai, Niko, Shannon) including:
+  - Email addresses
+  - Slack IDs
+  - Jira account IDs
+  - Culture Amp URLs
 
 ## How It Works
 

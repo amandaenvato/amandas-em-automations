@@ -10,6 +10,8 @@ Run these prompts in sequence:
 2. Execute `prompts/02-slack-communications.md` to collect Slack communications
 3. Execute `prompts/03-synthesize-log.md` to generate new log entries
 
+If for whatever reason the task cannot be completed, explain the issue and ask if the user wants to retry those failures.
+
 ## Output Structure
 
 All output goes into `communication-log/dd-mm-yyyy/`:
@@ -24,11 +26,8 @@ All output goes into `communication-log/dd-mm-yyyy/`:
 - Document: "Stakeholder Communication Plan"
 - Section: "Communication Log" table
 
-### Person of Interest
-- **Name**: Jonathan Williams
-- **Email**: jonathan.williams@envato.com
-- **Role**: Engineering Manager, Author Domain
-- **Slack ID**: Determined automatically via API
+### Important: Read People Information First
+**Before starting**, read the `people-info.md` file in the workspace root to get information about the subject person (Jonathan Williams).
 
 ## How It Works
 

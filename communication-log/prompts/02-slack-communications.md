@@ -1,12 +1,10 @@
 # Collect Slack Communications
 
 ## Goal
-Search for Slack messages from Jonathan Williams across key channels and organize them by stakeholder group.
+Search for Slack messages from the subject person across key channels and organize them by stakeholder group.
 
-## Subject
-- **Name**: Jonathan Williams
-- **Email**: jonathan.williams@envato.com
-- **Role**: Engineering Manager, Author Domain
+## Important: Read People Information First
+**Before starting**, read the `people-info.md` file in the workspace root to get information about the subject person (identified in the "Subject Person" section).
 
 ## Task
 1. Search for messages since the most recent entry in the current Communication Log (typically last 7 days)
@@ -15,14 +13,11 @@ Search for Slack messages from Jonathan Williams across key channels and organiz
 4. Extract date, stakeholder group, item, channel, link, and outcome for each communication
 
 ## Instructions
-- Use Slack MCP tools to search for messages from Jonathan Williams
-- Search across all of slack for most recent messages
-- Also search in key channels:
-  - **Company-Wide**: `#env-deployments`, `#shoutouts`, `#envato-delivery-and-projects`
-  - **Leadership**: `#extended-technology-leadership-team`, `#cust-account-mgmt-and-author-leadership`
-  - **Product**: `#author-product-trio`
-  - **Team**: `#author-domain`
-  - **Projects**: `#author-compliance-management-dsa`, `#proj-upload-handover`, `#tmp-salesforce-workato-poc`
+- First, read `current-communication-log.md` to identify the key channels from the "Key Channels Identified" section
+- Use those channels to guide your Slack search
+- Use Slack MCP tools to search for messages from the subject person (get their details from `people-info.md`)
+- Search across all of Slack for most recent messages
+- Additionally, search specifically in the channels identified from the Communication Log
 
 **Focus on messages that represent stakeholder communications:**
 - Sprint reports and updates

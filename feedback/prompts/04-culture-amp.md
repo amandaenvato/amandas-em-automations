@@ -3,22 +3,8 @@
 ## Goal
 Generate individual Culture Amp 1-on-1 conversation reports for each team member by using Playwright to extract data from their Culture Amp pages. Playwright will control a browser that is already authenticated with Culture Amp.
 
-## Team Members
-
-**Matt Ward** (matt.ward@envato.com)
-- URL: `https://envato.cultureamp.com/app/conversations/0190791e-94e3-7187-989b-72f60ea26a80?tab=history`
-
-**Ana Djordjevic** (ana.djordjevic@envato.com)
-- URL: `https://envato.cultureamp.com/app/conversations/0190791e-7c48-7571-9773-3c8a7377bc57?tab=history`
-
-**Ai Bate** (ai.bate@envato.com)
-- URL: `https://envato.cultureamp.com/app/conversations/0190791e-69f0-7057-939d-8bd02ca7b7b3?tab=history`
-
-**Niko Pax** (niko.pax@envato.com)
-- URL: `https://envato.cultureamp.com/app/conversations/0190791e-b169-77f5-9a07-ee0d3b45fe11?tab=history`
-
-**Shannon Ryan** (shannon.ryan@envato.com)
-- URL: `https://envato.cultureamp.com/app/conversations/0190791e-ba6b-775c-8893-bdbdd1ef0f44?tab=history`
+## Important: Read People Information First
+**Before starting**, read the `people-info.md` file in the workspace root to get Culture Amp URLs and email addresses for all team members.
 
 ## Task
 For each team member:
@@ -31,16 +17,21 @@ For each team member:
 ## Instructions
 Use the Playwright MCP browser tools to navigate and extract content. The browser is already authenticated with Culture Amp.
 
-**For each person:**
+**CRITICAL DISCOVERY**: Culture Amp's History tab displays conversation topics with note counts, but the actual conversation NOTES are hidden in expandable sections that require clicking "Show notes" buttons before extraction.
+
+**Proper Approach:**
 1. Navigate to their Culture Amp URL (with `?tab=history` parameter)
-2. Wait for the page to load completely
-3. Execute JavaScript: `document.body.textContent`
-4. Extract and parse the text content to find:
+2. **CRITICAL STEP**: Click ALL "Show notes" or "Show note" buttons for the 2-3 most recent conversations to expand the note sections (clicking automatically waits for elements, no need for explicit waits)
+3. Take a snapshot using `browser_snapshot()` to get the structured data including all expanded notes
+4. Parse the snapshot to extract conversation content from the nested regions:
    - Recent conversation topics and when they were completed
+   - **ACTUAL NOTES/INSIGHTS from each conversation topic**
    - Number of notes per topic
-   - Actions completed
+   - Actions completed with details
    - Chronological conversation history
-   - Key topics discussed
+   - Key topics discussed and their contents
+
+**IMPORTANT**: Without clicking "Show notes" buttons first, snapshots will NOT contain the actual conversation notes - only topic titles and counts. You MUST expand the note sections before taking snapshots.
 
 **Analysis points:**
 - Topics covered in recent conversations
@@ -51,22 +42,36 @@ Use the Playwright MCP browser tools to navigate and extract content. The browse
 - Feedback given and received
 - Overall engagement level and patterns
 
-**Content extraction:**
+**Required approach to get actual notes:**
+
 ```javascript
-// Navigate to the URL
+// Step 1: Navigate to the Culture Amp URL
 browser_navigate(url)
 
-// Extract page content
-const content = browser_evaluate(() => document.body.textContent)
+// Step 2: Expand all note sections by clicking "Show notes" buttons
+// Find all buttons with "Show notes" or "Show note" in their text
+// Click each one to expand the conversation notes
+browser_click()  // for each "Show notes" button
 
-// Parse and analyze the content
+// Step 3: Take a snapshot to get structured data including expanded notes
+browser_snapshot()
+
+// Step 4: Parse the snapshot to extract conversation notes, dates, topics, actions, etc.
+// The snapshot NOW contains the actual conversation notes in a structured format
 ```
 
+**Without clicking "Show notes" buttons, the snapshot will NOT contain the actual conversation notes - only topic titles and note counts.**
+
 **Technical notes:**
-- Use the Playwright MCP browser tools to navigate and extract content
+- **MUST click "Show notes" buttons before taking snapshot** - The note content is hidden in expandable UI elements
+- **Use `browser_snapshot()` after expanding notes** - This provides structured data from all expanded notes
+- The snapshots provide nested regions with actual note content once expanded
 - The History tab provides the most useful data for recent conversations
-- Page content includes conversation dates, topics, notes counts, and actions
-- Extract text content and parse for structured information
+- **Without expansion, snapshots will NOT contain the actual notes** - only topic titles and counts
+- After expanding and snapshotting, parse the snapshot regions to extract structured information about conversations, notes, and actions
+- Typical process: Click all "Show notes" buttons for the 2-3 most recent conversations, then take snapshot, then extract notes from snapshot regions
+- No need for explicit waits - click actions automatically wait for elements to appear
+- **Do not use `document.body.textContent` or `browser_evaluate`** - use snapshots after clicking to expand notes
 
 ## Output Format
 For each person, create `feedback/dd-mm-yyyy/culture-{firstname}.md` with:
@@ -85,11 +90,6 @@ For each person, create `feedback/dd-mm-yyyy/culture-{firstname}.md` with:
 - Actions assigned to the person
 - Actions they completed
 - Pending or overdue actions
-
-### Engagement Patterns
-- Regularity of conversations
-- Depth of discussion (based on notes)
-- Level of engagement and participation
 
 ### Key Insights
 - Notable achievements or wins

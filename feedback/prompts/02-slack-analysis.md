@@ -3,22 +3,8 @@
 ## Goal
 Generate individual Slack activity reports for each team member.
 
-## Team Members
-
-**Matt Ward**
-- Slack ID: "U04UDLK8ZB8" (matt.ward@envato.com)
-
-**Ana Djordjevic**
-- Slack ID: "U5Z91JNS0" (ana.djordjevic@envato.com)
-
-**Ai Bate**
-- Slack ID: "U042DMWMLM6" (ai.bate@envato.com)
-
-**Niko Pax**
-- Slack ID: "U02869QFPEY" (niko.pax@envato.com)
-
-**Shannon Ryan**
-- Slack ID: "UCZ4EM06B" (shannon.ryan@envato.com)
+## Important: Read People Information First
+**Before starting**, read the `people-info.md` file in the workspace root to get information about all team members.
 
 ## Task
 For each team member:

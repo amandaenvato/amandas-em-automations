@@ -28,6 +28,8 @@ Generate feedback for:
 
 Read all the collected analysis files and synthesize a new feedback entry in the exact format used in the current document.
 
+If for whatever reason the task cannot be completed, explain the issue and ask if the user wants to retry those failures.
+
 ### For Each Team Member, Synthesize:
 
 **Expectations**
@@ -41,12 +43,13 @@ Read all the collected analysis files and synthesize a new feedback entry in the
 - Identify what behaviours are helping or hindering growth
 
 **Behaviours**
-Synthesize from all sources (Slack, Jira, Culture Amp):
-- Recent work completed and its impact
+Patterns of behaviour synthesized from all sources (Slack, Jira, Culture Amp):
 - Communication and collaboration patterns
-- Problem-solving approaches
 - Initiative and leadership demonstrated
 - Specific examples and patterns
+- Recent work completed and its impact
+- Problem-solving approaches
+- Do not be overly verbose in this section, it does not need to be a comprehensive log of all activities.
 
 **Outcomes**
 - Compare current behaviours against previous feedback given

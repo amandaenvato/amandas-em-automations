@@ -3,27 +3,8 @@
 ## Goal
 Generate individual Jira work activity reports for each team member.
 
-## Team Members
-
-**Matt Ward**
-- Jira account_id: "557058:78cd7ea5-4b4e-47b9-9090-be983700bf1e"
-- Email: matt.ward@envato.com
-
-**Ana Djordjevic**
-- Jira account_id: "557058:c623601d-9856-44f0-8c27-007ae131cb73"
-- Email: ana.djordjevic@envato.com
-
-**Ai Bate**
-- Jira account_id: "631fcc634395a525a710a793"
-- Email: ai.bate@envato.com
-
-**Niko Pax**
-- Jira account_id: "60f4c3e78b1a9b006fc59ca9"
-- Email: niko.pax@envato.com
-
-**Shannon Ryan**
-- Jira account_id: "5bb702302d188519e0dbe3df"
-- Email: shannon.ryan@envato.com
+## Important: Read People Information First
+**Before starting**, read the `people-info.md` file in the workspace root to get Jira account IDs and email addresses for all team members.
 
 ## Task
 For each team member:
