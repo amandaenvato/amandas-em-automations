@@ -1,7 +1,7 @@
 # Generate Culture Amp Analysis Reports
 
 ## Goal
-Generate individual Culture Amp 1-on-1 conversation reports for each team member by using Playwright to extract data from their Culture Amp pages. playwright will control a browser that is alreday authenticated with culture amp.
+Generate individual Culture Amp 1-on-1 conversation reports for each team member by using Playwright to extract data from their Culture Amp pages. Playwright will control a browser that is already authenticated with Culture Amp.
 
 ## Team Members with URLs
 

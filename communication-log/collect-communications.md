@@ -2,7 +2,7 @@
 
 This prompt coordinates the **information collection** phase for automating the Communication Log section of the Stakeholder Communication Plan document.
 
-## Quick Start
+## Task
 
 Run these prompts in sequence:
 
