@@ -6,6 +6,9 @@ communication-log/*-*-*/**
 # Feedback: Ignore everything in date directories (pattern: dd-mm-yyyy like 27-10-2025)
 feedback/*-*-*/**
 
+# Sprint Report: Ignore everything in date directories (pattern: dd-mm-yyyy like 24-10-2025)
+sprint-report/*-*-*/**
+
 # Sensitive personal information
 people-info.md
 

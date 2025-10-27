@@ -53,8 +53,28 @@ Automates the Communication Log section of the Stakeholder Communication Plan do
 - `slack-communications.md` - Collected communications
 - `OUTPUT.md` - **Final output**: New table rows ready to append
 
+### 3. Sprint Report Improvement System
+Enhances draft sprint reports by gathering context and creating more executive-friendly versions.
+
+**How to Use:**
+- Ask your agent: `Follow the instructions in "sprint-report/improve-draft-report.md" to improve page [CONFLUENCE_PAGE_ID]`
+- Example: `Follow the instructions in "sprint-report/improve-draft-report.md" to improve page 518750321`
+
+**What the Agent Does:**
+1. Reads existing draft sprint report from Confluence
+2. Fetches detailed work item information from Jira
+3. Collects relevant Slack discussions from the sprint period
+4. Synthesizes an improved draft with better context and executive-friendly language
+
+**Output:** `sprint-report/dd-mm-yyyy/`
+- `draft-analysis.md` - Analysis of the existing draft
+- `jira-work.md` - Detailed analysis of completed work items
+- `slack-context.md` - Relevant Slack discussions from sprint period
+- `OUTPUT.md` - **Final output**: Improved draft ready for review
+
 ## Output Locations
 
-Both systems create dated directories with collected data and final synthesized outputs:
+All systems create dated directories with collected data and final synthesized outputs:
 - `feedback/dd-mm-yyyy/` - Analysis files and synthesized feedback entry
 - `communication-log/dd-mm-yyyy/` - Communication analysis and log entries ready to append
+- `sprint-report/dd-mm-yyyy/` - Draft analysis and improved sprint report
