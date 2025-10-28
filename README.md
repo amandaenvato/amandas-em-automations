@@ -1,12 +1,12 @@
 # Engineering Manager Automations
 
-**AI Agent Prompts for Engineering Manager Workflows**
+**AI Agent Recipes for Engineering Manager Workflows**
 
-Instruction prompts for AI agents with MCP access to automate feedback collection and communication logging for engineering managers.
+Instruction recipes for AI agents with MCP access to automate feedback collection, communication logging, and daily checkups for engineering managers.
 
 ## Overview
 
-These are instruction files for AI agents (like Claude Code, Cursor or Goose). The agent reads the instructions, collects data from Slack, Jira, Culture Amp, and Google Drive, then generates ready-to-use outputs. Just tell your agent to follow the instructions in the files.
+These are instruction recipes for AI agents (like Claude Code, Cursor or Goose). The agent reads the recipe instructions, collects data from Slack, Jira, Culture Amp, and Google Drive, then generates ready-to-use outputs. Just tell your agent to follow the instructions in the recipe files.
 
 ## Prerequisites
 
@@ -16,9 +16,9 @@ Your AI agent must have access to the following MCP servers:
 - **Atlassian** (Jira) - Work tracking and completed work
 - **Playwright** - Browser automation (for Culture Amp data extraction)
 
-## Systems
+## Recipes
 
-### 1. Feedback Collection System
+### 1. Feedback Collection Recipe
 Automates team feedback collection from Slack, Jira, and Culture Amp for 1-on-1 sessions.
 
 **How to Use:**
@@ -37,7 +37,7 @@ Automates team feedback collection from Slack, Jira, and Culture Amp for 1-on-1 
 - `culture-[name].md` - Culture Amp analysis per team member
 - `OUTPUT.md` - **Final output**: Synthesized feedback ready to append
 
-### 2. Communication Log System
+### 2. Communication Log Recipe
 Automates the Communication Log section of the Stakeholder Communication Plan document.
 
 **How to Use:**
@@ -53,7 +53,7 @@ Automates the Communication Log section of the Stakeholder Communication Plan do
 - `slack-communications.md` - Collected communications
 - `OUTPUT.md` - **Final output**: New table rows ready to append
 
-### 3. Sprint Report Improvement System
+### 3. Sprint Report Improvement Recipe
 Enhances draft sprint reports by gathering context and creating more executive-friendly versions.
 
 **How to Use:**
@@ -72,9 +72,28 @@ Enhances draft sprint reports by gathering context and creating more executive-f
 - `slack-context.md` - Relevant Slack discussions from sprint period
 - `OUTPUT.md` - **Final output**: Improved draft ready for review
 
+### 4. Daily Checkup Recipe
+Performs comprehensive daily status checks for author helpline and active Jira tickets.
+
+**How to Use:**
+- Ask your agent: `Please run the instructions in the @daily-checkup.md`
+- Or: `Follow the instructions in "daily-checkup/daily-checkup.md"`
+
+**What the Agent Does:**
+1. Checks #author-helpline Slack channel for unaddressed issues from the last 3 days
+2. Searches Jira for active tickets assigned to you (excluding Done/Closed/Resolved statuses)
+3. Provides a comprehensive summary with direct links and status counts
+
+**Output:** Direct conversation summary with:
+- Author helpline status (unaddressed issues count and details)
+- Jira tickets status (active tickets organized by status)
+- Overall status summary with action items and priorities
+
 ## Output Locations
 
-All systems create dated directories with collected data and final synthesized outputs:
+Most recipes create dated directories with collected data and final synthesized outputs:
 - `feedback/dd-mm-yyyy/` - Analysis files and synthesized feedback entry
 - `communication-log/dd-mm-yyyy/` - Communication analysis and log entries ready to append
 - `sprint-report/dd-mm-yyyy/` - Draft analysis and improved sprint report
+
+**Note:** The Daily Checkup recipe provides output directly in the conversation rather than creating files.
