@@ -89,6 +89,25 @@ Performs comprehensive daily status checks for author helpline and active Jira t
 - Jira tickets status (active tickets organized by status)
 - Overall status summary with action items and priorities
 
+### 5. Action Items Recipe
+Finds pending action items where you've been directly pinged or assigned in Slack and emails.
+
+**How to Use:**
+- Ask your agent: `Follow the instructions in "recipes/action-items/find.md" to find my pending action items`
+
+**What the Agent Does:**
+1. Searches Slack for all messages mentioning your handle (e.g., `@jdub`)
+2. Searches emails for Google Docs/Sheets assignments
+3. Reads specific emails to extract action details
+4. Identifies channel information for correct Slack links
+5. Returns formatted list of pending actions with clickable links
+
+**Output:** Direct conversation summary in Markdown format with:
+- Action titles, dates, and sources
+- Clickable links to Slack channels, emails, and documents
+- Specific action requirements and due dates
+- Additional context for each action
+
 ## Output Locations
 
 Most recipes create dated directories with collected data and final synthesized outputs:
