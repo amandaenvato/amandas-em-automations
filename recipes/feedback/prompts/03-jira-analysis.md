@@ -4,7 +4,7 @@
 Generate individual Jira work activity reports for each team member.
 
 ## Important: Read People Information First
-**Before starting**, read the `people-info.md` file in the workspace root to get Jira account IDs and email addresses for all team members.
+**Before starting**, read the `recipes/people-info.md` file to get Jira account IDs and email addresses for all team members.
 
 ## Task
 For each team member:

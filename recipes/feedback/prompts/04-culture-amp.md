@@ -4,7 +4,7 @@
 Generate individual Culture Amp 1-on-1 conversation reports for each team member by using Playwright to extract data from their Culture Amp pages. Playwright will control a browser that is already authenticated with Culture Amp.
 
 ## Important: Read People Information First
-**Before starting**, read the `people-info.md` file in the workspace root to get Culture Amp URLs and email addresses for all team members.
+**Before starting**, read the `recipes/people-info.md` file to get Culture Amp URLs and email addresses for all team members.
 
 ## Task
 For each team member:

@@ -4,7 +4,7 @@
 Search for Slack messages from the subject person across key channels and organize them by stakeholder group.
 
 ## Important: Read People Information First
-**Before starting**, read the `people-info.md` file in the workspace root to get information about the subject person (identified in the "Subject Person" section).
+**Before starting**, read the `recipes/people-info.md` file to get information about the subject person (identified in the "Subject Person" section).
 
 ## Task
 1. Search for messages since the most recent entry in the current Communication Log (typically last 7 days)
@@ -15,7 +15,7 @@ Search for Slack messages from the subject person across key channels and organi
 ## Instructions
 - First, read `current-communication-log.md` to identify the key channels from the "Key Channels Identified" section
 - Use those channels to guide your Slack search
-- Use Slack MCP tools to search for messages from the subject person (get their details from `people-info.md`)
+- Use Slack MCP tools to search for messages from the subject person (get their details from `recipes/people-info.md`)
 - Search across all of Slack for most recent messages
 - Additionally, search specifically in the channels identified from the Communication Log
 

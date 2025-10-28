@@ -22,15 +22,15 @@ Your AI agent must have access to the following MCP servers:
 Automates team feedback collection from Slack, Jira, and Culture Amp for 1-on-1 sessions.
 
 **How to Use:**
-1. Ask your agent to follow the instructions in `feedback/collect-info.md`
-2. Once complete, ask your agent to follow the instructions in `feedback/synthesize-feedback.md`
+1. Ask your agent to follow the instructions in `recipes/feedback/collect-info.md`
+2. Once complete, ask your agent to follow the instructions in `recipes/feedback/synthesize-feedback.md`
 
 **What the Agent Does:**
 1. Reads current feedback document from Google Drive
 2. Collects team member data from Slack, Jira, and Culture Amp
 3. Synthesizes comprehensive feedback entry ready to append
 
-**Output:** `feedback/dd-mm-yyyy/`
+**Output:** `recipes/feedback/dd-mm-yyyy/`
 - `current-doc.md` - Current state from Google Drive
 - `slack-[name].md` - Collected Slack activity per team member
 - `jira-[name].md` - Completed work per team member
@@ -41,14 +41,14 @@ Automates team feedback collection from Slack, Jira, and Culture Amp for 1-on-1 
 Automates the Communication Log section of the Stakeholder Communication Plan document.
 
 **How to Use:**
-- Ask your agent to follow the instructions in `communication-log/collect-communications.md`
+- Ask your agent to follow the instructions in `recipes/communication-log/collect-communications.md`
 
 **What the Agent Does:**
 1. Reads current Communication Log from Google Drive
 2. Collects Slack communications for the relevant period
 3. Synthesizes new log entries ready to append
 
-**Output:** `communication-log/dd-mm-yyyy/`
+**Output:** `recipes/communication-log/dd-mm-yyyy/`
 - `current-communication-log.md` - Current state from Google Drive
 - `slack-communications.md` - Collected communications
 - `OUTPUT.md` - **Final output**: New table rows ready to append
@@ -57,8 +57,8 @@ Automates the Communication Log section of the Stakeholder Communication Plan do
 Enhances draft sprint reports by gathering context and creating more executive-friendly versions.
 
 **How to Use:**
-- Ask your agent: `Follow the instructions in "sprint-report/improve-draft-report.md" to improve page [CONFLUENCE_PAGE_ID]`
-- Example: `Follow the instructions in "sprint-report/improve-draft-report.md" to improve page 518750321`
+- Ask your agent: `Follow the instructions in "recipes/sprint-report/improve-draft-report.md" to improve page [CONFLUENCE_PAGE_ID]`
+- Example: `Follow the instructions in "recipes/sprint-report/improve-draft-report.md" to improve page 518750321`
 
 **What the Agent Does:**
 1. Reads existing draft sprint report from Confluence
@@ -66,7 +66,7 @@ Enhances draft sprint reports by gathering context and creating more executive-f
 3. Collects relevant Slack discussions from the sprint period
 4. Synthesizes an improved draft with better context and executive-friendly language
 
-**Output:** `sprint-report/dd-mm-yyyy/`
+**Output:** `recipes/sprint-report/dd-mm-yyyy/`
 - `draft-analysis.md` - Analysis of the existing draft
 - `jira-work.md` - Detailed analysis of completed work items
 - `slack-context.md` - Relevant Slack discussions from sprint period
@@ -77,7 +77,7 @@ Performs comprehensive daily status checks for author helpline and active Jira t
 
 **How to Use:**
 - Ask your agent: `Please run the instructions in the @daily-checkup.md`
-- Or: `Follow the instructions in "daily-checkup/daily-checkup.md"`
+- Or: `Follow the instructions in "recipes/daily-checkup/daily-checkup.md"`
 
 **What the Agent Does:**
 1. Checks #author-helpline Slack channel for unaddressed issues from the last 3 days
@@ -92,8 +92,8 @@ Performs comprehensive daily status checks for author helpline and active Jira t
 ## Output Locations
 
 Most recipes create dated directories with collected data and final synthesized outputs:
-- `feedback/dd-mm-yyyy/` - Analysis files and synthesized feedback entry
-- `communication-log/dd-mm-yyyy/` - Communication analysis and log entries ready to append
-- `sprint-report/dd-mm-yyyy/` - Draft analysis and improved sprint report
+- `recipes/feedback/dd-mm-yyyy/` - Analysis files and synthesized feedback entry
+- `recipes/communication-log/dd-mm-yyyy/` - Communication analysis and log entries ready to append
+- `recipes/sprint-report/dd-mm-yyyy/` - Draft analysis and improved sprint report
 
 **Note:** The Daily Checkup recipe provides output directly in the conversation rather than creating files.

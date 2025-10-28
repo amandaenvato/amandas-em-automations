@@ -9,10 +9,11 @@ Execute the following steps in order, following the detailed instructions in eac
 1. **Author Helpline Check** - Follow instructions in `prompts/01-check-author-helpline.md`
 2. **Jira Tickets Check** - Follow instructions in `prompts/02-check-jira-tickets.md`
 3. **AWS Access Request Check** - Follow instructions in `prompts/03-check-aws-access-requests.md`
+4. **BambooHR Time Off Requests Check** - Follow instructions in `prompts/04-check-bamboo-timeoff-requests.md`
 
 ## Final Summary Format
 
-After completing all three checks, provide a comprehensive summary:
+After completing all four checks, provide a comprehensive summary:
 
 ---
 
@@ -47,6 +48,15 @@ After completing all three checks, provide a comprehensive summary:
 1. [Request Date/Time] - [Slack Link]
    - Status: Pending approval/denial
    - Note: Click link to review details and approve/deny
+
+## BambooHR Time Off Request Status
+- **Pending Requests**: [COUNT]
+
+**Pending Time Off Requests:**
+1. [Employee Name] - [BambooHR Link]
+   - Dates: [Date range]
+   - Status: Pending approval
+   - Note: Click link to review and approve/deny in BambooHR
 
 ## Overall Status
 - **Action Required**: [Summary of what needs attention]

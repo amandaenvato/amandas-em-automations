@@ -27,7 +27,7 @@ All output goes into `communication-log/dd-mm-yyyy/`:
 - Section: "Communication Log" table
 
 ### Important: Read People Information First
-**Before starting**, read the `people-info.md` file in the workspace root to get information about the subject person (Jonathan Williams).
+**Before starting**, read the `recipes/people-info.md` file to get information about the subject person (Jonathan Williams).
 
 ## How It Works
 

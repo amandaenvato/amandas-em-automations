@@ -29,7 +29,7 @@ All output goes into `feedback/dd-mm-yyyy/`:
 - Contains: Historical feedback entries for each team member
 
 ### Important: Read People Information First
-**Before starting**, read the `people-info.md` file in the workspace root to get information about:
+**Before starting**, read the `recipes/people-info.md` file to get information about:
 - Manager information (Jonathan Williams)
 - Team member details (Matt, Ana, Ai, Niko, Shannon) including:
   - Email addresses
