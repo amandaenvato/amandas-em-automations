@@ -10,11 +10,13 @@ These are instruction recipes for AI agents (like Claude Code, Cursor or Goose).
 
 ## Prerequisites
 
-Your AI agent must have access to the following MCP servers:
+Your AI agent must have access to the following MCP servers to read and search (no write ability necessary):
 - **Slack** - Team messages and communications
 - **Google Drive** - Document storage and updates
 - **Atlassian** (Jira) - Work tracking and completed work
-- **Playwright** - Browser automation (for Culture Amp data extraction)
+- **Atlassian** (Confluence) - Sprint report documents and team documentation
+- **Gmail** - Email assignments and notifications
+- **Playwright** - Browser automation (for Culture Amp and BambooHR data extraction)
 
 ## Recipes
 
@@ -82,11 +84,15 @@ Performs comprehensive daily status checks for author helpline and active Jira t
 **What the Agent Does:**
 1. Checks #author-helpline Slack channel for unaddressed issues from the last 3 days
 2. Searches Jira for active tickets assigned to you (excluding Done/Closed/Resolved statuses)
-3. Provides a comprehensive summary with direct links and status counts
+3. Checks for pending AWS access request notifications from the TEAM bot
+4. Checks BambooHR inbox for pending time off approval requests
+5. Provides a comprehensive summary with direct links and status counts
 
 **Output:** Direct conversation summary with:
 - Author helpline status (unaddressed issues count and details)
 - Jira tickets status (active tickets organized by status)
+- AWS access request status (pending notifications requiring approval)
+- BambooHR time off request status (pending approvals)
 - Overall status summary with action items and priorities
 
 ### 5. Action Items Recipe
