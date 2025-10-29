@@ -10,11 +10,7 @@ The goal is to identify specific pending actions where the user has been directl
 
 ### 1. Search Slack for Direct Mentions
 
-Use the Slack search tool to find all messages mentioning the user's handle:
-
-```bash
-mcp_slack-mcp-server_conversations_search_messages
-```
+Search Slack messages to find all messages mentioning the user's handle.
 
 **Key Parameters:**
 - `search_query`: Use `@username` (e.g., `@jdub`)
@@ -28,11 +24,7 @@ mcp_slack-mcp-server_conversations_search_messages
 
 ### 2. Search Emails for Google Docs/Sheets Assignments
 
-Use the Gmail search tool to find assignment notifications:
-
-```bash
-mcp_gmail_search_emails
-```
+Search Gmail for assignment notifications from Google Docs and Sheets.
 
 **Key Parameters:**
 - `query`: Use specific queries like:
@@ -43,22 +35,14 @@ mcp_gmail_search_emails
 
 ### 3. Read Specific Emails for Details
 
-For emails that contain assignments, read them to extract specific action details:
-
-```bash
-mcp_gmail_read_email
-```
+For emails that contain assignments, read them to extract specific action details.
 
 **Key Parameters:**
 - `messageId`: Use the message ID from search results
 
 ### 4. Get Channel Information for Correct Links
 
-To create proper Slack links, get channel information:
-
-```bash
-mcp_slack-mcp-server_channels_list
-```
+To create proper Slack links, get channel information from Slack.
 
 **Key Parameters:**
 - `channel_types`: Use `public_channel,private_channel,im,mpim` for comprehensive coverage
