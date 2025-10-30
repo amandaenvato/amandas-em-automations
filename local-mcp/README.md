@@ -1,19 +1,18 @@
 # Local MCP Server
 
-A simple MCP (Model Context Protocol) server that provides disk space monitoring tools.
+A simple MCP (Model Context Protocol) server that provides tools for interacting with the Cursor Agent API.
 
 ## Features
 
-- **get_disk_space**: Returns current disk space usage for the system
-  - Optional `path` parameter to check specific directory (defaults to root "/")
-  - Returns filesystem, total size, used space, available space, usage percentage, and mount point
+- **start_cursor_agent**: Start a new Cursor agent using the Cursor Agent API
+  - Required `repository_url`: The GitHub repository URL where the agent will work
+  - Required `prompt`: Instructions or tasks for the agent to perform
+  - Optional `branch_name`: The branch name where the agent will apply changes
+  - Optional `agent_name`: A descriptive name for the agent
+  - Optional `auto_create_pull_request`: Whether to automatically create a pull request (default: false)
+  - Optional `model`: The AI model to use (default: "composer-1")
 
-- **get_culture_amp_notes**: Provides instructions for extracting Culture Amp 1-on-1 conversation notes
-  - Required `culture_amp_id` parameter for the person's Culture Amp ID
-  - Optional `base_url` parameter (defaults to "https://envato.cultureamp.com")
-  - Returns step-by-step instructions for using Playwright MCP tools
-  - Generates the correct Culture Amp URL with history tab
-  - Provides detailed guidance on clicking "Show notes" buttons and extracting data
+**Note**: The Cursor API key must be provided via the `CURSOR_API_KEY` environment variable. It cannot be passed as a parameter for security reasons.
 
 ## Installation
 
@@ -49,19 +48,26 @@ npm start
 
 The server communicates via stdio and will be managed by your MCP client (Cursor).
 
-## Prerequisites for Culture Amp Tool
+## Testing
 
-The `get_culture_amp_notes` tool provides instructions for using your existing Playwright MCP server. It requires:
-1. **Playwright MCP server running** (already configured in your MCP setup)
-2. **Brave browser connected** via the Playwright extension
-3. **Logged into Culture Amp** in the connected browser tab
+The project uses [Vitest](https://vitest.dev/) for testing. To run tests:
+
+```bash
+# Run tests in watch mode
+npm test
+
+# Run tests once
+npm run test:run
+```
+
+Tests cover:
+- `CursorAgentClient` class methods (validation, API calls, error handling)
+- `LocalMCPServer` MCP handlers (tool registration, request handling)
 
 ## Future Enhancements
 
 This server can be extended to include additional tools such as:
-- CPU usage monitoring
-- Memory usage monitoring
-- Network statistics
-- Process monitoring
-- File system operations
-- Additional web scraping tools (BambooHR, etc.)
+- Agent status checking
+- Agent cancellation
+- Agent result retrieval
+- Additional Cursor API integrations

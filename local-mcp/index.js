@@ -6,8 +6,8 @@ import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
-import { PlaywrightMCPClient } from "./src/playwright-mcp-client.js";
-import { CultureAmpNotesExtractor } from "./src/culture-amp-extractor.js";
+import { fileURLToPath } from "url";
+import { CursorAgentClient } from "./src/cursor-agent-client.js";
 
 class LocalMCPServer {
   constructor() {
@@ -23,49 +23,80 @@ class LocalMCPServer {
       }
     );
 
-    this.playwrightClient = new PlaywrightMCPClient();
-    this.extractor = new CultureAmpNotesExtractor(this.playwrightClient);
+    this.cursorAgentClient = new CursorAgentClient();
     this.setupToolHandlers();
   }
 
   setupToolHandlers() {
     // List available tools
-    this.server.setRequestHandler(ListToolsRequestSchema, async () => {
+    const listToolsHandler = async () => {
       return {
         tools: [
           {
-            name: "get_culture_amp_notes",
-            description: "Extract Culture Amp 1-on-1 conversation notes for a given Culture Amp ID",
+            name: "start_cursor_agent",
+            description:
+              "Start a new Cursor agent using the Cursor Agent API. The agent will work autonomously on the specified repository.",
             inputSchema: {
               type: "object",
               properties: {
-                culture_amp_id: {
+                repository_url: {
                   type: "string",
-                  description: "Culture Amp ID to extract notes for",
+                  description:
+                    "The GitHub repository URL where the agent will work (e.g., https://github.com/owner/repo)",
                 },
-                base_url: {
+                prompt: {
                   type: "string",
-                  description: "Base Culture Amp URL (defaults to envato.cultureamp.com)",
-                  default: "https://envato.cultureamp.com",
+                  description:
+                    "Instructions or tasks for the agent to perform",
+                },
+                branch_name: {
+                  type: "string",
+                  description:
+                    "The branch name where the agent will apply changes (optional)",
+                },
+                agent_name: {
+                  type: "string",
+                  description:
+                    "A descriptive name for the agent (optional)",
+                },
+                auto_create_pull_request: {
+                  type: "boolean",
+                  description:
+                    "Whether the agent should automatically create a pull request with its changes (default: false)",
+                  default: false,
+                },
+                model: {
+                  type: "string",
+                  description:
+                    "The AI model to use for the agent (default: composer-1)",
+                  default: "composer-1",
                 },
               },
-              required: ["culture_amp_id"],
+              required: ["repository_url", "prompt"],
             },
           },
         ],
       };
-    });
+    };
 
     // Handle tool calls
-    this.server.setRequestHandler(CallToolRequestSchema, async (request) => {
+    const callToolHandler = async (request) => {
       const { name, arguments: args } = request.params;
 
-      if (name === "get_culture_amp_notes") {
-        return await this.extractor.extractNotes(args?.culture_amp_id, args?.base_url);
+      if (name === "start_cursor_agent") {
+        return await this.cursorAgentClient.startAgent(args || {});
       }
 
       throw new Error(`Unknown tool: ${name}`);
-    });
+    };
+
+    // Store handlers for testing
+    this._listToolsHandler = listToolsHandler;
+    this._callToolHandler = callToolHandler;
+
+    // Register handlers with server
+    this.server.setRequestHandler(ListToolsRequestSchema, listToolsHandler);
+    this.server.setRequestHandler(CallToolRequestSchema, callToolHandler);
   }
 
   async run() {
@@ -75,9 +106,23 @@ class LocalMCPServer {
   }
 }
 
-// Start the server
-const server = new LocalMCPServer();
-server.run().catch((error) => {
-  console.error("Server error:", error);
-  process.exit(1);
-});
+// Export for testing
+export { LocalMCPServer };
+
+// Start the server only if this is the main module (not imported)
+// Check if the current file is being run directly vs imported
+const isMainModule = (() => {
+  if (!process.argv[1]) return false;
+  const currentFile = fileURLToPath(import.meta.url);
+  const mainFile = process.argv[1];
+  // Normalize paths for comparison (handle relative/absolute paths)
+  return currentFile === mainFile || currentFile.endsWith(mainFile) || mainFile.endsWith(currentFile);
+})();
+
+if (isMainModule) {
+  const server = new LocalMCPServer();
+  server.run().catch((error) => {
+    console.error("Server error:", error);
+    process.exit(1);
+  });
+}
