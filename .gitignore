@@ -6,3 +6,4 @@ recipes/**/*-*-*/**
 # Sensitive personal information
 people-info.md
 
+**/node_modules
