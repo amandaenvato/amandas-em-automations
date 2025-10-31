@@ -28,7 +28,7 @@ describe("LocalMCPServer", () => {
   });
 
   describe("ListTools handler", () => {
-    it("should return start_cursor_agent tool in tools list", async () => {
+    it("should return all tools in tools list", async () => {
       const request = {
         params: {},
       };
@@ -38,8 +38,27 @@ describe("LocalMCPServer", () => {
 
       const response = await handler(request);
 
-      expect(response.tools).toHaveLength(1);
-      expect(response.tools[0]).toMatchObject({
+      expect(response.tools.length).toBeGreaterThan(1);
+      expect(response.tools.some(tool => tool.name === "start_cursor_agent")).toBe(true);
+      expect(response.tools.some(tool => tool.name === "gh_repo_list")).toBe(true);
+      expect(response.tools.some(tool => tool.name === "gh_repo_view")).toBe(true);
+      expect(response.tools.some(tool => tool.name === "gh_pr_list")).toBe(true);
+      expect(response.tools.some(tool => tool.name === "gh_pr_view")).toBe(true);
+      expect(response.tools.some(tool => tool.name === "gh_search_code")).toBe(true);
+      expect(response.tools.some(tool => tool.name === "gh_search_prs")).toBe(true);
+      expect(response.tools.some(tool => tool.name === "gh_search_commits")).toBe(true);
+    });
+
+    it("should return start_cursor_agent tool with correct schema", async () => {
+      const request = {
+        params: {},
+      };
+
+      const handler = server._listToolsHandler;
+      const response = await handler(request);
+
+      const cursorAgentTool = response.tools.find(tool => tool.name === "start_cursor_agent");
+      expect(cursorAgentTool).toMatchObject({
         name: "start_cursor_agent",
         description: expect.stringContaining("Cursor agent"),
         inputSchema: {
@@ -132,6 +151,55 @@ describe("LocalMCPServer", () => {
       const handler = server._callToolHandler;
 
       await expect(handler(request)).rejects.toThrow("Unknown tool: unknown_tool");
+    });
+
+    it("should handle gh_repo_list tool", async () => {
+      const request = {
+        params: {
+          name: "gh_repo_list",
+          arguments: { limit: 10 },
+        },
+      };
+
+      const handler = server._callToolHandler;
+      // Mock the githubCLI method
+      vi.spyOn(server.githubCLI, "listRepos").mockResolvedValue({
+        content: [{ type: "text", text: "repo1\nrepo2\n" }],
+      });
+
+      const response = await handler(request);
+
+      expect(server.githubCLI.listRepos).toHaveBeenCalledWith(10);
+      expect(response.content).toBeDefined();
+    });
+
+    it("should handle gh_pr_list tool with author filter", async () => {
+      const request = {
+        params: {
+          name: "gh_pr_list",
+          arguments: {
+            repo: "envato/repo-name",
+            state: "open",
+            author: "username",
+            limit: 5,
+          },
+        },
+      };
+
+      const handler = server._callToolHandler;
+      vi.spyOn(server.githubCLI, "listPRs").mockResolvedValue({
+        content: [{ type: "text", text: "PR #1\n" }],
+      });
+
+      const response = await handler(request);
+
+      expect(server.githubCLI.listPRs).toHaveBeenCalledWith(
+        "envato/repo-name",
+        "open",
+        "username",
+        5
+      );
+      expect(response.content).toBeDefined();
     });
 
     it("should handle missing arguments gracefully", async () => {

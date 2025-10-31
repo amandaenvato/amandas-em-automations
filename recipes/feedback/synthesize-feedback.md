@@ -24,6 +24,15 @@ Generate feedback for:
 - Niko Pax
 - Shannon Ryan
 
+## Context
+
+Before synthesizing, review the em-knowledgebase to understand:
+- Team health signals and patterns to recognize
+- What types of contributions demonstrate value and growth
+- Communication and collaboration indicators
+- Performance patterns and engagement signals
+- How to provide balanced, actionable feedback
+
 ## Task
 
 Read all the collected analysis files and synthesize a new feedback entry in the exact format used in the current document.
@@ -156,4 +165,3 @@ Make it:
 - Format: Matches the entry structure from current-doc.md
 - Content: New entry for today's date with synthesized information for all 5 team members
 - Sections: Complete for Matt, Ana, Niko, Ai, and Shannon
-

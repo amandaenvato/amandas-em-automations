@@ -2,6 +2,14 @@
 
 This recipe explains how to find pending action items where a user has been directly pinged or assigned in Slack and emails.
 
+## Before Starting
+
+**Review the em-knowledgebase** to understand:
+- What types of action items are typically urgent
+- Escalation patterns and risk signals
+- Communication channels where action items commonly appear
+- How to prioritize action items by importance
+
 ## Overview
 
 The goal is to identify specific pending actions where the user has been directly mentioned (e.g., `@username`) or assigned tasks, focusing on recent items (last 2 days by default).

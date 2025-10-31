@@ -8,6 +8,7 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import { fileURLToPath } from "url";
 import { CursorAgentClient } from "./src/cursor-agent-client.js";
+import { GitHubCLI } from "./src/github-cli.js";
 
 class LocalMCPServer {
   constructor() {
@@ -24,6 +25,7 @@ class LocalMCPServer {
     );
 
     this.cursorAgentClient = new CursorAgentClient();
+    this.githubCLI = new GitHubCLI();
     this.setupToolHandlers();
   }
 
@@ -75,6 +77,158 @@ class LocalMCPServer {
               required: ["repository_url", "prompt"],
             },
           },
+          {
+            name: "gh_repo_list",
+            description: "List repositories in the envato organization using gh CLI",
+            inputSchema: {
+              type: "object",
+              properties: {
+                limit: {
+                  type: "number",
+                  description: "Maximum number of repositories to return (optional)",
+                },
+              },
+              required: [],
+            },
+          },
+          {
+            name: "gh_repo_view",
+            description: "View details of a specific repository using gh CLI",
+            inputSchema: {
+              type: "object",
+              properties: {
+                repo: {
+                  type: "string",
+                  description: "Repository in format 'owner/repo' (e.g., 'envato/repo-name')",
+                },
+              },
+              required: ["repo"],
+            },
+          },
+          {
+            name: "gh_pr_list",
+            description: "List pull requests using gh CLI",
+            inputSchema: {
+              type: "object",
+              properties: {
+                repo: {
+                  type: "string",
+                  description: "Repository in format 'owner/repo' (optional, defaults to current repo)",
+                },
+                state: {
+                  type: "string",
+                  description: "Filter by state: open, closed, or all (optional)",
+                  enum: ["open", "closed", "all"],
+                },
+                author: {
+                  type: "string",
+                  description: "Filter by author username (optional)",
+                },
+                limit: {
+                  type: "number",
+                  description: "Maximum number of PRs to return (optional)",
+                },
+              },
+              required: [],
+            },
+          },
+          {
+            name: "gh_pr_view",
+            description: "View details of a specific pull request using gh CLI",
+            inputSchema: {
+              type: "object",
+              properties: {
+                pr_number: {
+                  type: "number",
+                  description: "Pull request number",
+                },
+                repo: {
+                  type: "string",
+                  description: "Repository in format 'owner/repo' (optional, defaults to current repo)",
+                },
+              },
+              required: ["pr_number"],
+            },
+          },
+          {
+            name: "gh_search_code",
+            description: "Search code using gh CLI",
+            inputSchema: {
+              type: "object",
+              properties: {
+                query: {
+                  type: "string",
+                  description: "Search query string",
+                },
+                repo: {
+                  type: "string",
+                  description: "Repository in format 'owner/repo' to search within (optional)",
+                },
+                limit: {
+                  type: "number",
+                  description: "Maximum number of results to return (optional)",
+                },
+              },
+              required: ["query"],
+            },
+          },
+          {
+            name: "gh_search_prs",
+            description: "Search pull requests using gh CLI",
+            inputSchema: {
+              type: "object",
+              properties: {
+                query: {
+                  type: "string",
+                  description: "Search query string",
+                },
+                repo: {
+                  type: "string",
+                  description: "Repository in format 'owner/repo' to search within (optional)",
+                },
+                state: {
+                  type: "string",
+                  description: "Filter by state: open, closed, or all (optional)",
+                  enum: ["open", "closed", "all"],
+                },
+                author: {
+                  type: "string",
+                  description: "Filter by author username (optional)",
+                },
+                limit: {
+                  type: "number",
+                  description: "Maximum number of results to return (optional)",
+                },
+              },
+              required: ["query"],
+            },
+          },
+          {
+            name: "gh_search_commits",
+            description: "Search commits using gh CLI",
+            inputSchema: {
+              type: "object",
+              properties: {
+                query: {
+                  type: "string",
+                  description: "Search query string",
+                },
+                repo: {
+                  type: "string",
+                  description: "Repository in format 'owner/repo' to search within (optional)",
+                },
+                author: {
+                  type: "string",
+                  description: "Filter by author username (optional)",
+                },
+                limit: {
+                  type: "number",
+                  description: "Maximum number of results to return (optional)",
+                },
+              },
+              required: ["query"],
+            },
+          },
         ],
       };
     };
@@ -85,6 +239,34 @@ class LocalMCPServer {
 
       if (name === "start_cursor_agent") {
         return await this.cursorAgentClient.startAgent(args || {});
+      }
+
+      if (name === "gh_repo_list") {
+        return await this.githubCLI.listRepos(args?.limit);
+      }
+
+      if (name === "gh_repo_view") {
+        return await this.githubCLI.viewRepo(args?.repo);
+      }
+
+      if (name === "gh_pr_list") {
+        return await this.githubCLI.listPRs(args?.repo, args?.state, args?.author, args?.limit);
+      }
+
+      if (name === "gh_pr_view") {
+        return await this.githubCLI.viewPR(args?.pr_number, args?.repo);
+      }
+
+      if (name === "gh_search_code") {
+        return await this.githubCLI.searchCode(args?.query, args?.repo, args?.limit);
+      }
+
+      if (name === "gh_search_prs") {
+        return await this.githubCLI.searchPRs(args?.query, args?.repo, args?.state, args?.author, args?.limit);
+      }
+
+      if (name === "gh_search_commits") {
+        return await this.githubCLI.searchCommits(args?.query, args?.repo, args?.author, args?.limit);
       }
 
       throw new Error(`Unknown tool: ${name}`);
