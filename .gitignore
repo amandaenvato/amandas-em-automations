@@ -7,8 +7,3 @@ recipes/**/*-*-*/**
 people-info.md
 
 **/node_modules
-
-em-knowledgebase/**/*
-knowledgebase/**/*
-!em-knowledgebase/README.md
-!knowledgebase/README.md
