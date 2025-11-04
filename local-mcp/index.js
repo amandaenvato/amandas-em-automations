@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import "dotenv/config";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
@@ -10,6 +11,7 @@ import { fileURLToPath } from "url";
 import { CursorAgentClient } from "./src/cursor-agent-client.js";
 import { GitHubCLI } from "./src/github-cli.js";
 import { TickTickClient } from "./src/ticktick-client.js";
+import { OpenAIClient } from "./src/openai-client.js";
 
 class LocalMCPServer {
   constructor() {
@@ -28,6 +30,7 @@ class LocalMCPServer {
     this.cursorAgentClient = new CursorAgentClient();
     this.githubCLI = new GitHubCLI();
     this.tickTickClient = new TickTickClient();
+    this.openAIClient = new OpenAIClient();
     this.setupToolHandlers();
   }
 
@@ -286,6 +289,25 @@ class LocalMCPServer {
               required: [],
             },
           },
+          {
+            name: "ask_openai",
+            description: "Pass a prompt to OpenAI and wait for the response",
+            inputSchema: {
+              type: "object",
+              properties: {
+                prompt: {
+                  type: "string",
+                  description: "The prompt/question to send to OpenAI",
+                },
+                model: {
+                  type: "string",
+                  description: "The model to use (default: 'gpt-5-nano')",
+                  default: "gpt-5-nano",
+                },
+              },
+              required: ["prompt"],
+            },
+          },
         ],
       };
     };
@@ -336,6 +358,13 @@ class LocalMCPServer {
 
       if (name === "ticktick_get_all_tasks") {
         return await this.tickTickClient.getAllTasks(args?.project, args?.status, args?.limit);
+      }
+
+      if (name === "ask_openai") {
+        return await this.openAIClient.askOpenAI({
+          prompt: args?.prompt,
+          model: args?.model,
+        });
       }
 
       throw new Error(`Unknown tool: ${name}`);
