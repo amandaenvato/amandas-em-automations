@@ -20,6 +20,8 @@ Execute the following steps in order:
 2. **Jira Tickets Check** (see details below)
 3. **AWS Access Request Check** (see details below)
 4. **BambooHR Time Off Requests Check** (see details below)
+5. **TickTick Tasks Summary** (see details below)
+6. **Saved Slack Messages Check** (see details below)
 
 ## Step 1: Check Author Helpline
 
@@ -156,9 +158,98 @@ Provide direct feedback in conversation format with:
 
 Do not create any documents - just provide the information directly in the conversation.
 
+## Step 5: Check TickTick Tasks
+
+### Instructions
+
+1. Use the `ticktick_get_pending_tasks` MCP tool to get all incomplete tasks
+2. Use the `ticktick_get_task_summary` MCP tool to get overall statistics
+3. **Ignore complete tasks** - only focus on incomplete tasks
+4. Analyze the incomplete tasks and group them into logical categories such as:
+   - Team Management & People Development
+   - On-Call & Operations
+   - Documentation & Process
+   - Training & Learning
+   - Team Feedback & Reviews
+   - Communication & Events
+   - Operational/Maintenance
+   - Or other relevant groupings based on task content
+5. For each task, include:
+   - Task title
+   - Priority (if available)
+   - Due date (if available)
+   - Project (if available)
+6. Note any high-priority tasks or tasks with upcoming due dates
+7. Identify stale tasks (e.g., tasks from months ago that may need review or cleanup)
+
+### Important Notes
+
+- Use the MCP tools (`ticktick_get_pending_tasks` and `ticktick_get_task_summary`) rather than directly querying the database
+- Focus only on incomplete tasks - do not include completed tasks in the summary
+- Group tasks logically to make the summary more actionable
+- Highlight tasks that need immediate attention (high priority, due soon, or stale)
+
+### Expected Output
+
+Provide direct feedback in conversation format with:
+- Overall statistics (total tasks, incomplete count, priority breakdown)
+- Grouped list of incomplete tasks by category
+- Each task showing title, priority, due date, and project (where available)
+- Notes on any high-priority items or stale tasks that need attention
+
+Do not create any documents - just provide the information directly in the conversation.
+
+## Step 6: Check Saved Slack Messages
+
+### Instructions
+
+1. Use Playwright to navigate to the Slack saved messages page at: `https://app.slack.com/client/E04LQRTKFNH/later`
+2. Wait for the page to load and extract saved messages from the "In progress" filter
+3. For each saved message:
+   - Extract the message ID (timestamp) and channel ID from links in the saved items list
+   - Use Slack MCP tools (`conversations_history` or `conversations_replies`) to retrieve the full message content
+   - Identify the channel type (public channel, private channel, or DM)
+   - Extract the author, date, and full message text
+4. Analyze each saved message to infer what action or task is needed:
+   - Look for explicit requests or questions
+   - Identify items requiring responses or follow-up
+   - Note any deadlines or time-sensitive items
+   - Determine priority based on context and urgency
+5. Group messages by priority (High, Medium, Low) or by type of action needed
+6. Provide a count of saved messages requiring action
+
+### Important Notes
+
+- Saved messages are accessed via the Slack "Later" page at `https://app.slack.com/client/E04LQRTKFNH/later`
+- Focus on messages in the "In progress" filter (these are active items)
+- Use Playwright to extract message IDs from the page, then use Slack MCP tools to get full message details
+- Message IDs are found in Slack URLs in the format: `https://envato.slack.com/archives/[CHANNEL_ID]/p[MESSAGE_TIMESTAMP]`
+- For DMs, channel IDs start with `D` or `U` prefix
+- Infer actions by analyzing message content for:
+  - Questions requiring answers
+  - Requests for information or decisions
+  - Items needing follow-up
+  - Tasks delegated or assigned
+  - Deadlines or time-sensitive matters
+
+### Expected Output
+
+Provide direct feedback in conversation format with:
+- Count of saved messages requiring action
+- List of messages grouped by priority or action type
+- For each message:
+  - Author name and channel
+  - Date/time
+  - Full message text or summary
+  - Inferred action/task needed
+  - Direct Slack link to the message
+- Clear indication of what needs to be done for each item
+
+Do not create any documents - just provide the information directly in the conversation.
+
 ## Final Summary Format
 
-After completing all four checks, provide a comprehensive summary:
+After completing all six checks, provide a comprehensive summary:
 
 ---
 
@@ -203,9 +294,58 @@ After completing all four checks, provide a comprehensive summary:
    - Status: Pending approval
    - Note: Click link to review and approve/deny in BambooHR
 
+## TickTick Summary
+
+**Overall Statistics:**
+- **Total Tasks**: [COUNT]
+- **Incomplete Tasks**: [COUNT]
+- **High Priority**: [COUNT]
+- **Medium Priority**: [COUNT]
+- **Low Priority**: [COUNT]
+
+### Incomplete Tasks by Category
+
+#### **[Category Name]** ([COUNT] tasks)
+- [Task Title] (Priority: [Priority], Due: [Due Date])
+- [Task Title] (Priority: [Priority], Due: [Due Date])
+
+#### **[Category Name]** ([COUNT] tasks)
+- [Task Title] (Priority: [Priority], Due: [Due Date])
+- [Task Title] (Priority: [Priority], Due: [Due Date])
+
+[Continue with additional categories as needed]
+
+**Note**: [Any notes about stale tasks, high-priority items, or items needing immediate attention]
+
+## Saved Slack Messages Status
+- **Messages Requiring Action**: [COUNT]
+- **High Priority**: [COUNT]
+- **Medium Priority**: [COUNT]
+- **Low Priority**: [COUNT]
+
+**Saved Messages Requiring Action:**
+
+#### **High Priority**
+1. [Author Name] - [Channel] - [Slack Link]
+   - Date: [Date/Time]
+   - Message: [Summary or excerpt]
+   - Action Needed: [Inferred action/task]
+
+#### **Medium Priority**
+1. [Author Name] - [Channel] - [Slack Link]
+   - Date: [Date/Time]
+   - Message: [Summary or excerpt]
+   - Action Needed: [Inferred action/task]
+
+#### **Low Priority**
+1. [Author Name] - [Channel] - [Slack Link]
+   - Date: [Date/Time]
+   - Message: [Summary or excerpt]
+   - Action Needed: [Inferred action/task]
+
 ## Overall Status
-- **Action Required**: [Summary of what needs attention]
-- **Priority Items**: [List any high priority items]
+- **Action Required**: [Summary of what needs attention across all systems]
+- **Priority Items**: [List any high priority items from all checks, including TickTick tasks and saved Slack messages]
 
 ---
 

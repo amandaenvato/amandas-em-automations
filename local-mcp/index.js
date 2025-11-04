@@ -9,6 +9,7 @@ import {
 import { fileURLToPath } from "url";
 import { CursorAgentClient } from "./src/cursor-agent-client.js";
 import { GitHubCLI } from "./src/github-cli.js";
+import { TickTickClient } from "./src/ticktick-client.js";
 
 class LocalMCPServer {
   constructor() {
@@ -26,6 +27,7 @@ class LocalMCPServer {
 
     this.cursorAgentClient = new CursorAgentClient();
     this.githubCLI = new GitHubCLI();
+    this.tickTickClient = new TickTickClient();
     this.setupToolHandlers();
   }
 
@@ -229,6 +231,61 @@ class LocalMCPServer {
               required: ["query"],
             },
           },
+          {
+            name: "ticktick_get_pending_tasks",
+            description: "Get pending (incomplete) tasks from TickTick",
+            inputSchema: {
+              type: "object",
+              properties: {
+                project: {
+                  type: "string",
+                  description: "Filter by project name (optional)",
+                },
+                priority: {
+                  type: "string",
+                  description: "Filter by priority: 'none', 'low', 'medium', or 'high' (optional)",
+                  enum: ["none", "low", "medium", "high"],
+                },
+                limit: {
+                  type: "number",
+                  description: "Maximum number of tasks to return (optional)",
+                },
+              },
+              required: [],
+            },
+          },
+          {
+            name: "ticktick_get_task_summary",
+            description: "Get summary statistics of all tasks in TickTick",
+            inputSchema: {
+              type: "object",
+              properties: {},
+              required: [],
+            },
+          },
+          {
+            name: "ticktick_get_all_tasks",
+            description: "Get all tasks (both complete and incomplete) from TickTick",
+            inputSchema: {
+              type: "object",
+              properties: {
+                project: {
+                  type: "string",
+                  description: "Filter by project name (optional)",
+                },
+                status: {
+                  type: "string",
+                  description: "Filter by status: 'incomplete' or 'complete' (optional)",
+                  enum: ["incomplete", "complete"],
+                },
+                limit: {
+                  type: "number",
+                  description: "Maximum number of tasks to return (optional)",
+                },
+              },
+              required: [],
+            },
+          },
         ],
       };
     };
@@ -267,6 +324,18 @@ class LocalMCPServer {
 
       if (name === "gh_search_commits") {
         return await this.githubCLI.searchCommits(args?.query, args?.repo, args?.author, args?.limit);
+      }
+
+      if (name === "ticktick_get_pending_tasks") {
+        return await this.tickTickClient.getPendingTasks(args?.project, args?.priority, args?.limit);
+      }
+
+      if (name === "ticktick_get_task_summary") {
+        return await this.tickTickClient.getTaskSummary();
+      }
+
+      if (name === "ticktick_get_all_tasks") {
+        return await this.tickTickClient.getAllTasks(args?.project, args?.status, args?.limit);
       }
 
       throw new Error(`Unknown tool: ${name}`);

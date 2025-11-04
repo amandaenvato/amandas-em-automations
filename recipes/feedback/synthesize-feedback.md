@@ -53,12 +53,15 @@ If for whatever reason the task cannot be completed, explain the issue and ask i
 
 **Behaviours**
 Patterns of behaviour synthesized from all sources (Slack, Jira, Culture Amp):
-- Communication and collaboration patterns
-- Initiative and leadership demonstrated
-- Specific examples and patterns
-- Recent work completed and its impact
-- Problem-solving approaches
-- Do not be overly verbose in this section, it does not need to be a comprehensive log of all activities.
+- **Focus on the most pertinent areas only** - this is NOT a comprehensive log
+- **Prioritize concerning examples** - behaviors that raise concerns or signal issues
+- **Prioritize excellent examples** - standout performance that demonstrates growth or exceeds expectations
+- Communication and collaboration patterns (only if notable)
+- Initiative and leadership demonstrated (only if notable)
+- Specific examples that illustrate trajectory progress or concerns
+- Recent work that has significant impact or demonstrates key behaviors
+- Problem-solving approaches (only if exceptional or concerning)
+- Do not list routine work unless it demonstrates something important about role expectations or trajectory.
 
 **Outcomes**
 - Compare current behaviours against previous feedback given
@@ -140,12 +143,20 @@ Generate a new entry section in this exact format:
 - Focus on growth areas and behaviours that help/hinder
 
 ### Behaviours
-Look for patterns across sources:
-- **From Slack**: Communication frequency, technical discussions, collaboration
-- **From Jira**: Types of work, complexity, consistency, technical contributions
-- **From Culture Amp**: Recent topics, action completion, engagement level
+**IMPORTANT: This section should NOT be comprehensive. Focus only on the most pertinent behaviors.**
 
-Be specific with examples, dates, and numbers.
+Look for patterns across sources:
+- **From Slack**: Communication patterns (only if notable - concerning or excellent)
+- **From Jira**: Work that demonstrates trajectory progress, concerning patterns, or exceptional performance
+- **From Culture Amp**: Concerning trends, excellent engagement, or notable action completion
+
+**Selection criteria for behaviors:**
+- Does this demonstrate progress toward trajectory goals?
+- Is this a concerning pattern that needs attention?
+- Is this an excellent example of performance against role expectations?
+- Does this illustrate a strength or weakness relevant to feedback?
+
+Be specific with examples, dates, and numbers, but only include the most relevant ones.
 
 ### Outcomes
 - Note observable changes from previous feedback
