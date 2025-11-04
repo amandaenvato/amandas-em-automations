@@ -11,6 +11,7 @@ import { CursorAgentClient } from "./src/cursor-agent-client.js";
 import { GitHubCLI } from "./src/github-cli.js";
 import { TickTickClient } from "./src/ticktick-client.js";
 import { OpenAIClient } from "./src/openai-client.js";
+import { CultureAmpClient } from "./src/cultureamp-client.js";
 
 class LocalMCPServer {
   constructor() {
@@ -30,6 +31,13 @@ class LocalMCPServer {
     this.githubCLI = new GitHubCLI();
     this.tickTickClient = new TickTickClient();
     this.openAIClient = new OpenAIClient();
+    try {
+      this.cultureAmpClient = new CultureAmpClient();
+    } catch (error) {
+      // Culture Amp client is optional - log warning but don't fail
+      console.error("Warning: Culture Amp client not initialized:", error.message);
+      this.cultureAmpClient = null;
+    }
     this.setupToolHandlers();
   }
 
@@ -307,6 +315,20 @@ class LocalMCPServer {
               required: ["prompt"],
             },
           },
+          ...(this.cultureAmpClient ? [{
+            name: "cultureamp_get_conversation",
+            description: "Get details about a Culture Amp conversation by its ID",
+            inputSchema: {
+              type: "object",
+              properties: {
+                conversation_id: {
+                  type: "string",
+                  description: "The conversation ID (UUID format, e.g., '0190791e-69f0-7057-939d-8bd02ca7b7b3')",
+                },
+              },
+              required: ["conversation_id"],
+            },
+          }] : []),
         ],
       };
     };
@@ -364,6 +386,16 @@ class LocalMCPServer {
           prompt: args?.prompt,
           model: args?.model,
         });
+      }
+
+      if (name === "cultureamp_get_conversation") {
+        if (!this.cultureAmpClient) {
+          throw new Error(
+            "Culture Amp client not available. Please set CULTUREAMP_TOKEN and CULTUREAMP_REFRESH_TOKEN " +
+            "environment variables."
+          );
+        }
+        return await this.cultureAmpClient.getConversation(args?.conversation_id);
       }
 
       throw new Error(`Unknown tool: ${name}`);

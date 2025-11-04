@@ -181,77 +181,58 @@ For each person, create `feedback/dd-mm-yyyy/jira-{firstname}.md` with:
 ## Step 4: Collect Culture Amp 1-on-1 Data
 
 ### Goal
-Generate individual Culture Amp 1-on-1 conversation reports for each team member by using Playwright to extract data from their Culture Amp pages. Playwright will control a browser that is already authenticated with Culture Amp.
+Generate individual Culture Amp 1-on-1 conversation reports for each team member using the `cultureamp_get_conversation` MCP tool.
 
 ### Important: Read People Information First
-**Before starting**, read the `recipes/people-info.md` file to get Culture Amp URLs and email addresses for all team members.
+**Before starting**, read the `recipes/people-info.md` file to get Culture Amp conversation IDs and email addresses for all team members.
 
 ### Instructions
 For each team member:
-1. Navigate to their Culture Amp conversation history page
-2. Extract the page content using Playwright and JavaScript
+1. Extract the conversation ID from their Culture Amp URL in `people-info.md`
+2. Use the `cultureamp_get_conversation` tool to fetch their conversation data
 3. Analyze their recent 1-on-1 conversation topics, notes, and actions
 4. Look for trends in their engagement, challenges, achievements, and feedback
 5. Note any recent updates or completed actions
 
 ### Process
-Use the Playwright MCP browser tools to navigate and extract content. The browser is already authenticated with Culture Amp.
+Use the `cultureamp_get_conversation` MCP tool to fetch conversation data directly from the Culture Amp API.
 
-**CRITICAL DISCOVERY**: Culture Amp's History tab displays conversation topics with note counts, but the actual conversation NOTES are hidden in expandable sections that require clicking "Show notes" buttons before extraction.
+**How to extract conversation IDs:**
+- The conversation ID is the UUID in the Culture Amp URL
+- Example: `https://envato.cultureamp.com/app/conversations/0190791e-69f0-7057-939d-8bd02ca7b7b3?tab=history`
+- Conversation ID: `0190791e-69f0-7057-939d-8bd02ca7b7b3`
 
-**Proper Approach:**
-1. Navigate to their Culture Amp URL (with `?tab=history` parameter)
-2. **CRITICAL STEP**: Click ALL "Show notes" or "Show note" buttons for the 2-3 most recent conversations to expand the note sections (clicking automatically waits for elements, no need for explicit waits)
-3. Take a snapshot using `browser_snapshot()` to get the structured data including all expanded notes
-4. Parse the snapshot to extract conversation content from the nested regions:
-   - Recent conversation topics and when they were completed
-   - **ACTUAL NOTES/INSIGHTS from each conversation topic**
-   - Number of notes per topic
-   - Actions completed with details
-   - Chronological conversation history
-   - Key topics discussed and their contents
-
-**IMPORTANT**: Without clicking "Show notes" buttons first, snapshots will NOT contain the actual conversation notes - only topic titles and counts. You MUST expand the note sections before taking snapshots.
-
-**Analysis points:**
-- Topics covered in recent conversations
-- Frequency of 1-on-1s
-- Types of challenges or roadblocks mentioned
-- Achievements and wins highlighted
-- Action items and their completion status
-- Feedback given and received
-- Overall engagement level and patterns
-
-**Required approach to get actual notes:**
-
+**Using the tool:**
+Call the `cultureamp_get_conversation` tool for each team member:
 ```javascript
-// Step 1: Navigate to the Culture Amp URL
-browser_navigate(url)
-
-// Step 2: Expand all note sections by clicking "Show notes" buttons
-// Find all buttons with "Show notes" or "Show note" in their text
-// Click each one to expand the conversation notes
-browser_click()  // for each "Show notes" button
-
-// Step 3: Take a snapshot to get structured data including expanded notes
-browser_snapshot()
-
-// Step 4: Parse the snapshot to extract conversation notes, dates, topics, actions, etc.
-// The snapshot NOW contains the actual conversation notes in a structured format
+cultureamp_get_conversation({
+  conversation_id: "0190791e-69f0-7057-939d-8bd02ca7b7b3" // Extract from people-info.md URL
+})
 ```
 
-**Without clicking "Show notes" buttons, the snapshot will NOT contain the actual conversation notes - only topic titles and note counts.**
+The tool returns a formatted markdown summary with:
+- **Summary section**: Title, participants, dates, completed topics count, topic types breakdown
+- **All completed topics**: Full details including type, creation/completion dates, attachments
+- **Attachments for each topic**: Notes, responses, check-ins, attachment events
+- **Chronological conversation history**: All topics ordered by completion date
 
-**Technical notes:**
-- **MUST click "Show notes" buttons before taking snapshot** - The note content is hidden in expandable UI elements
-- **Use `browser_snapshot()` after expanding notes** - This provides structured data from all expanded notes
-- The snapshots provide nested regions with actual note content once expanded
-- The History tab provides the most useful data for recent conversations
-- **Without expansion, snapshots will NOT contain the actual notes** - only topic titles and counts
-- After expanding and snapshotting, parse the snapshot regions to extract structured information about conversations, notes, and actions
-- Typical process: Click all "Show notes" buttons for the 2-3 most recent conversations, then take snapshot, then extract notes from snapshot regions
-- No need for explicit waits - click actions automatically wait for elements to appear
-- **Do not use `document.body.textContent` or `browser_evaluate`** - use snapshots after clicking to expand notes
+**What the tool provides:**
+- All completed topics with full details
+- Notes and responses from conversations (extracted from attachment content)
+- Check-in data (when available, including wellbeing scores)
+- Attachment events (complete, reopen, delete events)
+- Action items and their status (from action-type topics)
+- Topic type categorization (check_in, challenge, highlight, user, action)
+- Full attachment history for each topic
+
+**Analysis points:**
+- Topics covered in recent conversations (from completed topics list)
+- Frequency of 1-on-1s (from completion dates - look for patterns)
+- Types of challenges or roadblocks mentioned (from challenge-type topics and responses)
+- Achievements and wins highlighted (from highlight-type topics and responses)
+- Action items and their completion status (from action-type topics)
+- Feedback given and received (from user-type topics and notes)
+- Overall engagement level and patterns (from check-ins and response frequency)
 
 ### Output Format
 For each person, create `feedback/dd-mm-yyyy/culture-{firstname}.md` with:
@@ -318,12 +299,15 @@ Search for completed work assigned to each team member in the ATH project:
 Search period: Work completed in **last 7 days** or since their last feedback entry.
 
 ### Step 4: Collect Culture Amp 1-on-1 Data
-Extract recent 1-on-1 conversation history for each team member:
-- Conversation topics discussed
-- Frequency and regularity of meetings
-- Notes and insights shared
-- Action items and their status
-- Engagement patterns and participation
+Use the `cultureamp_get_conversation` MCP tool to fetch conversation data for each team member:
+- Extract conversation IDs from `recipes/people-info.md` URLs
+- Call `cultureamp_get_conversation` with each conversation ID
+- Extract and analyze:
+  - Conversation topics discussed (from completed topics)
+  - Frequency and regularity of meetings (from completion dates)
+  - Notes and insights shared (from attachments)
+  - Action items and their status (from action topics)
+  - Engagement patterns and participation (from check-ins and responses)
 
 ## Types of Information to Capture
 
