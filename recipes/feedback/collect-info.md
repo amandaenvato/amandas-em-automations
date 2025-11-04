@@ -46,22 +46,24 @@ All output goes into `feedback/dd-mm-yyyy/`:
 ## Step 1: Get Current Feedback Document
 
 ### Goal
-Read and save the current state of the Google Drive document as a markdown file.
+Copy the current feedback document from the most recent run and update it to match the Google Drive version.
 
 ### Instructions
-1. Read the Google Drive document with ID `1JRQS1rBc7XmNJkt28ZvKFB4oIY239vyv5HaOaGwjhiY` (document named "Feedback To Reports")
-2. Convert the content to markdown format
-3. Save the content to `feedback/dd-mm-yyyy/current-doc.md`
+1. Find the most recent date-stamped directory in `feedback/` (e.g., `feedback/03-11-2025/`)
+2. Copy `current-doc.md` from that directory to `feedback/dd-mm-yyyy/current-doc.md`
+3. Read the Google Drive document with ID `1JRQS1rBc7XmNJkt28ZvKFB4oIY239vyv5HaOaGwjhiY` (document named "Feedback To Reports")
+4. Update the copied file to match the Google Drive version (typically just the most recent entry section needs updating)
 
 ### Process
+- Copy the existing `current-doc.md` from the most recent date directory
 - Use the MCP Google Drive tools to read the document
-- Parse the content to extract all feedback entries for each person
+- Compare the Google Drive content with the copied file
+- Update the copied file to match the Google Drive version (usually only the latest entry section has changed)
 - Note the date of the last feedback entry for each person
-- Save as clean markdown in the current-doc.md file
 
 ### Expected Output
 - File: `feedback/dd-mm-yyyy/current-doc.md`
-- Contains: The entire current state of the feedback document
+- Contains: The entire current state of the feedback document, updated to match Google Drive
 
 ## Step 2: Collect Slack Activity
 
@@ -268,10 +270,13 @@ For each person, create `feedback/dd-mm-yyyy/culture-{firstname}.md` with:
 ## How It Works
 
 ### Step 1: Get Current Feedback Document
-Read the existing feedback document to determine:
-- The last feedback entry date for each team member
-- The format and structure of existing entries
-- Areas of focus in recent feedback
+Copy the most recent `current-doc.md` from the previous run and update it to match Google Drive:
+- Copy from the most recent date-stamped directory in `feedback/`
+- Read the Google Drive document to get the latest version
+- Update the copied file to match (typically only the most recent entry section needs updating)
+- Determine the last feedback entry date for each team member
+- Note the format and structure of existing entries
+- Identify areas of focus in recent feedback
 
 ### Step 2: Collect Slack Activity
 Search for each team member's messages and analyze:
