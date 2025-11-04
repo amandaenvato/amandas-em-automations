@@ -145,7 +145,7 @@ describe("CultureAmpClient", () => {
       expect(result.content).toBeDefined();
       expect(result.content[0].text).toContain("Test Conversation");
       expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining("Failed to fetch completed topics"));
-      
+
       consoleSpy.mockRestore();
     });
 
@@ -158,7 +158,7 @@ describe("CultureAmpClient", () => {
 
       // Test with records structure
       const mockTopicsRecords = { records: [{ id: "topic1", type: "highlight" }] };
-      
+
       global.fetch
         .mockResolvedValueOnce({
           ok: true,
@@ -211,7 +211,7 @@ describe("CultureAmpClient", () => {
 
       expect(result.content).toBeDefined();
       expect(consoleSpy).toHaveBeenCalledWith(expect.stringContaining("Failed to fetch attachments"));
-      
+
       consoleSpy.mockRestore();
     });
 
