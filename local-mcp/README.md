@@ -21,22 +21,6 @@ cd local-mcp
 npm install
 ```
 
-## Configuration
-
-Environment variables are loaded from a `.env` file in the `local-mcp` directory using `dotenv`. Create a `.env` file with the following variables:
-
-```bash
-# Cursor API Configuration
-# Get your API key from https://cursor.com/dashboard
-CURSOR_API_KEY=your_cursor_api_key_here
-
-# OpenAI API Configuration
-# Get your API key from https://platform.openai.com/api-keys
-OPENAI_API_KEY=your_openai_api_key_here
-```
-
-**Note**: Make sure to add `.env` to your `.gitignore` file to keep your API keys secure.
-
 ## Usage
 
 The server is configured in your MCP configuration file (`~/.cursor/mcp.json`) as:
