@@ -2,21 +2,52 @@
 
 **AI Agent Recipes for Engineering Manager Workflows**
 
-Instruction recipes for AI agents with MCP access to automate feedback collection, communication logging, and daily checkups for engineering managers.
+Instruction recipes for AI agents with MCP access to automate feedback collection, communication logging, daily checkups, and other engineering manager tasks.
 
 ## Overview
 
-These are instruction recipes for AI agents (like Claude Code, Cursor or Goose). The agent reads the recipe instructions, collects data from Slack, Jira, Culture Amp, and Google Drive, then generates ready-to-use outputs. Just tell your agent to follow the instructions in the recipe files.
+This repository contains instruction recipes for AI agents (like Claude Code, Cursor, or Goose) to automate common engineering manager workflows. The agent reads the recipe instructions, collects data from various sources (Slack, Jira, Culture Amp, Google Drive, etc.), and generates ready-to-use outputs.
 
-## Prerequisites
+**How it works:** Simply tell your agent to follow the instructions in a recipe file, and it will execute the workflow, gather necessary data, and produce formatted outputs ready for use.
 
-Your AI agent must have access to the following MCP servers to read and search (no write ability necessary):
-- **Slack** - Team messages and communications
-- **Google Drive** - Document storage and updates
-- **Atlassian** (Jira) - Work tracking and completed work
-- **Atlassian** (Confluence) - Sprint report documents and team documentation
-- **Gmail** - Email assignments and notifications
-- **Playwright** - Browser automation (for Culture Amp and BambooHR data extraction)
+## Components
+
+### Local MCP Server
+
+This project includes a custom [Local MCP Server](local-mcp/README.md) that provides additional tools beyond standard MCP servers:
+
+- **Cursor Agent API** - Start autonomous Cursor agents to work on GitHub repositories
+- **GitHub CLI** - Search code, PRs, commits, and manage repositories
+- **TickTick** - Task management integration
+- **OpenAI** - Direct API access for additional AI capabilities
+- **Culture Amp** - Conversation and feedback analysis
+
+See the [Local MCP README](local-mcp/README.md) for installation, configuration, and usage details.
+
+### External MCP Dependencies
+
+Your AI agent must have access to the following external MCP servers (read/search access sufficient, write not required):
+
+**Communication & Collaboration:**
+- **Slack** - Team messages, communications, mentions, and saved messages
+- **Gmail** - Email assignments, notifications, and document sharing
+
+**Documentation & Storage:**
+- **Google Drive** - Document storage, reading, and updates
+- **Atlassian Confluence** - Sprint reports and team documentation
+
+**Work Management:**
+- **Atlassian Jira** - Work tracking, ticket management, and completed work
+
+**Browser Automation:**
+- **Playwright** - Browser automation for systems without APIs:
+  - Culture Amp (feedback and conversation analysis)
+  - BambooHR (time off request approvals)
+  - TEAM system (AWS access request approvals)
+  - Slack saved messages page
+
+**Calendar:**
+- **Google Calendar** - Event management and meeting facilitation tracking
 
 ## Recipes
 
@@ -75,7 +106,7 @@ Enhances draft sprint reports by gathering context and creating more executive-f
 - `OUTPUT.md` - **Final output**: Improved draft ready for review
 
 ### 4. Daily Checkup Recipe
-Performs comprehensive daily status checks for author helpline and active Jira tickets.
+Performs comprehensive daily status checks across multiple systems and provides a complete overview of pending items.
 
 **How to Use:**
 - Ask your agent: `Please run the instructions in the @daily-checkup.md`
@@ -86,13 +117,22 @@ Performs comprehensive daily status checks for author helpline and active Jira t
 2. Searches Jira for active tickets assigned to you (excluding Done/Closed/Resolved statuses)
 3. Checks for pending AWS access request notifications from the TEAM bot
 4. Checks BambooHR inbox for pending time off approval requests
-5. Provides a comprehensive summary with direct links and status counts
+5. Retrieves TickTick pending tasks and organizes them by category
+6. Checks Slack saved messages for action items
+7. Searches Slack mentions for unaddressed action items
+8. Checks additional Slack pages (AWS requests channel, Activity, DMs) for concerning messages
+9. Checks Google Calendar for facilitate meetings scheduled today
+10. Provides a comprehensive summary with direct links and status counts
 
 **Output:** Direct conversation summary with:
 - Author helpline status (unaddressed issues count and details)
 - Jira tickets status (active tickets organized by status)
 - AWS access request status (pending notifications requiring approval)
 - BambooHR time off request status (pending approvals)
+- TickTick tasks summary (organized by category with priorities)
+- Saved Slack messages requiring action
+- Slack mentions and action items status
+- Calendar facilitate meetings for today
 - Overall status summary with action items and priorities
 
 ### 5. Action Items Recipe
@@ -114,6 +154,46 @@ Finds pending action items where you've been directly pinged or assigned in Slac
 - Specific action requirements and due dates
 - Additional context for each action
 
+### 6. Team Requests Recipe
+Checks for pending AWS access approval requests in the TEAM (Temporary Elevated Access Management) system.
+
+**How to Use:**
+- Ask your agent: `Follow the instructions in "recipes/team-requests/check-team-requests.md"`
+
+**What the Agent Does:**
+1. Navigates to AWS Access Portal and authenticates via TEAM IDC APP
+2. Checks the approvals page for pending access requests
+3. Extracts request details (requester, account, role, duration, justification, ticket number)
+4. Reports pending approvals ready for manual review
+
+**Output:** Direct conversation summary with:
+- Authentication status confirmation
+- Pending approvals count
+- Detailed request information for each pending approval
+- Direct link to approvals page for manual review
+
+### 7. Cursor Agent Recipe
+Identifies Jira tickets suitable for autonomous Cursor agent work and starts agents to complete them.
+
+**How to Use:**
+- Ask your agent: `Follow the instructions in "recipes/cursor-agent/identify-and-start-agent.md"`
+
+**What the Agent Does:**
+1. Searches Jira backlog for tickets suitable for autonomous work
+2. Analyzes tickets for clarity, risk, and scope
+3. Ensures tickets are properly labeled with `ai-suitable`
+4. Selects the best candidate ticket
+5. Conducts planning research (Slack, Jira, Confluence, GitHub, Google Drive)
+6. Updates ticket description with detailed findings and technical details
+7. Starts a Cursor agent with a comprehensive prompt to complete the work
+
+**Output:** Summary including:
+- Tickets reviewed and analyzed
+- Selected candidate with reasoning
+- Planning findings (repository, files, context)
+- Agent details (ID, status, repository)
+- Next steps for monitoring and review
+
 ## Output Locations
 
 Most recipes create dated directories with collected data and final synthesized outputs:
@@ -121,4 +201,4 @@ Most recipes create dated directories with collected data and final synthesized 
 - `recipes/communication-log/dd-mm-yyyy/` - Communication analysis and log entries ready to append
 - `recipes/sprint-report/dd-mm-yyyy/` - Draft analysis and improved sprint report
 
-**Note:** The Daily Checkup recipe provides output directly in the conversation rather than creating files.
+**Note:** Some recipes (Daily Checkup, Action Items, Team Requests) provide output directly in the conversation rather than creating files. Others create dated directories with intermediate analysis files and final synthesized outputs.
