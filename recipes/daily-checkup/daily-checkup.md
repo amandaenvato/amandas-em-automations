@@ -22,6 +22,8 @@ Execute the following steps in order:
 4. **BambooHR Time Off Requests Check** (see details below)
 5. **TickTick Tasks Summary** (see details below)
 6. **Saved Slack Messages Check** (see details below)
+6.5. **Slack Mentions and Action Items Check** (see details below)
+7. **Calendar Facilitate Meetings Check** (see details below)
 
 ## Step 1: Check Author Helpline
 
@@ -247,9 +249,105 @@ Provide direct feedback in conversation format with:
 
 Do not create any documents - just provide the information directly in the conversation.
 
+## Step 6.5: Check Slack Mentions and Action Items
+
+### Instructions
+
+1. Search Slack for messages containing "jdub" (without @ symbol) from the last 7 days
+2. Review the search results to identify messages that:
+   - Mention jdub directly or indirectly
+   - Appear to be requests, questions, or action items
+   - Require follow-up or response
+3. For each potential action item:
+   - Use `conversations_replies` to get full thread context if the message is part of a thread
+   - Use `conversations_history` if needed to understand the broader conversation context
+   - Identify if the item has been addressed or is still pending
+   - Determine the type of action needed (decision, response, follow-up, etc.)
+4. For messages that look like unaddressed actions:
+   - Extract the full context from the thread
+   - Note who mentioned jdub and what they're asking for
+   - Identify if there's been a response or if it's still pending
+   - Assess priority based on urgency and impact
+5. Group identified action items by:
+   - Status (Resolved, Pending Response, Needs Decision, etc.)
+   - Priority (High, Medium, Low)
+   - Type (Technical Question, Process Decision, Access Request, etc.)
+6. Construct direct Slack links for each message using format: `https://envato.slack.com/archives/[CHANNEL_ID]/p[MESSAGE_TIMESTAMP]`
+   - Channel IDs can be found in the search results or thread replies
+   - Use the message timestamp from the search results for the link
+
+### Important Notes
+
+- Search for "jdub" without the @ symbol to catch all mentions (both @mentions and text references)
+- Focus on messages from the last 7 days for relevance
+- Always get thread context to understand if items have been resolved in follow-up messages
+- Look for patterns like:
+  - Questions ending with "?"
+  - Requests for approval or decision ("WDYT?", "can you...", "should we...")
+  - Technical issues that need investigation
+  - Access requests or permission needs
+  - Status updates that might need acknowledgment
+- When constructing Slack links:
+  - Channel IDs from search results may need conversion (e.g., channel names like "#author-team" need to be converted to channel IDs)
+  - Message timestamps from search results are in format like `1762207610.257819`
+  - Full link format: `https://envato.slack.com/archives/C02FF616D09/p1762207610.257819`
+- If a message is in a thread, provide the link to the specific message, not just the thread parent
+
+### Expected Output
+
+Provide direct feedback in conversation format with:
+- Count of unaddressed action items mentioning jdub from the last 7 days
+- List of action items grouped by status and priority
+- For each action item:
+  - Author name and channel
+  - Date/time
+  - Full message context (from thread if applicable)
+  - Direct Slack link to the message
+  - Status (Resolved/Pending/Needs Response)
+  - Type of action needed
+  - Priority assessment
+- Summary of items that need immediate attention vs. those that are informational
+
+Do not create any documents - just provide the information directly in the conversation.
+
+## Step 7: Check Calendar Facilitate Meetings
+
+### Instructions
+
+1. Use the Google Calendar API to check today's calendar events
+2. Look for events with green color (colorId corresponding to "facilitate" label)
+3. For each facilitate meeting found:
+   - Include the meeting title
+   - Show the time and duration
+   - List attendees (if available)
+   - Note any attached documents or meeting links
+4. If no facilitate meetings are found, note that in the summary
+5. Provide a count of facilitate meetings for the day
+
+### Color Mapping Reference
+
+- **Green** = Facilitate (meetings you are facilitating/running)
+- Purple = Stakeholder
+- Yellow = 1 on 1
+- Blue = Personal reminder
+- Light blue = "Be present" (meetings you just need to attend)
+
+### Expected Output
+
+Provide direct feedback in conversation format with:
+- Count of facilitate meetings for today
+- List of each facilitate meeting with:
+  - Title and time
+  - Duration
+  - Attendees (if available)
+  - Meeting links or documents
+- Note if there are no facilitate meetings scheduled
+
+Do not create any documents - just provide the information directly in the conversation.
+
 ## Final Summary Format
 
-After completing all six checks, provide a comprehensive summary:
+After completing all seven checks, provide a comprehensive summary:
 
 ---
 
@@ -343,9 +441,53 @@ After completing all six checks, provide a comprehensive summary:
    - Message: [Summary or excerpt]
    - Action Needed: [Inferred action/task]
 
+## Slack Mentions and Action Items Status
+- **Unaddressed Action Items**: [COUNT]
+- **Resolved**: [COUNT]
+- **Pending Response**: [COUNT]
+- **Needs Decision**: [COUNT]
+
+**Unaddressed Action Items:**
+
+#### **Pending Response**
+1. [Author Name] - [Channel] - [Slack Link](https://envato.slack.com/archives/[CHANNEL_ID]/p[MESSAGE_TIMESTAMP])
+   - Date: [Date/Time]
+   - Message: [Full context from thread]
+   - Type: [Technical Question/Process Decision/Access Request/etc.]
+   - Priority: [High/Medium/Low]
+   - Status: Pending Response
+
+#### **Needs Decision**
+1. [Author Name] - [Channel] - [Slack Link](https://envato.slack.com/archives/[CHANNEL_ID]/p[MESSAGE_TIMESTAMP])
+   - Date: [Date/Time]
+   - Message: [Full context from thread]
+   - Type: [Technical Question/Process Decision/Access Request/etc.]
+   - Priority: [High/Medium/Low]
+   - Status: Needs Decision
+
+#### **Resolved**
+1. [Author Name] - [Channel] - [Slack Link](https://envato.slack.com/archives/[CHANNEL_ID]/p[MESSAGE_TIMESTAMP])
+   - Date: [Date/Time]
+   - Message: [Summary]
+   - Status: Resolved
+
+## Calendar Facilitate Meetings Status
+- **Facilitate Meetings Today**: [COUNT]
+
+**Facilitate Meetings (Green Label):**
+1. [Meeting Title] - [Time] ([Duration])
+   - Attendees: [List of attendees if available]
+   - Meeting Link: [Google Meet link if available]
+   - Notes: [Any attached documents or notes]
+
+[Continue listing all facilitate meetings if any]
+
+**Note**: [If no facilitate meetings, note that none are scheduled for today]
+
 ## Overall Status
 - **Action Required**: [Summary of what needs attention across all systems]
 - **Priority Items**: [List any high priority items from all checks, including TickTick tasks and saved Slack messages]
+- **Facilitate Meetings**: [Include any facilitate meetings that require preparation or action items]
 
 ---
 
