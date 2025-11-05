@@ -23,6 +23,7 @@ Execute the following steps in order:
 5. **TickTick Tasks Summary** (see details below)
 6. **Saved Slack Messages Check** (see details below)
 6.5. **Slack Mentions and Action Items Check** (see details below)
+6.6. **Additional Slack Pages Check** (see details below)
 7. **Calendar Facilitate Meetings Check** (see details below)
 
 ## Step 1: Check Author Helpline
@@ -310,6 +311,59 @@ Provide direct feedback in conversation format with:
 
 Do not create any documents - just provide the information directly in the conversation.
 
+## Step 6.6: Check Additional Slack Pages for Concerning Messages
+
+### Instructions
+
+1. Use Playwright to navigate to three additional Slack pages to check for any concerning messages:
+   - **AWS Access Request Channel**: Navigate to `https://app.slack.com/client/E04LQRTKFNH/D07N5KT40MT`
+   - **Activity Page**: Navigate to `https://app.slack.com/client/E04LQRTKFNH/activity`
+   - **DMs Page**: Navigate to `https://app.slack.com/client/E04LQRTKFNH/dms`
+
+2. For each page:
+   - Wait for the page to load completely
+   - Take a snapshot of the page to see visible messages
+   - Extract any message IDs or timestamps from visible messages
+   - Look for any urgent, concerning, or action-required messages
+
+3. Use Slack MCP tools to get full message details:
+   - Use `conversations_history` to get messages from channels if needed
+   - Use `conversations_search_messages` with concerning keywords if needed (e.g., "urgent", "emergency", "critical", "escalate", "security", "incident", "error", "failed", "broken", "down")
+   - Check DMs by using `conversations_history` with DM channel IDs found on the DMs page
+
+4. Look for concerning patterns:
+   - Urgent requests or escalations
+   - Security incidents or concerns
+   - System errors or failures
+   - Messages requiring immediate action
+   - Any mentions that might have been missed in the main search
+
+5. For any concerning messages found:
+   - Extract full message context using Slack MCP tools
+   - Determine if action is needed or if it's already resolved
+   - Note the urgency and priority
+   - Construct direct Slack links
+
+### Important Notes
+
+- Use Playwright's `browser_navigate` to access these pages
+- Use `browser_snapshot` to see what's visible on each page
+- The AWS Access Request channel (D07N5KT40MT) shows TEAM bot notifications that may need approval
+- The Activity page shows mentions, reactions, and thread activity - useful for catching items you might have missed
+- The DMs page shows direct messages - check for any unread or concerning DMs
+- Not all messages may be immediately visible - use Slack MCP tools to get full conversation history if needed
+- Focus on recent messages (last 2-3 days) unless something urgent appears older
+
+### Expected Output
+
+Provide direct feedback in conversation format with:
+- Summary of what was found on each page
+- Any concerning messages requiring attention (with links and context)
+- Note if no concerning messages were found
+- Brief confirmation that these additional checks were completed
+
+Do not create any documents - just provide the information directly in the conversation.
+
 ## Step 7: Check Calendar Facilitate Meetings
 
 ### Instructions
@@ -483,6 +537,21 @@ After completing all seven checks, provide a comprehensive summary:
 [Continue listing all facilitate meetings if any]
 
 **Note**: [If no facilitate meetings, note that none are scheduled for today]
+
+## Additional Slack Pages Check Status
+- **Concerning Messages Found**: [COUNT]
+- **AWS Access Request Channel**: [Summary of any urgent items]
+- **Activity Page**: [Summary of any missed mentions or urgent items]
+- **DMs**: [Summary of any concerning direct messages]
+
+**Concerning Messages (if any):**
+1. [Message summary] - [Slack Link]
+   - Channel/Type: [Channel name or DM]
+   - Date: [Date/Time]
+   - Urgency: [High/Medium/Low]
+   - Action Needed: [Brief description]
+
+**Note**: [If no concerning messages found, note that additional Slack pages were checked and no urgent items were identified]
 
 ## Overall Status
 - **Action Required**: [Summary of what needs attention across all systems]
