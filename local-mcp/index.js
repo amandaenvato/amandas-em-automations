@@ -12,6 +12,7 @@ import { GitHubCLI } from "./src/github-cli.js";
 import { TickTickClient } from "./src/ticktick-client.js";
 import { OpenAIClient } from "./src/openai-client.js";
 import { CultureAmpClient } from "./src/cultureamp-client.js";
+import { BrowserClient } from "./src/browser-client.js";
 
 class LocalMCPServer {
   constructor() {
@@ -31,6 +32,7 @@ class LocalMCPServer {
     this.githubCLI = new GitHubCLI();
     this.tickTickClient = new TickTickClient();
     this.openAIClient = new OpenAIClient();
+    this.browserClient = new BrowserClient();
     try {
       this.cultureAmpClient = new CultureAmpClient();
     } catch (error) {
@@ -359,6 +361,20 @@ class LocalMCPServer {
               required: ["prompt"],
             },
           },
+          {
+            name: "brave_browser_navigate",
+            description: "Open Brave browser, navigate to a URL, and return the page content",
+            inputSchema: {
+              type: "object",
+              properties: {
+                url: {
+                  type: "string",
+                  description: "The URL to navigate to (e.g., https://envato.cultureamp.com/app/home)",
+                },
+              },
+              required: ["url"],
+            },
+          },
           ...(this.cultureAmpClient ? [{
             name: "cultureamp_get_conversation",
             description: "Get details about a Culture Amp conversation by its ID",
@@ -444,6 +460,10 @@ class LocalMCPServer {
           prompt: args?.prompt,
           model: args?.model,
         });
+      }
+
+      if (name === "brave_browser_navigate") {
+        return await this.browserClient.navigateAndGetContent(args?.url);
       }
 
       if (name === "cultureamp_get_conversation") {
