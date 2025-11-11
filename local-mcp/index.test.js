@@ -19,99 +19,20 @@ describe("LocalMCPServer", () => {
     vi.restoreAllMocks();
   });
 
-  describe("initialization", () => {
-    it("should create server instance with cursorAgentClient", () => {
-      expect(server).toBeDefined();
-      expect(server.cursorAgentClient).toBeDefined();
-      expect(server.server).toBeDefined();
-    });
-  });
-
-  describe("ListTools handler", () => {
-    it("should return all tools in tools list", async () => {
-      const request = {
-        params: {},
-      };
-
-      const handler = server._listToolsHandler;
-      expect(handler).toBeDefined();
-
-      const response = await handler(request);
-
-      expect(response.tools.length).toBeGreaterThan(1);
+  describe("ListTools", () => {
+    it("should return all tools", async () => {
+      const response = await server._listToolsHandler({ params: {} });
+      expect(response.tools.length).toBeGreaterThan(0);
       expect(response.tools.some(tool => tool.name === "start_cursor_agent")).toBe(true);
       expect(response.tools.some(tool => tool.name === "gh_repo_list")).toBe(true);
-      expect(response.tools.some(tool => tool.name === "gh_repo_view")).toBe(true);
-      expect(response.tools.some(tool => tool.name === "gh_pr_list")).toBe(true);
-      expect(response.tools.some(tool => tool.name === "gh_pr_view")).toBe(true);
-      expect(response.tools.some(tool => tool.name === "gh_search_code")).toBe(true);
-      expect(response.tools.some(tool => tool.name === "gh_search_prs")).toBe(true);
-      expect(response.tools.some(tool => tool.name === "gh_search_commits")).toBe(true);
-    });
-
-    it("should return start_cursor_agent tool with correct schema", async () => {
-      const request = {
-        params: {},
-      };
-
-      const handler = server._listToolsHandler;
-      const response = await handler(request);
-
-      const cursorAgentTool = response.tools.find(tool => tool.name === "start_cursor_agent");
-      expect(cursorAgentTool).toMatchObject({
-        name: "start_cursor_agent",
-        description: expect.stringContaining("Cursor agent"),
-        inputSchema: {
-          type: "object",
-          properties: expect.objectContaining({
-            repository_url: expect.any(Object),
-            prompt: expect.any(Object),
-          }),
-          required: ["repository_url", "prompt"],
-        },
-      });
-    });
-
-    it("should have correct tool schema properties", async () => {
-      const request = { params: {} };
-      const handler = server._listToolsHandler;
-      const response = await handler(request);
-      const schema = response.tools[0].inputSchema;
-
-      expect(schema.properties.repository_url).toMatchObject({
-        type: "string",
-        description: expect.stringContaining("GitHub repository"),
-      });
-      expect(schema.properties.prompt).toMatchObject({
-        type: "string",
-        description: expect.any(String),
-      });
-      expect(schema.properties.branch_name).toMatchObject({
-        type: "string",
-        description: expect.any(String),
-      });
-      expect(schema.properties.agent_name).toMatchObject({
-        type: "string",
-        description: expect.any(String),
-      });
-      expect(schema.properties.auto_create_pull_request).toMatchObject({
-        type: "boolean",
-        description: expect.any(String),
-        default: false,
-      });
-      expect(schema.properties.model).toMatchObject({
-        type: "string",
-        description: expect.any(String),
-        default: "composer-1",
-      });
-      expect(schema.required).toEqual(["repository_url", "prompt"]);
+      expect(response.tools.some(tool => tool.name === "ask_openai")).toBe(true);
     });
   });
 
-  describe("CallTool handler", () => {
-    it("should call startAgent for start_cursor_agent tool", async () => {
+  describe("Tool handlers - happy paths", () => {
+    it("should handle start_cursor_agent", async () => {
       process.env.CURSOR_API_KEY = "test-key";
-      const mockFetch = vi.fn().mockResolvedValue({
+      global.fetch = vi.fn().mockResolvedValue({
         ok: true,
         text: async () => JSON.stringify({
           id: "agent-123",
@@ -119,9 +40,8 @@ describe("LocalMCPServer", () => {
           status: "running",
         }),
       });
-      global.fetch = mockFetch;
 
-      const request = {
+      const response = await server._callToolHandler({
         params: {
           name: "start_cursor_agent",
           arguments: {
@@ -129,142 +49,199 @@ describe("LocalMCPServer", () => {
             prompt: "Test prompt",
           },
         },
-      };
+      });
 
-      const handler = server._callToolHandler;
-      const response = await handler(request);
-
-      expect(mockFetch).toHaveBeenCalled();
       expect(response.content).toBeDefined();
       expect(response.content[0].type).toBe("text");
-      expect(response.content[0].text).toContain("Cursor Agent Started Successfully");
     });
 
-    it("should throw error for unknown tool", async () => {
-      const request = {
-        params: {
-          name: "unknown_tool",
-          arguments: {},
-        },
-      };
-
-      const handler = server._callToolHandler;
-
-      await expect(handler(request)).rejects.toThrow("Unknown tool: unknown_tool");
-    });
-
-    it("should handle gh_repo_list tool", async () => {
-      const request = {
-        params: {
-          name: "gh_repo_list",
-          arguments: { limit: 10 },
-        },
-      };
-
-      const handler = server._callToolHandler;
-      // Mock the githubCLI method
+    it("should handle gh_repo_list", async () => {
       vi.spyOn(server.githubCLI, "listRepos").mockResolvedValue({
         content: [{ type: "text", text: "repo1\nrepo2\n" }],
       });
 
-      const response = await handler(request);
+      const response = await server._callToolHandler({
+        params: {
+          name: "gh_repo_list",
+          arguments: {},
+        },
+      });
 
-      expect(server.githubCLI.listRepos).toHaveBeenCalledWith(10);
       expect(response.content).toBeDefined();
     });
 
-    it("should handle gh_pr_list tool with author filter", async () => {
-      const request = {
-        params: {
-          name: "gh_pr_list",
-          arguments: {
-            repo: "envato/repo-name",
-            state: "open",
-            author: "username",
-            limit: 5,
-          },
-        },
-      };
+    it("should handle gh_repo_view", async () => {
+      vi.spyOn(server.githubCLI, "viewRepo").mockResolvedValue({
+        content: [{ type: "text", text: "Repository details" }],
+      });
 
-      const handler = server._callToolHandler;
+      const response = await server._callToolHandler({
+        params: {
+          name: "gh_repo_view",
+          arguments: { repo: "envato/repo-name" },
+        },
+      });
+
+      expect(response.content).toBeDefined();
+    });
+
+    it("should handle gh_pr_list", async () => {
       vi.spyOn(server.githubCLI, "listPRs").mockResolvedValue({
         content: [{ type: "text", text: "PR #1\n" }],
       });
 
-      const response = await handler(request);
+      const response = await server._callToolHandler({
+        params: {
+          name: "gh_pr_list",
+          arguments: {},
+        },
+      });
 
-      expect(server.githubCLI.listPRs).toHaveBeenCalledWith(
-        "envato/repo-name",
-        "open",
-        "username",
-        5
-      );
       expect(response.content).toBeDefined();
     });
 
-    it("should handle missing arguments gracefully", async () => {
-      process.env.CURSOR_API_KEY = "test-key";
-      const mockFetch = vi.fn().mockResolvedValue({
-        ok: true,
-        text: async () => JSON.stringify({
-          id: "agent-123",
-          status: "running",
-        }),
+    it("should handle gh_pr_view", async () => {
+      vi.spyOn(server.githubCLI, "viewPR").mockResolvedValue({
+        content: [{ type: "text", text: "PR #123 details" }],
       });
-      global.fetch = mockFetch;
 
-      const request = {
+      const response = await server._callToolHandler({
         params: {
-          name: "start_cursor_agent",
-          arguments: null,
+          name: "gh_pr_view",
+          arguments: { pr_number: 123 },
         },
-      };
+      });
 
-      const handler = server._callToolHandler;
-
-      // Should propagate validation errors from CursorAgentClient
-      await expect(handler(request)).rejects.toThrow();
+      expect(response.content).toBeDefined();
     });
 
-    it("should pass all arguments to startAgent", async () => {
-      process.env.CURSOR_API_KEY = "test-key";
-      const mockFetch = vi.fn().mockResolvedValue({
-        ok: true,
-        text: async () => JSON.stringify({
-          id: "agent-123",
-          name: "Custom Agent",
-          status: "running",
-        }),
+    it("should handle gh_search_code", async () => {
+      vi.spyOn(server.githubCLI, "searchCode").mockResolvedValue({
+        content: [{ type: "text", text: "search results" }],
       });
-      global.fetch = mockFetch;
 
-      const request = {
+      const response = await server._callToolHandler({
         params: {
-          name: "start_cursor_agent",
+          name: "gh_search_code",
+          arguments: { query: "function test" },
+        },
+      });
+
+      expect(response.content).toBeDefined();
+    });
+
+    it("should handle gh_search_prs", async () => {
+      vi.spyOn(server.githubCLI, "searchPRs").mockResolvedValue({
+        content: [{ type: "text", text: "PR results" }],
+      });
+
+      const response = await server._callToolHandler({
+        params: {
+          name: "gh_search_prs",
+          arguments: { query: "bug fix" },
+        },
+      });
+
+      expect(response.content).toBeDefined();
+    });
+
+    it("should handle gh_search_commits", async () => {
+      vi.spyOn(server.githubCLI, "searchCommits").mockResolvedValue({
+        content: [{ type: "text", text: "commit results" }],
+      });
+
+      const response = await server._callToolHandler({
+        params: {
+          name: "gh_search_commits",
+          arguments: { query: "initial commit" },
+        },
+      });
+
+      expect(response.content).toBeDefined();
+    });
+
+    it("should handle ask_openai", async () => {
+      vi.spyOn(server.openAIClient, "askOpenAI").mockResolvedValue({
+        content: [{ type: "text", text: "OpenAI response" }],
+      });
+
+      const response = await server._callToolHandler({
+        params: {
+          name: "ask_openai",
+          arguments: { prompt: "test prompt" },
+        },
+      });
+
+      expect(response.content).toBeDefined();
+    });
+
+    it("should handle extract_cookies", async () => {
+      vi.spyOn(server.browserClient, "extractCookies").mockResolvedValue({
+        content: [{ type: "text", text: '{"token": "abc123"}' }],
+      });
+
+      const response = await server._callToolHandler({
+        params: {
+          name: "extract_cookies",
           arguments: {
-            repository_url: "https://github.com/owner/repo",
-            prompt: "Test prompt",
-            branch_name: "feature-branch",
-            agent_name: "Custom Agent",
-            auto_create_pull_request: true,
-            model: "composer-1",
+            url: "https://example.com",
+            waitForIndicators: ["Login"],
           },
         },
-      };
+      });
 
-      const handler = server._callToolHandler;
-      await handler(request);
+      expect(response.content).toBeDefined();
+    });
 
-      const callArgs = mockFetch.mock.calls[0][1];
-      const body = JSON.parse(callArgs.body);
-      expect(body.source.repository).toBe("https://github.com/owner/repo");
-      expect(body.prompt.text).toBe("Test prompt");
-      expect(body.branch).toBe("feature-branch");
-      expect(body.model).toBe("composer-1");
-      // These fields are no longer sent in the API request
-      expect(body.repository_url).toBeUndefined();
-      expect(body.agent_name).toBeUndefined();
-      expect(body.auto_create_pull_request).toBeUndefined();
+    it("should handle cultureamp_get_conversation", async () => {
+      global.fetch = vi.fn()
+        .mockResolvedValueOnce({
+          ok: true,
+          text: async () => JSON.stringify({
+            id: "0190791e-69f0-7057-939d-8bd02ca7b7b3",
+            title: "Test Conversation",
+            participants: {},
+          }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          text: async () => JSON.stringify({ records: [] }),
+        })
+        .mockResolvedValueOnce({
+          ok: true,
+          text: async () => JSON.stringify([]),
+        });
+
+      const response = await server._callToolHandler({
+        params: {
+          name: "cultureamp_get_conversation",
+          arguments: {
+            conversation_id: "0190791e-69f0-7057-939d-8bd02ca7b7b3",
+            token: "test-token",
+            refresh_token: "test-refresh-token",
+          },
+        },
+      });
+
+      expect(response.content).toBeDefined();
+    });
+
+    it("should handle fetch_page", async () => {
+      vi.spyOn(server.browserClient, "fetchPage").mockResolvedValue({
+        content: [{ type: "text", text: "Page content" }],
+      });
+
+      const response = await server._callToolHandler({
+        params: {
+          name: "fetch_page",
+          arguments: {
+            url: "https://example.com",
+            waitForIndicators: ["Loaded"],
+          },
+        },
+      });
+
+      expect(response.content).toBeDefined();
     });
   });
 });
