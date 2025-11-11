@@ -10,3 +10,5 @@ people-info.md
 
 .env
 **/.env
+
+scratch/**/*

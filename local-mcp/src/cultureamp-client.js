@@ -1,21 +1,15 @@
 export class CultureAmpClient {
-  constructor() {
-    this.baseUrl = process.env.CULTUREAMP_BASE_URL || "https://envato.cultureamp.com";
-
-    const tokenEnv = process.env.CULTUREAMP_TOKEN;
-    const refreshTokenEnv = process.env.CULTUREAMP_REFRESH_TOKEN;
-
-    if (!tokenEnv || !refreshTokenEnv) {
+  constructor(token, refreshToken) {
+    if (!token || !refreshToken) {
       throw new Error(
-        "Culture Amp authentication required. Set both:\n" +
-        "  - CULTUREAMP_TOKEN: The JWT token value\n" +
-        "  - CULTUREAMP_REFRESH_TOKEN: The refresh token value\n" +
-        "Extract these values from your browser's network tab or curl command."
+        "Culture Amp authentication required. Both token and refreshToken must be provided."
       );
     }
 
-    // Build cookie string from separate variables
-    this.cookies = `cultureamp.production-us.token=${tokenEnv}; cultureamp.production-us.refresh-token=${refreshTokenEnv}`;
+    this.baseUrl = process.env.CULTUREAMP_BASE_URL || "https://envato.cultureamp.com";
+
+    // Build cookie string from provided tokens
+    this.cookies = `cultureamp.production-us.token=${token}; cultureamp.production-us.refresh-token=${refreshToken}`;
   }
 
   /**

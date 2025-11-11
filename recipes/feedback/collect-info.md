@@ -57,7 +57,15 @@ Copy the current feedback document from the most recent run and update it to mat
 ### Process
 - Copy the existing `current-doc.md` from the most recent date directory
 - Use the MCP Google Drive tools to read the document
-- Compare the Google Drive content with the copied file
+- **Important: Handle Large File Responses**
+  - If the Google Drive tool responds with a message containing "Large output has been written to:" followed by a file path (e.g., "Large output has been written to: /Users/jonathanwilliams/.cursor/projects/.../file.txt (55.9 KB, 871 lines)")
+  - **DO NOT recreate the file** - instead, extract the file path from the message and simply copy it using:
+    ```bash
+    cp /extracted/path/to/file.txt feedback/dd-mm-yyyy/current-doc.md
+    ```
+  - Extract the full file path from the message (everything between "Large output has been written to: " and the opening parenthesis)
+  - This is much more efficient than recreating large files and avoids unnecessary processing
+- If the tool returns content directly, compare the Google Drive content with the copied file
 - Update the copied file to match the Google Drive version (usually only the latest entry section has changed)
 - Note the date of the last feedback entry for each person
 
@@ -199,16 +207,40 @@ For each team member:
 ### Process
 Use the `cultureamp_get_conversation` MCP tool to fetch conversation data directly from the Culture Amp API.
 
-**How to extract conversation IDs:**
+**Step 1: Extract Culture Amp Authentication Tokens**
+
+Before calling `cultureamp_get_conversation`, you need to extract authentication tokens from your browser cookies using the `extract_cookies` tool with Culture Amp specific arguments:
+
+```javascript
+extract_cookies({
+  url: "https://envato.cultureamp.com/app/home",
+  cookieNames: ["cultureamp.production-us.token", "cultureamp.production-us.refresh-token"],
+  waitForIndicators: ["JW"],
+  maxWaitTime: 40000,
+  headless: false
+})
+```
+
+**Important Notes:**
+- The browser window will open (not headless) - make sure you're logged into Culture Amp
+- The tool waits for the "JW" indicator to appear, which indicates the page has loaded and you're logged in
+- The tool will extract the `cultureamp.production-us.token` and `cultureamp.production-us.refresh-token` cookies
+- Parse the JSON response to get the token values for use with `cultureamp_get_conversation`
+
+**Step 2: Extract Conversation IDs**
+
 - The conversation ID is the UUID in the Culture Amp URL
 - Example: `https://envato.cultureamp.com/app/conversations/0190791e-69f0-7057-939d-8bd02ca7b7b3?tab=history`
 - Conversation ID: `0190791e-69f0-7057-939d-8bd02ca7b7b3`
 
-**Using the tool:**
-Call the `cultureamp_get_conversation` tool for each team member:
+**Step 3: Use the tool**
+
+Call the `cultureamp_get_conversation` tool for each team member with the extracted tokens:
 ```javascript
 cultureamp_get_conversation({
-  conversation_id: "0190791e-69f0-7057-939d-8bd02ca7b7b3" // Extract from people-info.md URL
+  conversation_id: "0190791e-69f0-7057-939d-8bd02ca7b7b3", // Extract from people-info.md URL
+  token: "eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCIsImtpZCI6InY3WF93UUxKTDNPSDBHRC1WQkhMTkctZGlHYyJ9...", // From extract_cookies
+  refresh_token: "h666XzNjOHS55nsWlzim5iz7p3QGiOfd-iUU23LsxSbeJGwTXvn6btXOGJV_zbJ-" // From extract_cookies
 })
 ```
 
@@ -273,7 +305,8 @@ For each person, create `feedback/dd-mm-yyyy/culture-{firstname}.md` with:
 Copy the most recent `current-doc.md` from the previous run and update it to match Google Drive:
 - Copy from the most recent date-stamped directory in `feedback/`
 - Read the Google Drive document to get the latest version
-- Update the copied file to match (typically only the most recent entry section needs updating)
+- **If the tool writes to a temp file** (response contains "Large output has been written to:"), extract the file path from the message and copy it: `cp /extracted/path/to/file.txt feedback/dd-mm-yyyy/current-doc.md` (extract path between "Large output has been written to: " and the opening parenthesis)
+- If content is returned directly, update the copied file to match (typically only the most recent entry section needs updating)
 - Determine the last feedback entry date for each team member
 - Note the format and structure of existing entries
 - Identify areas of focus in recent feedback
@@ -305,8 +338,12 @@ Search period: Work completed in **last 7 days** or since their last feedback en
 
 ### Step 4: Collect Culture Amp 1-on-1 Data
 Use the `cultureamp_get_conversation` MCP tool to fetch conversation data for each team member:
+- **First, extract authentication tokens** using `extract_cookies` with Culture Amp specific arguments:
+  - `url: "https://envato.cultureamp.com/app/home"`
+  - `cookieNames: ["cultureamp.production-us.token", "cultureamp.production-us.refresh-token"]`
+  - `waitForIndicators: ["JW"]`
 - Extract conversation IDs from `recipes/people-info.md` URLs
-- Call `cultureamp_get_conversation` with each conversation ID
+- Call `cultureamp_get_conversation` with each conversation ID and the extracted tokens
 - Extract and analyze:
   - Conversation topics discussed (from completed topics)
   - Frequency and regularity of meetings (from completion dates)

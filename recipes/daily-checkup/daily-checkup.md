@@ -131,9 +131,12 @@ Do not create any documents - just provide the information directly in the conve
 
 ### Instructions
 
-1. Use playwright to navigate to the BambooHR inbox at: https://envato.bamboohr.com/inbox/
-2. **Authentication Note**: If the page redirects to Okta sign-in, inform the user that they need to sign in manually, and ask them to tell you when they have completed authentication so you can proceed.
-3. Once authenticated and the inbox page loads, check if there are any pending time off requests
+1. Use the `fetch_page` tool to navigate to the BambooHR inbox at: https://envato.bamboohr.com/inbox/
+   - **waitForIndicators**: Use `['Requests']` to wait for the page to load
+   - **maxWaitTime**: 120000 (2 minutes)
+   - **headless**: false (to allow authentication if needed)
+2. **Authentication Note**: If the page redirects to Okta sign-in, the browser window will open and wait for you to sign in manually. Once authenticated, the page should redirect back to the inbox.
+3. Parse the HTML content returned by `fetch_page` to check if there are any pending time off requests
 4. If requests are visible:
    - Provide the request details (employee name, dates, type)
    - Note the status of the request
@@ -143,10 +146,11 @@ Do not create any documents - just provide the information directly in the conve
 
 ### Important Notes
 
-- This requires navigating to BambooHR using Playwright
+- Use the `fetch_page` tool to access the BambooHR inbox - it will save your logged-in session state for faster subsequent calls
 - **BambooHR requires Okta authentication** - the page will redirect to a sign-in page if not authenticated
-- If you see a sign-in page, inform the user and wait for confirmation that they have signed in before proceeding
-- Once authenticated, navigate to the inbox page again
+- The browser window will open (not headless) to allow manual authentication if needed
+- The `fetch_page` tool waits for the "Requests" indicator, which appears once the inbox page has loaded
+- Once authenticated, your session state will be saved, so subsequent calls will be faster
 - The inbox page will show all pending approval requests
 - Look for the "Requests" section on the page
 - If you see "You have no more requests!" or "It's a great day! You have no more requests!" that means inbox is clear
@@ -206,8 +210,11 @@ Do not create any documents - just provide the information directly in the conve
 
 ### Instructions
 
-1. Use Playwright to navigate to the Slack saved messages page at: `https://app.slack.com/client/E04LQRTKFNH/later`
-2. Wait for the page to load and extract saved messages from the "In progress" filter
+1. Use the `fetch_page` tool to navigate to the Slack saved messages page at: `https://app.slack.com/client/E04LQRTKFNH/later`
+   - **waitForIndicators**: Use `['Saved', 'In progress', 'css:[data-qa="slack_kit_list"]']` to wait for the page to load
+   - **maxWaitTime**: 120000 (2 minutes)
+   - **headless**: false (to allow authentication if needed)
+2. Parse the HTML content returned by `fetch_page` to extract saved messages from the "In progress" filter
 3. For each saved message:
    - Extract the message ID (timestamp) and channel ID from links in the saved items list
    - Use Slack MCP tools (`conversations_history` or `conversations_replies`) to retrieve the full message content
@@ -225,7 +232,8 @@ Do not create any documents - just provide the information directly in the conve
 
 - Saved messages are accessed via the Slack "Later" page at `https://app.slack.com/client/E04LQRTKFNH/later`
 - Focus on messages in the "In progress" filter (these are active items)
-- Use Playwright to extract message IDs from the page, then use Slack MCP tools to get full message details
+- Use `fetch_page` to get the page HTML content, then parse it to extract message IDs, then use Slack MCP tools to get full message details
+- The `fetch_page` tool will save your logged-in session state, so subsequent calls will be faster
 - Message IDs are found in Slack URLs in the format: `https://envato.slack.com/archives/[CHANNEL_ID]/p[MESSAGE_TIMESTAMP]`
 - For DMs, channel IDs start with `D` or `U` prefix
 - Infer actions by analyzing message content for:
@@ -315,14 +323,17 @@ Do not create any documents - just provide the information directly in the conve
 
 ### Instructions
 
-1. Use Playwright to navigate to three additional Slack pages to check for any concerning messages:
-   - **AWS Access Request Channel**: Navigate to `https://app.slack.com/client/E04LQRTKFNH/D07N5KT40MT`
-   - **Activity Page**: Navigate to `https://app.slack.com/client/E04LQRTKFNH/activity`
-   - **DMs Page**: Navigate to `https://app.slack.com/client/E04LQRTKFNH/dms`
+1. Use the `fetch_page` tool to navigate to three additional Slack pages to check for any concerning messages:
+   - **AWS Access Request Channel**: `https://app.slack.com/client/E04LQRTKFNH/D07N5KT40MT`
+     - **waitForIndicators**: `['Slack', 'css:[data-qa="slack_kit_list"]']`
+   - **Activity Page**: `https://app.slack.com/client/E04LQRTKFNH/activity`
+     - **waitForIndicators**: `['Activity', 'css:[data-qa="slack_kit_list"]']`
+   - **DMs Page**: `https://app.slack.com/client/E04LQRTKFNH/dms`
+     - **waitForIndicators**: `['Direct messages', 'css:[data-qa="slack_kit_list"]']`
+   - For all pages: **maxWaitTime**: 120000, **headless**: false
 
 2. For each page:
-   - Wait for the page to load completely
-   - Take a snapshot of the page to see visible messages
+   - Parse the HTML content returned by `fetch_page` to see visible messages
    - Extract any message IDs or timestamps from visible messages
    - Look for any urgent, concerning, or action-required messages
 
@@ -346,8 +357,8 @@ Do not create any documents - just provide the information directly in the conve
 
 ### Important Notes
 
-- Use Playwright's `browser_navigate` to access these pages
-- Use `browser_snapshot` to see what's visible on each page
+- Use the `fetch_page` tool to access these pages - it will save your logged-in session state for faster subsequent calls
+- Parse the HTML content returned by `fetch_page` to extract message information
 - The AWS Access Request channel (D07N5KT40MT) shows TEAM bot notifications that may need approval
 - The Activity page shows mentions, reactions, and thread activity - useful for catching items you might have missed
 - The DMs page shows direct messages - check for any unread or concerning DMs

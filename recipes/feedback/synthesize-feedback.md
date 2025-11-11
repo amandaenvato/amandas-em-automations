@@ -76,7 +76,10 @@ Generate 3-4 actionable bullet points covering:
 - Strategic feedback for career development
 
 **Feedback Given**
-- Leave this section blank - it will be filled during the actual feedback session
+- Document what feedback was actually given in Slack conversations or Culture Amp notes since the last feedback entry
+- Include specific dates and sources (e.g., "Nov 6, 2025 (Culture Amp): ..." or "Nov 10, 2025 (Slack): ...")
+- Capture recognition, acknowledgments, or explicit feedback given during 1-on-1s, check-ins, or team conversations
+- If no feedback was given during this period, note "No explicit feedback documented in Culture Amp or Slack for this period"
 
 ## Output Format
 
@@ -102,7 +105,7 @@ Generate a new entry section in this exact format:
     * [Actionable feedback suggestion 2]
     * [Actionable feedback suggestion 3]
   * **Feedback given:**
-    * [leave blank]
+    * [Document what feedback was actually given in Slack or Culture Amp since last feedback entry, with dates and sources]
 
 * **Ana Djordjevic**
   * Expectations:
@@ -169,6 +172,16 @@ Make it:
 - **Relevant**: Tied to expectations and trajectory
 - **Concrete**: With examples and next steps
 - **Balanced**: Recognition + growth areas
+
+### Feedback Given
+**Important:** This section documents what feedback was actually given, not what should be given.
+
+- Review Culture Amp notes for completed feedback topics, check-ins, and recognition
+- Review Slack conversations for explicit feedback, shoutouts, or acknowledgments
+- Include specific dates and sources (e.g., "Nov 6, 2025 (Culture Amp): ...")
+- Document recognition, acknowledgments, or explicit feedback given during 1-on-1s, check-ins, or team conversations
+- If no feedback was given during this period, note "No explicit feedback documented in Culture Amp or Slack for this period"
+- This captures what was actually communicated to the team member, not what should be communicated
 
 ## Expected Output
 

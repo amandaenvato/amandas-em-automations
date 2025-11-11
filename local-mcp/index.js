@@ -356,12 +356,41 @@ class LocalMCPServer {
             },
           },
           {
-            name: "cultureamp_extract_tokens",
-            description: "Extract Culture Amp authentication tokens from browser cookies. Navigates to Culture Amp home page and extracts token and refresh-token cookies using CDP.",
+            name: "extract_cookies",
+            description: "Extract cookies from a page after navigating to it and waiting for indicators that it has loaded and logged in",
             inputSchema: {
               type: "object",
-              properties: {},
-              required: [],
+              properties: {
+                url: {
+                  type: "string",
+                  description: "The URL to navigate to",
+                },
+                cookieNames: {
+                  type: "array",
+                  items: {
+                    type: "string",
+                  },
+                  description: "Array of cookie names to extract (e.g., ['token', 'refresh-token']). If empty, extracts all cookies.",
+                },
+                waitForIndicators: {
+                  type: "array",
+                  items: {
+                    type: "string",
+                  },
+                  description: "Array of text patterns (regex) or CSS selectors (prefixed with 'css:') to wait for. Examples: ['JW', 'css:.home-container', 'jonathan.williams@envato.com']. At least one indicator is required.",
+                },
+                maxWaitTime: {
+                  type: "number",
+                  description: "Maximum time to wait for indicators in milliseconds (default: 120000)",
+                  default: 120000,
+                },
+                headless: {
+                  type: "boolean",
+                  description: "Whether to run browser in headless mode (default: false)",
+                  default: false,
+                },
+              },
+              required: ["url", "waitForIndicators"],
             },
           },
           {
@@ -384,6 +413,37 @@ class LocalMCPServer {
                 },
               },
               required: ["conversation_id", "token", "refresh_token"],
+            },
+          },
+          {
+            name: "fetch_page",
+            description: "Fetch a single page, wait for indicators that it has loaded and logged in, then return the page contents (HTML and text)",
+            inputSchema: {
+              type: "object",
+              properties: {
+                url: {
+                  type: "string",
+                  description: "The URL to fetch",
+                },
+                waitForIndicators: {
+                  type: "array",
+                  items: {
+                    type: "string",
+                  },
+                  description: "Array of text patterns (regex) or CSS selectors (prefixed with 'css:') to wait for (required). Examples: ['Saved', 'In progress', 'css:.inbox-container', 'jonathan.williams@envato.com']",
+                },
+                maxWaitTime: {
+                  type: "number",
+                  description: "Maximum time to wait for indicators in milliseconds (default: 120000)",
+                  default: 120000,
+                },
+                headless: {
+                  type: "boolean",
+                  description: "Whether to run browser in headless mode (default: false)",
+                  default: false,
+                },
+              },
+              required: ["url", "waitForIndicators"],
             },
           },
         ],
@@ -459,18 +519,39 @@ class LocalMCPServer {
         });
       }
 
-      if (name === "cultureamp_extract_tokens") {
-        return await this.browserClient.extractCultureAmpTokens();
+      if (name === "extract_cookies") {
+        if (!args?.waitForIndicators || args.waitForIndicators.length === 0) {
+          throw new Error("waitForIndicators is required. Provide at least one indicator to wait for.");
+        }
+        return await this.browserClient.extractCookies(
+          args?.url,
+          args?.cookieNames || [],
+          args.waitForIndicators,
+          args?.maxWaitTime || 120000,
+          args?.headless || false
+        );
       }
 
       if (name === "cultureamp_get_conversation") {
         if (!args?.token || !args?.refresh_token) {
           throw new Error(
-            "Token and refresh_token are required. Use cultureamp_extract_tokens to get them from your browser."
+            "Token and refresh_token are required. Use extract_cookies with Culture Amp specific arguments: " +
+            "url='https://envato.cultureamp.com/app/home', " +
+            "cookieNames=['cultureamp.production-us.token', 'cultureamp.production-us.refresh-token'], " +
+            "waitForIndicators=['JW']"
           );
         }
         const cultureAmpClient = new CultureAmpClient(args.token, args.refresh_token);
         return await cultureAmpClient.getConversation(args.conversation_id);
+      }
+
+      if (name === "fetch_page") {
+        return await this.browserClient.fetchPage(
+          args?.url,
+          args?.waitForIndicators || [],
+          args?.maxWaitTime || 60000,
+          args?.headless || false
+        );
       }
 
       throw new Error(`Unknown tool: ${name}`);

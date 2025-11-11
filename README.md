@@ -43,7 +43,6 @@ Your AI agent must have access to the following external MCP servers (read/searc
 - **Playwright** - Browser automation for systems without APIs:
   - Culture Amp (feedback and conversation analysis)
   - BambooHR (time off request approvals)
-  - TEAM system (AWS access request approvals)
   - Slack saved messages page
 
 **Calendar:**
@@ -154,25 +153,7 @@ Finds pending action items where you've been directly pinged or assigned in Slac
 - Specific action requirements and due dates
 - Additional context for each action
 
-### 6. Team Requests Recipe
-Checks for pending AWS access approval requests in the TEAM (Temporary Elevated Access Management) system.
-
-**How to Use:**
-- Ask your agent: `Follow the instructions in "recipes/team-requests/check-team-requests.md"`
-
-**What the Agent Does:**
-1. Navigates to AWS Access Portal and authenticates via TEAM IDC APP
-2. Checks the approvals page for pending access requests
-3. Extracts request details (requester, account, role, duration, justification, ticket number)
-4. Reports pending approvals ready for manual review
-
-**Output:** Direct conversation summary with:
-- Authentication status confirmation
-- Pending approvals count
-- Detailed request information for each pending approval
-- Direct link to approvals page for manual review
-
-### 7. Cursor Agent Recipe
+### 6. Cursor Agent Recipe
 Identifies Jira tickets suitable for autonomous Cursor agent work and starts agents to complete them.
 
 **How to Use:**
@@ -201,4 +182,4 @@ Most recipes create dated directories with collected data and final synthesized 
 - `recipes/communication-log/dd-mm-yyyy/` - Communication analysis and log entries ready to append
 - `recipes/sprint-report/dd-mm-yyyy/` - Draft analysis and improved sprint report
 
-**Note:** Some recipes (Daily Checkup, Action Items, Team Requests) provide output directly in the conversation rather than creating files. Others create dated directories with intermediate analysis files and final synthesized outputs.
+**Note:** Some recipes (Daily Checkup, Action Items) provide output directly in the conversation rather than creating files. Others create dated directories with intermediate analysis files and final synthesized outputs.
