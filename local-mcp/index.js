@@ -33,13 +33,7 @@ class LocalMCPServer {
     this.tickTickClient = new TickTickClient();
     this.openAIClient = new OpenAIClient();
     this.browserClient = new BrowserClient();
-    try {
-      this.cultureAmpClient = new CultureAmpClient();
-    } catch (error) {
-      // Culture Amp client is optional - log warning but don't fail
-      console.error("Warning: Culture Amp client not initialized:", error.message);
-      this.cultureAmpClient = null;
-    }
+    // Culture Amp client is created on-demand with tokens from browser extraction
     this.setupToolHandlers();
   }
 
@@ -362,20 +356,15 @@ class LocalMCPServer {
             },
           },
           {
-            name: "brave_browser_navigate",
-            description: "Open Brave browser, navigate to a URL, and return the page content",
+            name: "cultureamp_extract_tokens",
+            description: "Extract Culture Amp authentication tokens from browser cookies. Navigates to Culture Amp home page and extracts token and refresh-token cookies using CDP.",
             inputSchema: {
               type: "object",
-              properties: {
-                url: {
-                  type: "string",
-                  description: "The URL to navigate to (e.g., https://envato.cultureamp.com/app/home)",
-                },
-              },
-              required: ["url"],
+              properties: {},
+              required: [],
             },
           },
-          ...(this.cultureAmpClient ? [{
+          {
             name: "cultureamp_get_conversation",
             description: "Get details about a Culture Amp conversation by its ID",
             inputSchema: {
@@ -385,10 +374,18 @@ class LocalMCPServer {
                   type: "string",
                   description: "The conversation ID (UUID format, e.g., '0190791e-69f0-7057-939d-8bd02ca7b7b3')",
                 },
+                token: {
+                  type: "string",
+                  description: "Culture Amp JWT token (extracted from browser cookies)",
+                },
+                refresh_token: {
+                  type: "string",
+                  description: "Culture Amp refresh token (extracted from browser cookies)",
+                },
               },
-              required: ["conversation_id"],
+              required: ["conversation_id", "token", "refresh_token"],
             },
-          }] : []),
+          },
         ],
       };
     };
@@ -462,18 +459,18 @@ class LocalMCPServer {
         });
       }
 
-      if (name === "brave_browser_navigate") {
-        return await this.browserClient.navigateAndGetContent(args?.url);
+      if (name === "cultureamp_extract_tokens") {
+        return await this.browserClient.extractCultureAmpTokens();
       }
 
       if (name === "cultureamp_get_conversation") {
-        if (!this.cultureAmpClient) {
+        if (!args?.token || !args?.refresh_token) {
           throw new Error(
-            "Culture Amp client not available. Please set CULTUREAMP_TOKEN and CULTUREAMP_REFRESH_TOKEN " +
-            "environment variables."
+            "Token and refresh_token are required. Use cultureamp_extract_tokens to get them from your browser."
           );
         }
-        return await this.cultureAmpClient.getConversation(args?.conversation_id);
+        const cultureAmpClient = new CultureAmpClient(args.token, args.refresh_token);
+        return await cultureAmpClient.getConversation(args.conversation_id);
       }
 
       throw new Error(`Unknown tool: ${name}`);
