@@ -20,9 +20,8 @@ const expandedFields = document.getElementById('expanded-fields');
 const dueDateLabel = document.getElementById('due-date-label');
 const fromLabel = document.getElementById('from-label');
 
-// Get the repo root path (go up one level from task-manager directory)
-const repoRoot = path.join(__dirname, '..');
-const tasksFile = path.join(repoRoot, 'tasks.jsonl');
+// Get the tasks file path (in the same directory as this file)
+const tasksFile = path.join(__dirname, 'tasks.jsonl');
 
 // Task list elements
 const tasksList = document.getElementById('tasks-list');

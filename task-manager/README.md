@@ -27,7 +27,7 @@ The app will appear in your menu bar. Click the icon to open the task form.
 1. Click the menu bar icon
 2. Enter your task in the input field (and optionally add due date, from, or description)
 3. Press Enter or click "Add"
-4. The task will be appended to `tasks.jsonl` in the repo root
+4. The task will be appended to `tasks.jsonl` in the task-manager directory
 
 ## Task Format
 

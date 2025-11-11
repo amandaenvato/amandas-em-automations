@@ -3,7 +3,7 @@ const path = require('path');
 
 /**
  * Add a task to the JSONL file
- * @param {string} filePath - Path to the tasks.jsonl file
+ * @param {string} filePath - Path to the tasks.jsonl file (in task-manager directory)
  * @param {string} taskText - The task text to add
  * @param {object} options - Optional task properties
  * @param {string|null} options.dueDate - Due date in YYYY-MM-DD format
@@ -50,7 +50,7 @@ function addTask(filePath, taskText, options = {}) {
 
 /**
  * Read all tasks from the JSONL file
- * @param {string} filePath - Path to the tasks.jsonl file
+ * @param {string} filePath - Path to the tasks.jsonl file (in task-manager directory)
  * @returns {Array} Array of task objects
  */
 function readTasks(filePath) {
@@ -80,7 +80,7 @@ function readTasks(filePath) {
 
 /**
  * Update a task in the JSONL file
- * @param {string} filePath - Path to the tasks.jsonl file
+ * @param {string} filePath - Path to the tasks.jsonl file (in task-manager directory)
  * @param {number} lineNumber - Line number (0-indexed) of the task to update
  * @param {object} updates - Fields to update
  */
@@ -117,7 +117,7 @@ function updateTask(filePath, lineNumber, updates) {
 
 /**
  * Mark a task as done or not done
- * @param {string} filePath - Path to the tasks.jsonl file
+ * @param {string} filePath - Path to the tasks.jsonl file (in task-manager directory)
  * @param {number} lineNumber - Line number (0-indexed) of the task
  * @param {boolean} completed - Whether the task is completed
  */
