@@ -46,7 +46,10 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   background: var(--bg-tertiary);
   color: var(--text-primary);
-  overflow: visible;
+  overflow: hidden;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
 }
 
 .container {
@@ -55,7 +58,10 @@ body {
   background: var(--bg-primary);
   min-width: 320px;
   max-width: 400px;
-  overflow: visible;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .page-header {
@@ -100,6 +106,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  flex-shrink: 0;
 }
 
 .task-input-wrapper {
@@ -249,6 +256,22 @@ body {
   color: var(--text-primary);
 }
 
+#edit-due-date-input {
+  cursor: pointer;
+}
+
+#edit-due-date-input::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 1;
+  filter: invert(0.5);
+}
+
+@media (prefers-color-scheme: dark) {
+  #edit-due-date-input::-webkit-calendar-picker-indicator {
+    filter: invert(0.7);
+  }
+}
+
 #due-date-input:focus,
 #from-input:focus,
 #description-input:focus,
@@ -294,11 +317,12 @@ body {
 }
 
 .status {
-  margin-top: 8px;
+  margin-top: 4px;
   font-size: 11px;
   color: var(--text-secondary);
   min-height: 14px;
   text-align: center;
+  flex-shrink: 0;
 }
 
 .status.success {
@@ -310,11 +334,14 @@ body {
 }
 
 .tasks-section {
-  margin-top: 16px;
-  padding-top: 16px;
+  margin-top: 8px;
+  padding-top: 12px;
   border-top: 1px solid var(--border-primary);
-  max-height: 300px;
-  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .tasks-header {
@@ -322,6 +349,7 @@ body {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 8px;
+  flex-shrink: 0;
 }
 
 .tasks-header h3 {
@@ -356,6 +384,9 @@ body {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
 }
 
 .task-item {
@@ -374,6 +405,36 @@ body {
 
 .task-item.completed {
   opacity: 0.6;
+}
+
+.task-item.overdue {
+  background: rgba(255, 69, 58, 0.1);
+  border-left: 3px solid var(--error);
+  padding-left: 5px; /* Reduced from 8px to account for 3px border */
+}
+
+.task-item.overdue:hover {
+  background: rgba(255, 69, 58, 0.15);
+}
+
+.task-item.overdue .task-title {
+  color: var(--error);
+  font-weight: 500;
+}
+
+.task-item.due-today {
+  background: rgba(10, 132, 255, 0.1);
+  border-left: 3px solid var(--accent);
+  padding-left: 5px; /* Reduced from 8px to account for 3px border */
+}
+
+.task-item.due-today:hover {
+  background: rgba(10, 132, 255, 0.15);
+}
+
+.task-item.due-today .task-title {
+  color: var(--accent);
+  font-weight: 500;
 }
 
 .task-checkbox {
@@ -538,6 +599,45 @@ body {
   text-align: center;
   color: var(--text-tertiary);
   font-size: 12px;
+}
+
+.edit-form-actions {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-primary);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.save-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.save-button:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px var(--shadow);
+}
+
+.save-button:active {
+  background: var(--accent-active);
+  transform: translateY(0);
+}
+
+.save-button svg {
+  flex-shrink: 0;
 }
 
 /* Scrollbar styling for dark mode */

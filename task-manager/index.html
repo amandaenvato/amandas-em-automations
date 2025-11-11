@@ -23,56 +23,6 @@
           </svg>
         </button>
       </div>
-
-      <div class="quick-actions" id="quick-actions">
-        <button type="button" class="action-btn" id="due-date-btn" title="Due date">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <rect x="2" y="2" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/>
-            <path d="M2 5H12M5 2V5M9 2V5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-          <span id="due-date-label">Due date</span>
-        </button>
-
-        <button type="button" class="action-btn" id="from-btn" title="From">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <circle cx="7" cy="4" r="2" stroke="currentColor" stroke-width="1.5"/>
-            <path d="M2 12C2 9.5 4.5 8 7 8C9.5 8 12 9.5 12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-          <span id="from-label">From</span>
-        </button>
-
-        <button type="button" class="action-btn" id="description-btn" title="Add description">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M3 3H11M3 7H11M3 11H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-          <span>Note</span>
-        </button>
-      </div>
-
-      <div class="expanded-fields" id="expanded-fields" style="display: none;">
-        <div class="field-group" id="due-date-group" style="display: none;">
-          <label>Due date</label>
-          <input type="date" id="due-date-input" />
-          <button type="button" class="clear-btn" id="clear-due-date">×</button>
-        </div>
-
-        <div class="field-group" id="from-group" style="display: none;">
-          <label>From</label>
-          <select id="from-input">
-            <option value="">Select person</option>
-            <option value="Mark">Mark</option>
-            <option value="Bart">Bart</option>
-            <option value="Nick">Nick</option>
-          </select>
-          <button type="button" class="clear-btn" id="clear-from">×</button>
-        </div>
-
-        <div class="field-group" id="description-group" style="display: none;">
-          <label>Description</label>
-          <textarea id="description-input" placeholder="Add notes..." rows="3"></textarea>
-          <button type="button" class="clear-btn" id="clear-description">×</button>
-        </div>
-      </div>
     </form>
     <div id="status" class="status"></div>
 
@@ -112,11 +62,6 @@
           autofocus
           required
         />
-        <button type="submit" class="add-button" title="Save">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </button>
       </div>
 
       <div class="quick-actions" id="edit-quick-actions">
@@ -167,6 +112,15 @@
           <textarea id="edit-description-input" placeholder="Add notes..." rows="3"></textarea>
           <button type="button" class="clear-btn" id="edit-clear-description">×</button>
         </div>
+      </div>
+
+      <div class="edit-form-actions">
+        <button type="submit" class="save-button" title="Save">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Save</span>
+        </button>
       </div>
     </form>
   </div>

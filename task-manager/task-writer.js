@@ -11,41 +11,23 @@ const path = require('path');
  * @param {string|null} options.description - Task description
  */
 function addTask(filePath, taskText, options = {}) {
-  return new Promise((resolve, reject) => {
-    try {
-      // Get current date/time
-      const now = new Date();
-      const timestamp = now.toISOString();
+  try {
+    const task = {
+      title: taskText,
+      added: new Date().toISOString()
+    };
 
-      // Build task object
-      const task = {
-        title: taskText,
-        added: timestamp,
-        completed: false
-      };
+    // Add optional fields
+    if (options.dueDate) task.dueDate = options.dueDate;
+    if (options.from) task.from = options.from;
+    if (options.description) task.description = options.description;
 
-      // Add optional fields
-      if (options.dueDate) {
-        task.dueDate = options.dueDate;
-      }
-      if (options.from) {
-        task.from = options.from;
-      }
-      if (options.description) {
-        task.description = options.description;
-      }
-
-      // Convert to JSON line (single line JSON)
-      const jsonLine = JSON.stringify(task) + '\n';
-
-      // Append to file (create if doesn't exist)
-      fs.appendFileSync(filePath, jsonLine, 'utf8');
-
-      resolve();
-    } catch (error) {
-      reject(error);
-    }
-  });
+    // Append to file (create if doesn't exist)
+    fs.appendFileSync(filePath, JSON.stringify(task) + '\n', 'utf8');
+    return Promise.resolve();
+  } catch (error) {
+    return Promise.reject(error);
+  }
 }
 
 /**
@@ -116,13 +98,55 @@ function updateTask(filePath, lineNumber, updates) {
 }
 
 /**
- * Mark a task as done or not done
+ * Mark a task as done or not done by moving it between files
  * @param {string} filePath - Path to the tasks.jsonl file (in task-manager directory)
  * @param {number} lineNumber - Line number (0-indexed) of the task
- * @param {boolean} completed - Whether the task is completed
+ * @param {boolean} completed - Whether the task is completed (true = move to completed, false = move back to active)
  */
 function markTaskDone(filePath, lineNumber, completed) {
-  return updateTask(filePath, lineNumber, { completed });
+  return new Promise((resolve, reject) => {
+    try {
+      const dir = path.dirname(filePath);
+      const completedFilePath = path.join(dir, 'completed-tasks.jsonl');
+
+      if (!fs.existsSync(filePath)) {
+        reject(new Error('Tasks file not found'));
+        return;
+      }
+
+      // Read the task from the source file
+      const content = fs.readFileSync(filePath, 'utf8');
+      const lines = content.trim().split('\n').filter(line => line.trim());
+
+      if (lineNumber < 0 || lineNumber >= lines.length) {
+        reject(new Error('Invalid line number'));
+        return;
+      }
+
+      const task = JSON.parse(lines[lineNumber]);
+
+      // Remove the task from source file
+      lines.splice(lineNumber, 1);
+      fs.writeFileSync(filePath, lines.join('\n') + (lines.length > 0 ? '\n' : ''), 'utf8');
+
+      // Remove internal properties before saving
+      delete task._lineNumber;
+      delete task.completed;
+
+      // Add to destination file
+      if (completed) {
+        // Move to completed file
+        fs.appendFileSync(completedFilePath, JSON.stringify(task) + '\n', 'utf8');
+      } else {
+        // Move back to active file
+        fs.appendFileSync(filePath, JSON.stringify(task) + '\n', 'utf8');
+      }
+
+      resolve();
+    } catch (error) {
+      reject(error);
+    }
+  });
 }
 
 module.exports = {
