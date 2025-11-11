@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Task Manager</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Main View -->
+  <div class="container" id="main-view">
+    <form id="task-form">
+      <div class="task-input-wrapper">
+        <input
+          type="text"
+          id="task-input"
+          placeholder="What needs to be done?"
+          autofocus
+          required
+        />
+        <button type="submit" class="add-button" title="Add task (Enter)">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 3V13M3 8H13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="quick-actions" id="quick-actions">
+        <button type="button" class="action-btn" id="due-date-btn" title="Due date">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <rect x="2" y="2" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M2 5H12M5 2V5M9 2V5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span id="due-date-label">Due date</span>
+        </button>
+
+        <button type="button" class="action-btn" id="from-btn" title="From">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <circle cx="7" cy="4" r="2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M2 12C2 9.5 4.5 8 7 8C9.5 8 12 9.5 12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span id="from-label">From</span>
+        </button>
+
+        <button type="button" class="action-btn" id="description-btn" title="Add description">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M3 3H11M3 7H11M3 11H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span>Note</span>
+        </button>
+      </div>
+
+      <div class="expanded-fields" id="expanded-fields" style="display: none;">
+        <div class="field-group" id="due-date-group" style="display: none;">
+          <label>Due date</label>
+          <input type="date" id="due-date-input" />
+          <button type="button" class="clear-btn" id="clear-due-date">×</button>
+        </div>
+
+        <div class="field-group" id="from-group" style="display: none;">
+          <label>From</label>
+          <select id="from-input">
+            <option value="">Select person</option>
+            <option value="Mark">Mark</option>
+            <option value="Bart">Bart</option>
+            <option value="Nick">Nick</option>
+          </select>
+          <button type="button" class="clear-btn" id="clear-from">×</button>
+        </div>
+
+        <div class="field-group" id="description-group" style="display: none;">
+          <label>Description</label>
+          <textarea id="description-input" placeholder="Add notes..." rows="3"></textarea>
+          <button type="button" class="clear-btn" id="clear-description">×</button>
+        </div>
+      </div>
+    </form>
+    <div id="status" class="status"></div>
+
+    <div class="tasks-section">
+      <div class="tasks-header">
+        <h3>Tasks</h3>
+        <button type="button" class="refresh-btn" id="refresh-tasks" title="Refresh">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M7 2V5M7 9V12M2 7H5M9 7H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M10.5 3.5L9 5M5 9L3.5 10.5M10.5 10.5L9 9M5 5L3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div id="tasks-list" class="tasks-list">
+        <!-- Tasks will be rendered here -->
+      </div>
+      </div>
+    </div>
+
+  <!-- Edit View -->
+  <div class="container" id="edit-view" style="display: none;">
+    <div class="page-header">
+      <button type="button" class="back-button" id="back-button" title="Back">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <h2>Edit Task</h2>
+    </div>
+
+    <form id="edit-form">
+      <div class="task-input-wrapper">
+        <input
+          type="text"
+          id="edit-title-input"
+          placeholder="Task title"
+          autofocus
+          required
+        />
+        <button type="submit" class="add-button" title="Save">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8L6 11L13 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="quick-actions" id="edit-quick-actions">
+        <button type="button" class="action-btn" id="edit-due-date-btn" title="Due date">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <rect x="2" y="2" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M2 5H12M5 2V5M9 2V5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span id="edit-due-date-label">Due date</span>
+        </button>
+
+        <button type="button" class="action-btn" id="edit-from-btn" title="From">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <circle cx="7" cy="4" r="2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M2 12C2 9.5 4.5 8 7 8C9.5 8 12 9.5 12 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span id="edit-from-label">From</span>
+        </button>
+
+        <button type="button" class="action-btn" id="edit-description-btn" title="Add description">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M3 3H11M3 7H11M3 11H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span>Note</span>
+        </button>
+      </div>
+
+      <div class="expanded-fields" id="edit-expanded-fields" style="display: none;">
+        <div class="field-group" id="edit-due-date-group" style="display: none;">
+          <label>Due date</label>
+          <input type="date" id="edit-due-date-input" />
+          <button type="button" class="clear-btn" id="edit-clear-due-date">×</button>
+        </div>
+
+        <div class="field-group" id="edit-from-group" style="display: none;">
+          <label>From</label>
+          <select id="edit-from-input">
+            <option value="">Select person</option>
+            <option value="Mark">Mark</option>
+            <option value="Bart">Bart</option>
+            <option value="Nick">Nick</option>
+          </select>
+          <button type="button" class="clear-btn" id="edit-clear-from">×</button>
+        </div>
+
+        <div class="field-group" id="edit-description-group" style="display: none;">
+          <label>Description</label>
+          <textarea id="edit-description-input" placeholder="Add notes..." rows="3"></textarea>
+          <button type="button" class="clear-btn" id="edit-clear-description">×</button>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
+

@@ -297,6 +297,50 @@ class LocalMCPServer {
             },
           },
           {
+            name: "ticktick_update_task",
+            description: "Update a TickTick task's title, description, tag, and/or due date",
+            inputSchema: {
+              type: "object",
+              properties: {
+                task_identifier: {
+                  type: "string",
+                  description: "Task title (exact match) or entity ID",
+                },
+                title: {
+                  type: "string",
+                  description: "New title for the task (optional)",
+                },
+                description: {
+                  type: "string",
+                  description: "New description/content for the task (optional)",
+                },
+                tag: {
+                  type: "string",
+                  description: "Tag to add to the task (optional, will append to existing tags)",
+                },
+                due_date: {
+                  type: "string",
+                  description: "Due date in format 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' (optional)",
+                },
+              },
+              required: ["task_identifier"],
+            },
+          },
+          {
+            name: "ticktick_mark_task_done",
+            description: "Mark a TickTick task as done (complete)",
+            inputSchema: {
+              type: "object",
+              properties: {
+                task_identifier: {
+                  type: "string",
+                  description: "Task title (exact match) or entity ID",
+                },
+              },
+              required: ["task_identifier"],
+            },
+          },
+          {
             name: "ask_openai",
             description: "Pass a prompt to OpenAI and wait for the response",
             inputSchema: {
@@ -379,6 +423,20 @@ class LocalMCPServer {
 
       if (name === "ticktick_get_all_tasks") {
         return await this.tickTickClient.getAllTasks(args?.project, args?.status, args?.limit);
+      }
+
+      if (name === "ticktick_update_task") {
+        return await this.tickTickClient.updateTask(
+          args?.task_identifier,
+          args?.title,
+          args?.description,
+          args?.tag,
+          args?.due_date
+        );
+      }
+
+      if (name === "ticktick_mark_task_done") {
+        return await this.tickTickClient.markTaskDone(args?.task_identifier);
       }
 
       if (name === "ask_openai") {

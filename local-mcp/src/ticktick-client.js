@@ -282,9 +282,12 @@ export class TickTickClient {
           THEN datetime(t.ZENDDATE + 978307200, 'unixepoch', 'localtime')
           ELSE NULL
         END as due_date,
-        datetime(t.ZCREATIONDATE + 978307200, 'unixepoch', 'localtime') as created_date
+        datetime(t.ZCREATIONDATE + 978307200, 'unixepoch', 'localtime') as created_date,
+        COALESCE(t.ZSTRINGOFTAGS, '') as tags,
+        parent.ZTITLE as parent_task
       FROM ZTTTASK t
       LEFT JOIN ZTTPROJECT p ON t.ZPROJECT = p.Z_PK
+      LEFT JOIN ZTTTASK parent ON t.ZPARENTID = parent.ZENTITYID
       WHERE t.ZDELETIONSTATUS = 0
         AND t.ZSTATUS = 0
     `;
@@ -391,9 +394,12 @@ export class TickTickClient {
           WHEN t.ZENDDATE IS NOT NULL AND t.ZENDDATE > 0
           THEN datetime(t.ZENDDATE + 978307200, 'unixepoch', 'localtime')
           ELSE NULL
-        END as due_date
+        END as due_date,
+        COALESCE(t.ZSTRINGOFTAGS, '') as tags,
+        parent.ZTITLE as parent_task
       FROM ZTTTASK t
       LEFT JOIN ZTTPROJECT p ON t.ZPROJECT = p.Z_PK
+      LEFT JOIN ZTTTASK parent ON t.ZPARENTID = parent.ZENTITYID
       WHERE t.ZDELETIONSTATUS = 0
     `;
 
@@ -424,6 +430,301 @@ export class TickTickClient {
     }
 
     return await this.executeQueryAsMarkdown(query);
+  }
+
+  /**
+   * Update a task's title, description, tag, and/or due date
+   * @param {string} taskIdentifier - Task title (exact match) or entity ID
+   * @param {string} title - New title (optional)
+   * @param {string} description - New description (optional)
+   * @param {string} tag - Tag to add (optional, will append to existing tags)
+   * @param {string} due_date - Due date in format 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' (optional)
+   */
+  async updateTask(taskIdentifier, title = null, description = null, tag = null, due_date = null) {
+    const dbPath = this.getDatabasePath();
+
+    if (!existsSync(dbPath)) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Error: TickTick database not found at ${dbPath}. Make sure TickTick is installed.`,
+          },
+        ],
+        isError: true,
+      };
+    }
+
+    // Build WHERE clause - support both entity ID and title matching
+    let whereClause;
+    if (taskIdentifier.length === 24 && /^[0-9a-f]+$/i.test(taskIdentifier)) {
+      // Looks like an entity ID
+      whereClause = `ZENTITYID = '${taskIdentifier.replace(/'/g, "''")}'`;
+    } else {
+      // Treat as title (exact match)
+      whereClause = `ZTITLE = '${taskIdentifier.replace(/'/g, "''")}'`;
+    }
+
+    // Build UPDATE SET clause
+    const updates = [];
+    if (title !== null) {
+      updates.push(`ZTITLE = '${title.replace(/'/g, "''")}'`);
+    }
+    if (description !== null) {
+      updates.push(`ZCONTENT = '${description.replace(/'/g, "''")}'`);
+    }
+    if (due_date !== null) {
+      // Parse due date and convert to TickTick timestamp
+      // Accept formats: 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS'
+      let dateObj;
+      if (due_date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        // Date only - set to end of day
+        dateObj = new Date(due_date + " 23:59:59");
+      } else if (due_date.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/)) {
+        dateObj = new Date(due_date);
+      } else {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Error: Invalid due_date format. Use 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS'`,
+            },
+          ],
+          isError: true,
+        };
+      }
+
+      if (isNaN(dateObj.getTime())) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Error: Invalid date: "${due_date}"`,
+            },
+          ],
+          isError: true,
+        };
+      }
+
+      // Convert to TickTick timestamp (seconds since 2001-01-01)
+      const unixTimestamp = Math.floor(dateObj.getTime() / 1000);
+      const tickTickTimestamp = unixTimestamp - 978307200;
+      updates.push(`ZENDDATE = ${tickTickTimestamp}`);
+      updates.push(`ZSERVERENDDATE = ${tickTickTimestamp}`);
+      // Clear start date fields when setting due date (start dates are for date ranges, not due dates)
+      updates.push(`ZSTARTDATE = NULL`);
+      updates.push(`ZSERVERSTARTDATE = NULL`);
+      // Ensure it's not marked as all-day (ZALLDAY = 0 for timed tasks)
+      updates.push(`ZALLDAY = 0`);
+    }
+
+    if (updates.length === 0) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "Error: At least one of title, description, tag, or due_date must be provided.",
+          },
+        ],
+        isError: true,
+      };
+    }
+
+    try {
+      // First check if task exists and get current tags if needed
+      let currentTags = "";
+      if (tag !== null) {
+        const getTagsQuery = `SELECT COALESCE(ZSTRINGOFTAGS, '') as tags FROM ZTTTASK WHERE ${whereClause} AND ZDELETIONSTATUS = 0 LIMIT 1`;
+        const tagsResult = await this.executeQuery(getTagsQuery, "csv");
+        const tagsText = tagsResult.content[0].text.trim();
+        const lines = tagsText.split("\n").filter(line => line.trim());
+        currentTags = lines[lines.length - 1] || "";
+
+        if (tagsText === "" || (lines.length === 1 && lines[0] === "tags")) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: `Error: Task not found: "${taskIdentifier}"`,
+              },
+            ],
+            isError: true,
+          };
+        }
+
+        // Handle tag appending
+        const tagList = currentTags ? currentTags.split(",").map(t => t.trim()) : [];
+        if (!tagList.includes(tag.trim())) {
+          tagList.push(tag.trim());
+          updates.push(`ZSTRINGOFTAGS = '${tagList.join(",").replace(/'/g, "''")}'`);
+        }
+      } else {
+        // Just check if task exists
+        const checkQuery = `SELECT COUNT(*) as count FROM ZTTTASK WHERE ${whereClause} AND ZDELETIONSTATUS = 0`;
+        const checkResult = await this.executeQuery(checkQuery, "csv");
+        const countText = checkResult.content[0].text.trim();
+        const lines = countText.split("\n").filter(line => line.trim());
+        const countLine = lines[lines.length - 1];
+        const count = parseInt(countLine);
+
+        if (isNaN(count) || count === 0) {
+          return {
+            content: [
+              {
+                type: "text",
+                text: `Error: Task not found: "${taskIdentifier}"`,
+              },
+            ],
+            isError: true,
+          };
+        }
+      }
+
+      // Update last modified date
+      const currentTimestamp = Math.floor(Date.now() / 1000) - 978307200; // Convert to TickTick timestamp
+      updates.push(`ZLASTMODIFIEDDATE = ${currentTimestamp}`);
+
+      const query = `
+        UPDATE ZTTTASK
+        SET ${updates.join(", ")}
+        WHERE ${whereClause}
+          AND ZDELETIONSTATUS = 0
+      `;
+
+      // Update the task
+      await this.executeQuery(query, "csv");
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Task updated successfully.`,
+          },
+        ],
+      };
+    } catch (error) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Error updating task: ${error.message}`,
+          },
+        ],
+        isError: true,
+      };
+    }
+  }
+
+  /**
+   * Mark a task as done (complete)
+   * @param {string} taskIdentifier - Task title (exact match) or entity ID
+   */
+  async markTaskDone(taskIdentifier) {
+    const dbPath = this.getDatabasePath();
+
+    if (!existsSync(dbPath)) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Error: TickTick database not found at ${dbPath}. Make sure TickTick is installed.`,
+          },
+        ],
+        isError: true,
+      };
+    }
+
+    // Build WHERE clause - support both entity ID and title matching
+    let whereClause;
+    if (taskIdentifier.length === 24 && /^[0-9a-f]+$/i.test(taskIdentifier)) {
+      // Looks like an entity ID
+      whereClause = `ZENTITYID = '${taskIdentifier.replace(/'/g, "''")}'`;
+    } else {
+      // Treat as title (exact match)
+      whereClause = `ZTITLE = '${taskIdentifier.replace(/'/g, "''")}'`;
+    }
+
+    const currentTimestamp = Math.floor(Date.now() / 1000) - 978307200; // Convert to TickTick timestamp
+
+    const query = `
+      UPDATE ZTTTASK
+      SET ZSTATUS = 1,
+          ZCOMPLETIONDATE = ${currentTimestamp},
+          ZLASTMODIFIEDDATE = ${currentTimestamp}
+      WHERE ${whereClause}
+        AND ZDELETIONSTATUS = 0
+        AND ZSTATUS = 0
+    `;
+
+    try {
+      // First check if task exists and get its status
+      const checkQuery = `SELECT ZSTATUS FROM ZTTTASK WHERE ${whereClause} AND ZDELETIONSTATUS = 0 LIMIT 1`;
+      const checkResult = await this.executeQuery(checkQuery, "csv");
+      const resultText = checkResult.content[0].text.trim();
+
+      // CSV format may include header, so skip first line if it's "ZSTATUS"
+      const lines = resultText.split("\n").filter(line => line.trim());
+      const dataLine = lines[lines.length - 1]; // Get last line (data)
+
+      if (!dataLine || dataLine === "" || dataLine === "ZSTATUS") {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Error: Task not found: "${taskIdentifier}"`,
+            },
+          ],
+          isError: true,
+        };
+      }
+
+      const currentStatus = parseInt(dataLine);
+      if (isNaN(currentStatus)) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Error: Could not determine task status: "${taskIdentifier}"`,
+            },
+          ],
+          isError: true,
+        };
+      }
+
+      if (currentStatus === 1) {
+        return {
+          content: [
+            {
+              type: "text",
+              text: `Task is already marked as done.`,
+            },
+          ],
+          isError: false,
+        };
+      }
+
+      // Update the task
+      await this.executeQuery(query, "csv");
+
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Task marked as done successfully.`,
+          },
+        ],
+      };
+    } catch (error) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Error marking task as done: ${error.message}`,
+          },
+        ],
+        isError: true,
+      };
+    }
   }
 }
 
