@@ -20,7 +20,7 @@ Execute the following steps in order:
 2. **Jira Tickets Check** (see details below)
 3. **AWS Access Request Check** (see details below)
 4. **BambooHR Time Off Requests Check** (see details below)
-5. **TickTick Tasks Summary** (see details below)
+5. **Tasks Summary** (see details below)
 6. **Saved Slack Messages Check** (see details below)
 6.5. **Slack Mentions and Action Items Check** (see details below)
 6.6. **Additional Slack Pages Check** (see details below)
@@ -165,14 +165,14 @@ Provide direct feedback in conversation format with:
 
 Do not create any documents - just provide the information directly in the conversation.
 
-## Step 5: Check TickTick Tasks
+## Step 5: Check Tasks
 
 ### Instructions
 
-1. Use the `ticktick_get_pending_tasks` MCP tool to get all incomplete tasks
-2. Use the `ticktick_get_task_summary` MCP tool to get overall statistics
-3. **Ignore complete tasks** - only focus on incomplete tasks
-4. Analyze the incomplete tasks and group them into logical categories such as:
+1. Read the tasks from `task-manager/tasks.jsonl` file
+2. Parse the JSONL format (each line is a JSON object)
+3. **Only include active tasks** - completed tasks are in `completed-tasks.jsonl` and should be ignored
+4. Analyze the tasks and group them into logical categories such as:
    - Team Management & People Development
    - On-Call & Operations
    - Documentation & Process
@@ -183,26 +183,26 @@ Do not create any documents - just provide the information directly in the conve
    - Or other relevant groupings based on task content
 5. For each task, include:
    - Task title
-   - Priority (if available)
    - Due date (if available)
-   - Project (if available)
-6. Note any high-priority tasks or tasks with upcoming due dates
+   - From (person who requested it, if available)
+   - Description (if available)
+6. Note any tasks with upcoming due dates or overdue tasks
 7. Identify stale tasks (e.g., tasks from months ago that may need review or cleanup)
 
 ### Important Notes
 
-- Use the MCP tools (`ticktick_get_pending_tasks` and `ticktick_get_task_summary`) rather than directly querying the database
-- Focus only on incomplete tasks - do not include completed tasks in the summary
+- Read tasks directly from `task-manager/tasks.jsonl` file
+- Focus only on active tasks - completed tasks are in a separate file
 - Group tasks logically to make the summary more actionable
-- Highlight tasks that need immediate attention (high priority, due soon, or stale)
+- Highlight tasks that need immediate attention (due soon, overdue, or stale)
 
 ### Expected Output
 
 Provide direct feedback in conversation format with:
-- Overall statistics (total tasks, incomplete count, priority breakdown)
-- Grouped list of incomplete tasks by category
-- Each task showing title, priority, due date, and project (where available)
-- Notes on any high-priority items or stale tasks that need attention
+- Overall statistics (total active tasks, overdue count, due today count)
+- Grouped list of active tasks by category
+- Each task showing title, due date, from (if available), and description (if available)
+- Notes on any overdue tasks, tasks due today, or stale tasks that need attention
 
 Do not create any documents - just provide the information directly in the conversation.
 
@@ -457,24 +457,22 @@ After completing all seven checks, provide a comprehensive summary:
    - Status: Pending approval
    - Note: Click link to review and approve/deny in BambooHR
 
-## TickTick Summary
+## Tasks Summary
 
 **Overall Statistics:**
-- **Total Tasks**: [COUNT]
-- **Incomplete Tasks**: [COUNT]
-- **High Priority**: [COUNT]
-- **Medium Priority**: [COUNT]
-- **Low Priority**: [COUNT]
+- **Total Active Tasks**: [COUNT]
+- **Overdue Tasks**: [COUNT]
+- **Due Today**: [COUNT]
 
-### Incomplete Tasks by Category
+### Active Tasks by Category
 
 #### **[Category Name]** ([COUNT] tasks)
-- [Task Title] (Priority: [Priority], Due: [Due Date])
-- [Task Title] (Priority: [Priority], Due: [Due Date])
+- [Task Title] (Due: [Due Date], From: [Person if available])
+- [Task Title] (Due: [Due Date], From: [Person if available])
 
 #### **[Category Name]** ([COUNT] tasks)
-- [Task Title] (Priority: [Priority], Due: [Due Date])
-- [Task Title] (Priority: [Priority], Due: [Due Date])
+- [Task Title] (Due: [Due Date], From: [Person if available])
+- [Task Title] (Due: [Due Date], From: [Person if available])
 
 [Continue with additional categories as needed]
 
@@ -566,7 +564,7 @@ After completing all seven checks, provide a comprehensive summary:
 
 ## Overall Status
 - **Action Required**: [Summary of what needs attention across all systems]
-- **Priority Items**: [List any high priority items from all checks, including TickTick tasks and saved Slack messages]
+- **Priority Items**: [List any high priority items from all checks, including tasks and saved Slack messages]
 - **Facilitate Meetings**: [Include any facilitate meetings that require preparation or action items]
 
 ---
