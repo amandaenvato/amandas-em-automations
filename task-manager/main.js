@@ -1,4 +1,4 @@
-const { ipcMain } = require('electron');
+const { ipcMain, app } = require('electron');
 const path = require('path');
 const fs = require('fs');
 const { menubar } = require('menubar');
@@ -6,10 +6,10 @@ const { menubar } = require('menubar');
 // Handle icon path - use default if custom icon doesn't exist
 let iconPath = path.join(__dirname, 'icon.png');
 if (!fs.existsSync(iconPath)) {
-  // Use a default icon or let menubar handle it
   iconPath = undefined;
 }
 
+// Initialize menubar - let it handle window positioning relative to tray icon
 const mb = menubar({
   index: `file://${path.join(__dirname, 'index.html')}`,
   icon: iconPath,
@@ -35,6 +35,31 @@ const mb = menubar({
   }
 });
 
+// Function to update autorun setting
+function setAutoLaunch(enabled) {
+  const settings = {
+    openAtLogin: enabled,
+    openAsHidden: false,
+    name: 'Task Manager',
+    path: process.execPath,
+    args: [path.join(__dirname)]
+  };
+
+  console.log('Setting auto-launch:', enabled, settings);
+  app.setLoginItemSettings(settings);
+
+  // Verify it was set correctly
+  const currentSettings = app.getLoginItemSettings();
+  console.log('Auto-launch settings after update:', currentSettings);
+}
+
+// Function to get current autorun state
+function getAutoLaunch() {
+  const settings = app.getLoginItemSettings();
+  console.log('Getting auto-launch state:', settings.openAtLogin);
+  return settings.openAtLogin;
+}
+
 mb.on('ready', () => {
   console.log('Task Manager is ready');
 });
@@ -46,8 +71,8 @@ const SHOW_COOLDOWN = 300; // ms to wait after show before allowing blur to hide
 
 mb.on('after-create-window', () => {
   console.log('Window created');
-  mb.window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
-  mb.window.setAlwaysOnTop(true, 'floating');
+
+  // Let menubar handle window positioning - don't override it
 
   // Close window when it loses focus
   mb.window.on('blur', () => {
@@ -91,16 +116,15 @@ mb.on('after-create-window', () => {
 mb.on('show', () => {
   console.log('Window show event triggered');
   lastShowTime = Date.now();
+
   // Cancel any pending blur timeout
   if (blurTimeout) {
     clearTimeout(blurTimeout);
     blurTimeout = null;
   }
+
+  // Let menubar handle window showing - don't override
   if (mb.window && !mb.window.isDestroyed()) {
-    // Ensure window is shown and focused
-    if (!mb.window.isVisible()) {
-    mb.window.show();
-    }
     mb.window.focus();
   }
 });
@@ -121,4 +145,19 @@ ipcMain.on('close-window', () => {
   if (mb.window) {
     mb.window.hide();
   }
+});
+
+// IPC handlers for autorun management
+ipcMain.handle('get-auto-launch', () => {
+  return getAutoLaunch();
+});
+
+ipcMain.handle('set-auto-launch', (event, enabled) => {
+  setAutoLaunch(enabled);
+  return getAutoLaunch();
+});
+
+// IPC handler for quit
+ipcMain.on('quit-app', () => {
+  app.quit();
 });

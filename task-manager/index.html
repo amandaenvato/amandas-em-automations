@@ -29,18 +29,61 @@
     <div class="tasks-section">
       <div class="tasks-header">
         <h3>Tasks</h3>
-        <button type="button" class="refresh-btn" id="refresh-tasks" title="Refresh">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-            <path d="M7 2V5M7 9V12M2 7H5M9 7H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-            <path d="M10.5 3.5L9 5M5 9L3.5 10.5M10.5 10.5L9 9M5 5L3.5 3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          </svg>
-        </button>
+        <div class="header-actions">
+          <button type="button" class="refresh-btn" id="refresh-tasks" title="Refresh">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M11.5 2.5C10.5 1.5 9.1 1 7.5 1C4.5 1 2 3.5 2 6.5M2.5 11.5C3.5 12.5 4.9 13 6.5 13C9.5 13 12 10.5 12 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2 2.5L2 5.5L5 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 11.5L12 8.5L9 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button type="button" class="settings-btn" id="settings-btn" title="Settings">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <circle cx="7" cy="7" r="2.5" stroke="currentColor" stroke-width="1.5" fill="none"/>
+              <path d="M7 1V2.5M7 11.5V13M1 7H2.5M11.5 7H13M2.5 2.5L3.5 3.5M10.5 10.5L11.5 11.5M2.5 11.5L3.5 10.5M10.5 3.5L11.5 2.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
       </div>
       <div id="tasks-list" class="tasks-list">
         <!-- Tasks will be rendered here -->
       </div>
       </div>
     </div>
+
+  <!-- Settings View -->
+  <div class="container" id="settings-view" style="display: none;">
+    <div class="page-header">
+      <button type="button" class="back-button" id="settings-back-button" title="Back">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M10 12L6 8L10 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <h2>Settings</h2>
+    </div>
+
+    <div class="settings-content">
+      <div class="setting-item">
+        <div class="setting-label">
+          <label for="auto-launch-toggle">Launch at Login</label>
+          <span class="setting-description">Automatically start Task Manager when you log in</span>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="auto-launch-toggle" />
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+
+      <div class="settings-actions">
+        <button type="button" class="quit-button" id="quit-button" title="Quit Task Manager">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M6 2H10M6 2L6 6M6 2L4 2M10 2L10 6M10 2L12 2M3 4H13M3 4L3 14C3 14.5523 3.44772 15 4 15H12C12.5523 15 13 14.5523 13 14V4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Quit Task Manager</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- Edit View -->
   <div class="container" id="edit-view" style="display: none;">

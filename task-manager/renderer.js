@@ -251,8 +251,58 @@ function goBack() {
   currentTask = null;
 }
 
-// Back button handler
+function showSettings() {
+  // Hide main view, show settings view
+  document.getElementById('main-view').style.display = 'none';
+  document.getElementById('edit-view').style.display = 'none';
+  document.getElementById('settings-view').style.display = 'flex';
+
+  // Load current auto-launch state
+  loadAutoLaunchState();
+}
+
+function goBackFromSettings() {
+  // Hide settings view, show main view
+  document.getElementById('settings-view').style.display = 'none';
+  document.getElementById('main-view').style.display = 'flex';
+}
+
+async function loadAutoLaunchState() {
+  try {
+    const enabled = await ipcRenderer.invoke('get-auto-launch');
+    document.getElementById('auto-launch-toggle').checked = enabled;
+  } catch (error) {
+    console.error('Error loading auto-launch state:', error);
+  }
+}
+
+async function toggleAutoLaunch(enabled) {
+  try {
+    const result = await ipcRenderer.invoke('set-auto-launch', enabled);
+    console.log('Auto-launch toggled to:', enabled, 'Result:', result);
+    showStatus(enabled ? 'Launch at login enabled' : 'Launch at login disabled', 'success');
+  } catch (error) {
+    console.error('Error toggling auto-launch:', error);
+    showStatus('Error updating setting', 'error');
+  }
+}
+
+// Back button handlers
 document.getElementById('back-button').addEventListener('click', goBack);
+document.getElementById('settings-back-button').addEventListener('click', goBackFromSettings);
+
+// Settings button handler
+document.getElementById('settings-btn').addEventListener('click', showSettings);
+
+// Auto-launch toggle handler
+document.getElementById('auto-launch-toggle').addEventListener('change', (e) => {
+  toggleAutoLaunch(e.target.checked);
+});
+
+// Quit button handler
+document.getElementById('quit-button').addEventListener('click', () => {
+  ipcRenderer.send('quit-app');
+});
 
 // Edit form submission
 document.getElementById('edit-form').addEventListener('submit', async (e) => {
