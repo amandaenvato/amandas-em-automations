@@ -3,6 +3,35 @@ import { promisify } from "util";
 
 const execAsync = promisify(exec);
 
+// Explicit mapping of tool names to gh commands
+const COMMAND_MAP = {
+  "repo-list": "repo list",
+  "repo-view": "repo view",
+  "pr-list": "pr list",
+  "pr-view": "pr view",
+  "pr-diff": "pr diff",
+  "pr-files": "pr files",
+  "pr-checks": "pr checks",
+  "pr-status": "pr status",
+  "issue-list": "issue list",
+  "issue-view": "issue view",
+  "search-code": "search code",
+  "search-prs": "search prs",
+  "search-commits": "search commits",
+  "search-issues": "search issues",
+  "search-repos": "search repos",
+  "search-users": "search users",
+  "release-list": "release list",
+  "release-view": "release view",
+  "release-download": "release download",
+  "branch-list": "branch list",
+  "branch-view": "branch view",
+  "commit-view": "commit view",
+};
+
+// Export allowed command keys as an array for use in tool schema
+export const ALLOWED_COMMANDS = Object.keys(COMMAND_MAP).sort();
+
 export class GitHubCLI {
   /**
    * Execute a gh CLI command and return the result
@@ -42,295 +71,28 @@ export class GitHubCLI {
   }
 
   /**
-   * List repositories in the envato organization
+   * Execute a read-only gh command with validation
+   * @param {string} commandKey - The command key (e.g., 'repo-list', 'pr-view')
+   * @param {string[]} args - Arguments to pass to the gh command
    */
-  async listRepos(limit = null) {
-    const args = ["--owner", "envato"];
-    if (limit) {
-      args.push("--limit", limit.toString());
-    }
-    return await this.executeCommand("repo list", args);
-  }
+  async executeReadOnlyCommand(commandKey, args = []) {
+    // Look up the command key in COMMAND_MAP
+    const ghCommand = COMMAND_MAP[commandKey];
 
-  /**
-   * View details of a specific repository
-   */
-  async viewRepo(repo) {
-    if (!repo) {
+    // If the key doesn't exist, the command isn't allowed
+    if (!ghCommand) {
+      const availableCommands = ALLOWED_COMMANDS.join(", ");
       return {
         content: [
           {
             type: "text",
-            text: "Error: repo parameter is required (e.g., 'envato/repo-name')",
-          },
-        ],
-        isError: true,
-      };
-    }
-    return await this.executeCommand("repo view", [repo]);
-  }
-
-  /**
-   * List pull requests
-   */
-  async listPRs(repo = null, state = null, author = null, limit = null) {
-    const args = [];
-    if (repo) {
-      args.push("--repo", repo);
-    }
-    if (state) {
-      args.push("--state", state);
-    }
-    if (author) {
-      args.push("--author", author);
-    }
-    if (limit) {
-      args.push("--limit", limit.toString());
-    }
-    return await this.executeCommand("pr list", args);
-  }
-
-  /**
-   * View details of a specific pull request
-   */
-  async viewPR(prNumber, repo = null) {
-    if (!prNumber) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "Error: pr_number parameter is required",
-          },
-        ],
-        isError: true,
-      };
-    }
-    const args = [prNumber.toString()];
-    if (repo) {
-      args.push("--repo", repo);
-    }
-    return await this.executeCommand("pr view", args);
-  }
-
-  /**
-   * Search code
-   */
-  async searchCode(query, repo = null, limit = null) {
-    if (!query) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "Error: query parameter is required",
-          },
-        ],
-        isError: true,
-      };
-    }
-    const args = [];
-    if (repo) {
-      args.push("--repo", repo);
-    }
-    if (limit) {
-      args.push("--limit", limit.toString());
-    }
-    args.push(query);
-    return await this.executeCommand("search code", args);
-  }
-
-  /**
-   * Search pull requests
-   */
-  async searchPRs(query, repo = null, state = null, author = null, limit = null) {
-    if (!query) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "Error: query parameter is required",
-          },
-        ],
-        isError: true,
-      };
-    }
-    const args = [];
-    if (repo) {
-      args.push("--repo", repo);
-    }
-    if (state) {
-      args.push("--state", state);
-    }
-    if (author) {
-      args.push("--author", author);
-    }
-    if (limit) {
-      args.push("--limit", limit.toString());
-    }
-    args.push(query);
-    return await this.executeCommand("search prs", args);
-  }
-
-  /**
-   * Search commits
-   */
-  async searchCommits(query, repo = null, author = null, limit = null) {
-    if (!query) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "Error: query parameter is required",
-          },
-        ],
-        isError: true,
-      };
-    }
-    const args = [];
-    if (repo) {
-      args.push("--repo", repo);
-    }
-    if (author) {
-      args.push("--author", author);
-    }
-    if (limit) {
-      args.push("--limit", limit.toString());
-    }
-    args.push(query);
-    return await this.executeCommand("search commits", args);
-  }
-
-  /**
-   * Read a file from a GitHub repository
-   * Uses GitHub API to get file contents
-   */
-  async readFile(repo, path, ref = null) {
-    if (!repo || !path) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "Error: repo and path parameters are required (e.g., 'envato/marketplace', 'app/models/user.rb')",
+            text: `Command '${commandKey}' is not allowed. Only the following read-only commands are permitted:\n${availableCommands}`,
           },
         ],
         isError: true,
       };
     }
 
-    try {
-      // Use GitHub API to get file contents
-      const apiPath = `repos/${repo}/contents/${path}`;
-      const args = [apiPath];
-      if (ref) {
-        args.push("--jq", `'.content'`);
-        // For ref, we need to add it as a query parameter
-        const { stdout } = await execAsync(
-          `gh api ${apiPath}?ref=${ref} --jq '.content'`,
-          { maxBuffer: 10 * 1024 * 1024 }
-        );
-        const base64Content = stdout.trim().replace(/"/g, "");
-        const fileContent = Buffer.from(base64Content, "base64").toString("utf-8");
-        return {
-          content: [
-            {
-              type: "text",
-              text: fileContent,
-            },
-          ],
-        };
-      } else {
-        const { stdout } = await execAsync(
-          `gh api ${apiPath} --jq '.content'`,
-          { maxBuffer: 10 * 1024 * 1024 }
-        );
-        const base64Content = stdout.trim().replace(/"/g, "");
-        const fileContent = Buffer.from(base64Content, "base64").toString("utf-8");
-        return {
-          content: [
-            {
-              type: "text",
-              text: fileContent,
-            },
-          ],
-        };
-      }
-    } catch (error) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: `Error reading file: ${error.message}\nRepo: ${repo}, Path: ${path}`,
-          },
-        ],
-        isError: true,
-      };
-    }
-  }
-
-  /**
-   * View PR diff to see what changed
-   */
-  async viewPRDiff(prNumber, repo = null) {
-    if (!prNumber) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "Error: pr_number parameter is required",
-          },
-        ],
-        isError: true,
-      };
-    }
-    const args = [prNumber.toString()];
-    if (repo) {
-      args.push("--repo", repo);
-    }
-    return await this.executeCommand("pr diff", args);
-  }
-
-  /**
-   * View commit details
-   */
-  async viewCommit(sha, repo = null) {
-    if (!sha) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "Error: sha parameter is required",
-          },
-        ],
-        isError: true,
-      };
-    }
-    const args = [sha];
-    if (repo) {
-      args.push("--repo", repo);
-    }
-    return await this.executeCommand("commit view", args);
-  }
-
-  /**
-   * Get files changed in a PR
-   */
-  async getPRFiles(prNumber, repo = null) {
-    if (!prNumber) {
-      return {
-        content: [
-          {
-            type: "text",
-            text: "Error: pr_number parameter is required",
-          },
-        ],
-        isError: true,
-      };
-    }
-    const args = [prNumber.toString()];
-    if (repo) {
-      args.push("--repo", repo);
-    }
-    args.push("--json", "files", "--jq", ".[].files[].path");
-    return await this.executeCommand("pr view", args);
+    return await this.executeCommand(ghCommand, args);
   }
 }
-
