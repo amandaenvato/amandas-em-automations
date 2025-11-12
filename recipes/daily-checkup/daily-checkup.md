@@ -12,6 +12,12 @@ Perform all daily checkup tasks in sequence and provide a comprehensive summary.
 
 This context will help you prioritize issues and identify what needs immediate attention.
 
+## Output Structure
+
+1. **Create a dated directory**: `recipes/daily-checkup/dd-mm-yyyy/` (e.g., `recipes/daily-checkup/15-01-2025/`)
+2. **Create OUTPUT.md** in that directory with the full comprehensive analysis (using the format below)
+3. **Respond in conversation** with ONLY the "Action Required" section formatted as markdown with working links
+
 ## Instructions
 
 Execute the following steps in order:
@@ -214,12 +220,23 @@ Do not create any documents - just provide the information directly in the conve
    - **waitForIndicators**: Use `['Saved', 'In progress', 'css:[data-qa="slack_kit_list"]']` to wait for the page to load
    - **maxWaitTime**: 120000 (2 minutes)
    - **headless**: false (to allow authentication if needed)
-2. Parse the HTML content returned by `fetch_page` to extract saved messages from the "In progress" filter
-3. For each saved message:
-   - Extract the message ID (timestamp) and channel ID from links in the saved items list
-   - Use Slack MCP tools (`conversations_history` or `conversations_replies`) to retrieve the full message content
-   - Identify the channel type (public channel, private channel, or DM)
-   - Extract the author, date, and full message text
+2. Parse the **text content** (not just HTML) returned by `fetch_page` to extract saved messages from the "In progress" filter
+   - The saved messages appear in the text content in this format:
+     - Channel name (e.g., "temp-author-system-migration-to-content-platform")
+     - Author name (e.g., "Jared McCorkindale")
+     - Message text (may be truncated with "…" if long)
+     - For DMs, it shows "Direct message" instead of channel name, followed by author name
+3. For each saved message found in the text:
+   - Extract the channel name (or note if it's a DM), author name, and message text snippet
+   - Use Slack MCP `conversations_search_messages` tool to search for the full message using:
+     - Unique phrases from the message text
+     - Author name + channel name (if available)
+     - Key terms from the message content
+   - From the search results, identify the correct message and extract:
+     - Full message text
+     - Channel ID and message timestamp (for constructing Slack links)
+     - Date/time
+     - Thread context (if applicable)
 4. Analyze each saved message to infer what action or task is needed:
    - Look for explicit requests or questions
    - Identify items requiring responses or follow-up
@@ -232,10 +249,12 @@ Do not create any documents - just provide the information directly in the conve
 
 - Saved messages are accessed via the Slack "Later" page at `https://app.slack.com/client/E04LQRTKFNH/later`
 - Focus on messages in the "In progress" filter (these are active items)
-- Use `fetch_page` to get the page HTML content, then parse it to extract message IDs, then use Slack MCP tools to get full message details
+- **Key Learning**: The `fetch_page` tool now waits an additional 1500ms after indicators appear to ensure the page is fully rendered. The saved messages are rendered dynamically via JavaScript, so the actual message links/channel IDs are NOT in the static HTML. However, the text content DOES contain the saved messages in a readable format.
+- **Extraction Strategy**: Parse the text content (not HTML) to find saved messages. The format is: channel name → author name → message text. Then use Slack search tools to find the full message details and construct proper links.
 - The `fetch_page` tool will save your logged-in session state, so subsequent calls will be faster
 - Message IDs are found in Slack URLs in the format: `https://envato.slack.com/archives/[CHANNEL_ID]/p[MESSAGE_TIMESTAMP]`
 - For DMs, channel IDs start with `D` or `U` prefix
+- When searching for messages, use unique phrases from the message text to find the exact message
 - Infer actions by analyzing message content for:
   - Questions requiring answers
   - Requests for information or decisions
@@ -412,7 +431,11 @@ Do not create any documents - just provide the information directly in the conve
 
 ## Final Summary Format
 
-After completing all seven checks, provide a comprehensive summary:
+After completing all seven checks:
+
+1. **Create the dated directory**: `recipes/daily-checkup/dd-mm-yyyy/` (format: DD-MM-YYYY, e.g., `15-01-2025`)
+2. **Write the full comprehensive summary** to `recipes/daily-checkup/dd-mm-yyyy/OUTPUT.md` using the format below
+3. **Respond in conversation** with ONLY the "Action Required" section (see format at the end) formatted as markdown with working links
 
 ---
 
@@ -569,4 +592,40 @@ After completing all seven checks, provide a comprehensive summary:
 
 ---
 
-Do not create any documents - provide this summary directly in the conversation.
+## Action Required Section (For Conversation Response)
+
+After writing the full OUTPUT.md file, respond in the conversation with ONLY this section, formatted as markdown with working links:
+
+```markdown
+# Action Required - Daily Checkup Summary
+
+## High Priority
+
+### 1. [Action Title]
+- **Link**: [Working Slack/Jira/BambooHR link]
+- **Details**: [Brief description]
+- **Action**: [What needs to be done]
+
+[Continue with all high priority items]
+
+## Medium Priority
+
+[Continue with medium priority items]
+
+## Low Priority / Informational
+
+[Continue with low priority items]
+
+---
+
+**Quick Links:**
+- [AWS Access Request Channel](https://app.slack.com/client/E04LQRTKFNH/D07N5KT40MT)
+- [Author Helpline](https://envato.slack.com/archives/C02175EGYP2)
+- [Tasks Manager](file:///Users/jonathanwilliams/Development/envato/em-automations/task-manager/tasks.jsonl)
+```
+
+**Important**:
+- Write the full comprehensive summary to OUTPUT.md
+- Then respond in conversation with ONLY the Action Required section
+- Ensure all links are working and properly formatted
+- Group actions by priority (High, Medium, Low)
