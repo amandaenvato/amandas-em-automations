@@ -172,6 +172,9 @@ export class BrowserClient {
       // Wait for indicators (required) - this will handle waiting for page load and authentication
       await this._waitForIndicators(page, waitForIndicators, maxWaitTime);
 
+      // Additional wait after indicators appear to ensure page is fully rendered
+      await setTimeout(1500);
+
       // Extract cookies
       const allCookies = await context.cookies();
       const extractedCookies = {};
@@ -245,10 +248,12 @@ export class BrowserClient {
       // Wait for indicators (required) - this will handle waiting for page load and authentication
       await this._waitForIndicators(page, waitForIndicators, maxWaitTime);
 
-      // Get page content with error handling
-      let pageContent, pageText;
+      // Additional wait after indicators appear to ensure page is fully rendered
+      await setTimeout(1500);
+
+      // Get page text content with error handling
+      let pageText;
       try {
-        pageContent = await page.content();
         pageText = await page.evaluate(
           () => {
             if (!document.body) return "";
@@ -258,7 +263,6 @@ export class BrowserClient {
       } catch (e) {
         // If we can't get content, try one more time after a short wait
         await setTimeout(1000);
-        pageContent = await page.content();
         pageText = await page.evaluate(
           () => {
             if (!document.body) return "";
@@ -275,7 +279,7 @@ export class BrowserClient {
         content: [
           {
             type: "text",
-            text: `# Page Content\n\n**URL**: ${url}\n\n## HTML Content\n\n\`\`\`html\n${pageContent}\n\`\`\`\n\n## Text Content\n\n\`\`\`\n${pageText}\n\`\`\``,
+            text: `# Page Content\n\n**URL**: ${url}\n\n## Text Content\n\n\`\`\`\n${pageText}\n\`\`\``,
           },
         ],
       };

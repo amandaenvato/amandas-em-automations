@@ -236,6 +236,82 @@ class LocalMCPServer {
             },
           },
           {
+            name: "gh_read_file",
+            description: "Read a file from a GitHub repository",
+            inputSchema: {
+              type: "object",
+              properties: {
+                repo: {
+                  type: "string",
+                  description: "Repository in format 'owner/repo' (e.g., 'envato/marketplace')",
+                },
+                path: {
+                  type: "string",
+                  description: "File path in the repository (e.g., 'app/models/user.rb')",
+                },
+                ref: {
+                  type: "string",
+                  description: "Git reference (branch, tag, or commit SHA) to read from (optional, defaults to default branch)",
+                },
+              },
+              required: ["repo", "path"],
+            },
+          },
+          {
+            name: "gh_pr_diff",
+            description: "View the diff of a pull request to see what changed",
+            inputSchema: {
+              type: "object",
+              properties: {
+                pr_number: {
+                  type: "number",
+                  description: "Pull request number",
+                },
+                repo: {
+                  type: "string",
+                  description: "Repository in format 'owner/repo' (optional, defaults to current repo)",
+                },
+              },
+              required: ["pr_number"],
+            },
+          },
+          {
+            name: "gh_commit_view",
+            description: "View details of a specific commit",
+            inputSchema: {
+              type: "object",
+              properties: {
+                sha: {
+                  type: "string",
+                  description: "Commit SHA (full or short)",
+                },
+                repo: {
+                  type: "string",
+                  description: "Repository in format 'owner/repo' (optional, defaults to current repo)",
+                },
+              },
+              required: ["sha"],
+            },
+          },
+          {
+            name: "gh_pr_files",
+            description: "Get list of files changed in a pull request",
+            inputSchema: {
+              type: "object",
+              properties: {
+                pr_number: {
+                  type: "number",
+                  description: "Pull request number",
+                },
+                repo: {
+                  type: "string",
+                  description: "Repository in format 'owner/repo' (optional, defaults to current repo)",
+                },
+              },
+              required: ["pr_number"],
+            },
+          },
+          {
             name: "ask_openai",
             description: "Pass a prompt to OpenAI and wait for the response",
             inputSchema: {
@@ -247,8 +323,8 @@ class LocalMCPServer {
                 },
                 model: {
                   type: "string",
-                  description: "The model to use (default: 'gpt-5-nano')",
-                  default: "gpt-5-nano",
+                  description: "The model to use (default: 'gpt-5')",
+                  default: "gpt-5",
                 },
               },
               required: ["prompt"],
@@ -383,6 +459,22 @@ class LocalMCPServer {
 
       if (name === "gh_search_commits") {
         return await this.githubCLI.searchCommits(args?.query, args?.repo, args?.author, args?.limit);
+      }
+
+      if (name === "gh_read_file") {
+        return await this.githubCLI.readFile(args?.repo, args?.path, args?.ref);
+      }
+
+      if (name === "gh_pr_diff") {
+        return await this.githubCLI.viewPRDiff(args?.pr_number, args?.repo);
+      }
+
+      if (name === "gh_commit_view") {
+        return await this.githubCLI.viewCommit(args?.sha, args?.repo);
+      }
+
+      if (name === "gh_pr_files") {
+        return await this.githubCLI.getPRFiles(args?.pr_number, args?.repo);
       }
 
       if (name === "ask_openai") {

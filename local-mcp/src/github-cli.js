@@ -198,5 +198,139 @@ export class GitHubCLI {
     args.push(query);
     return await this.executeCommand("search commits", args);
   }
+
+  /**
+   * Read a file from a GitHub repository
+   * Uses GitHub API to get file contents
+   */
+  async readFile(repo, path, ref = null) {
+    if (!repo || !path) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "Error: repo and path parameters are required (e.g., 'envato/marketplace', 'app/models/user.rb')",
+          },
+        ],
+        isError: true,
+      };
+    }
+
+    try {
+      // Use GitHub API to get file contents
+      const apiPath = `repos/${repo}/contents/${path}`;
+      const args = [apiPath];
+      if (ref) {
+        args.push("--jq", `'.content'`);
+        // For ref, we need to add it as a query parameter
+        const { stdout } = await execAsync(
+          `gh api ${apiPath}?ref=${ref} --jq '.content'`,
+          { maxBuffer: 10 * 1024 * 1024 }
+        );
+        const base64Content = stdout.trim().replace(/"/g, "");
+        const fileContent = Buffer.from(base64Content, "base64").toString("utf-8");
+        return {
+          content: [
+            {
+              type: "text",
+              text: fileContent,
+            },
+          ],
+        };
+      } else {
+        const { stdout } = await execAsync(
+          `gh api ${apiPath} --jq '.content'`,
+          { maxBuffer: 10 * 1024 * 1024 }
+        );
+        const base64Content = stdout.trim().replace(/"/g, "");
+        const fileContent = Buffer.from(base64Content, "base64").toString("utf-8");
+        return {
+          content: [
+            {
+              type: "text",
+              text: fileContent,
+            },
+          ],
+        };
+      }
+    } catch (error) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: `Error reading file: ${error.message}\nRepo: ${repo}, Path: ${path}`,
+          },
+        ],
+        isError: true,
+      };
+    }
+  }
+
+  /**
+   * View PR diff to see what changed
+   */
+  async viewPRDiff(prNumber, repo = null) {
+    if (!prNumber) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "Error: pr_number parameter is required",
+          },
+        ],
+        isError: true,
+      };
+    }
+    const args = [prNumber.toString()];
+    if (repo) {
+      args.push("--repo", repo);
+    }
+    return await this.executeCommand("pr diff", args);
+  }
+
+  /**
+   * View commit details
+   */
+  async viewCommit(sha, repo = null) {
+    if (!sha) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "Error: sha parameter is required",
+          },
+        ],
+        isError: true,
+      };
+    }
+    const args = [sha];
+    if (repo) {
+      args.push("--repo", repo);
+    }
+    return await this.executeCommand("commit view", args);
+  }
+
+  /**
+   * Get files changed in a PR
+   */
+  async getPRFiles(prNumber, repo = null) {
+    if (!prNumber) {
+      return {
+        content: [
+          {
+            type: "text",
+            text: "Error: pr_number parameter is required",
+          },
+        ],
+        isError: true,
+      };
+    }
+    const args = [prNumber.toString()];
+    if (repo) {
+      args.push("--repo", repo);
+    }
+    args.push("--json", "files", "--jq", ".[].files[].path");
+    return await this.executeCommand("pr view", args);
+  }
 }
 
