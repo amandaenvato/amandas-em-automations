@@ -1,10 +1,6 @@
 # Recipe outputs: Ignore everything in date-stamped output directories (pattern: <recipename>-dd-mm-yyyy)
-files/output/**/*
-files/scratch/**/*
-files/tasks/**/*
-
-# Sensitive personal information
-files/recipe-config/people-info.md
+files/**/*
+!files/**/*.example.*
 
 # Node modules
 **/node_modules
@@ -15,6 +11,10 @@ files/recipe-config/people-info.md
 
 # Cursor configuration
 .cursor/**/*
+!.cursor/**/*.example.*
 
 # Keep the gitkeeps
 !**/.gitkeep
+
+# DS_Store
+**/.DS_Store
