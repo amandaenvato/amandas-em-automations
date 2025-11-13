@@ -26,6 +26,29 @@ This repository contains instruction recipes for AI agents (like Claude Code, Cu
    - Fill in your team member information and personal details
    - This configuration is required for recipes that reference team members (Feedback Collection, Shoutouts, etc.)
 
+3. **External MCP Dependencies:**
+   Your AI agent must have access to the following external MCP servers (read/search access sufficient, write not required):
+
+   **Communication & Collaboration:**
+   - **Slack** - Team messages, communications, mentions, and saved messages
+   - **Gmail** - Email assignments, notifications, and document sharing
+
+   **Documentation & Storage:**
+   - **Google Drive** - Document storage, reading, and updates
+   - **Atlassian Confluence** - Sprint reports and team documentation
+
+   **Work Management:**
+   - **Atlassian Jira** - Work tracking, ticket management, and completed work
+
+   **Browser Automation:**
+   - Browser automation tools (via local-mcp) for systems without APIs:
+     - Culture Amp (feedback and conversation analysis)
+     - BambooHR (time off request approvals)
+     - Slack saved messages page
+
+   **Calendar:**
+   - **Google Calendar** - Event management and meeting facilitation tracking
+
 ## Components
 
 ### Local MCP Server
@@ -43,30 +66,6 @@ See the [Local MCP README](local-mcp/README.md) for installation, configuration,
 ### Task Manager
 
 A simple Electron menu bar app for quickly capturing tasks. Tasks are written to `files/tasks/pending.jsonl` format. See [Task Manager README](task-manager/README.md) for setup and usage details.
-
-### External MCP Dependencies
-
-Your AI agent must have access to the following external MCP servers (read/search access sufficient, write not required):
-
-**Communication & Collaboration:**
-- **Slack** - Team messages, communications, mentions, and saved messages
-- **Gmail** - Email assignments, notifications, and document sharing
-
-**Documentation & Storage:**
-- **Google Drive** - Document storage, reading, and updates
-- **Atlassian Confluence** - Sprint reports and team documentation
-
-**Work Management:**
-- **Atlassian Jira** - Work tracking, ticket management, and completed work
-
-**Browser Automation:**
-- Browser automation tools (via local-mcp) for systems without APIs:
-  - Culture Amp (feedback and conversation analysis)
-  - BambooHR (time off request approvals)
-  - Slack saved messages page
-
-**Calendar:**
-- **Google Calendar** - Event management and meeting facilitation tracking
 
 ## Recipes
 
