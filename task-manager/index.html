@@ -2,12 +2,29 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Task Manager</title>
+  <title>EM Helper</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <!-- Main View -->
   <div class="container" id="main-view">
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+      <button type="button" class="nav-tab active" data-view="tasks" id="nav-tasks">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <rect x="2" y="2" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M2 5H12M5 2V5M9 2V5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span>Tasks</span>
+      </button>
+      <button type="button" class="nav-tab" data-view="recipes" id="nav-recipes">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M7 2L2 5V12C2 12.5523 2.44772 13 3 13H11C11.5523 13 12 12.5523 12 12V5L7 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M7 2V13M2 5H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span>Recipes</span>
+      </button>
+    </div>
     <form id="task-form">
       <div class="task-input-wrapper">
         <input
@@ -48,8 +65,47 @@
       <div id="tasks-list" class="tasks-list">
         <!-- Tasks will be rendered here -->
       </div>
+    </div>
+  </div>
+
+  <!-- Recipes View -->
+  <div class="container" id="recipes-view" style="display: none;">
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+      <button type="button" class="nav-tab" data-view="tasks" id="nav-tasks-recipes">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <rect x="2" y="2" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M2 5H12M5 2V5M9 2V5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span>Tasks</span>
+      </button>
+      <button type="button" class="nav-tab active" data-view="recipes" id="nav-recipes-recipes">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M7 2L2 5V12C2 12.5523 2.44772 13 3 13H11C11.5523 13 12 12.5523 12 12V5L7 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M7 2V13M2 5H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <span>Recipes</span>
+      </button>
+    </div>
+
+    <div class="recipes-section">
+      <div class="recipes-header">
+        <h3>Recipes</h3>
+        <div class="header-actions">
+          <button type="button" class="refresh-btn" id="refresh-recipes" title="Refresh">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M11.5 2.5C10.5 1.5 9.1 1 7.5 1C4.5 1 2 3.5 2 6.5M2.5 11.5C3.5 12.5 4.9 13 6.5 13C9.5 13 12 10.5 12 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M2 2.5L2 5.5L5 5.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 11.5L12 8.5L9 8.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <div id="recipes-list" class="recipes-list">
+        <!-- Recipes will be rendered here -->
       </div>
     </div>
+  </div>
 
   <!-- Settings View -->
   <div class="container" id="settings-view" style="display: none;">

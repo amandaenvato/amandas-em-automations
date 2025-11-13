@@ -244,16 +244,17 @@ function loadTaskIntoEditForm(task) {
 }
 
 function goBack() {
-  // Hide edit view, show main view
+  // Hide edit view, show main view (tasks tab)
   document.getElementById('edit-view').style.display = 'none';
-  document.getElementById('main-view').style.display = 'flex';
+  switchView('tasks');
   editingTaskId = null;
   currentTask = null;
 }
 
 function showSettings() {
-  // Hide main view, show settings view
+  // Hide all views, show settings view
   document.getElementById('main-view').style.display = 'none';
+  document.getElementById('recipes-view').style.display = 'none';
   document.getElementById('edit-view').style.display = 'none';
   document.getElementById('settings-view').style.display = 'flex';
 
@@ -262,9 +263,9 @@ function showSettings() {
 }
 
 function goBackFromSettings() {
-  // Hide settings view, show main view
+  // Hide settings view, show main view (tasks tab)
   document.getElementById('settings-view').style.display = 'none';
-  document.getElementById('main-view').style.display = 'flex';
+  switchView('tasks');
 }
 
 async function loadAutoLaunchState() {
@@ -488,11 +489,11 @@ function showStatus(message, type = '') {
   status.textContent = message;
   status.className = 'status ' + type;
 
-  if (type === 'success') {
+  if (type === 'success' || type === 'info') {
     setTimeout(() => {
       status.textContent = '';
       status.className = 'status';
-    }, 2000);
+    }, type === 'info' ? 3000 : 2000);
   }
 }
 
@@ -506,4 +507,157 @@ loadTasks();
 
 // Focus input when window opens
 taskInput.focus();
+
+// ===== RECIPES FUNCTIONALITY =====
+
+const recipesList = document.getElementById('recipes-list');
+const refreshRecipesBtn = document.getElementById('refresh-recipes');
+
+// Navigation between views
+function switchView(view) {
+  const mainView = document.getElementById('main-view');
+  const recipesView = document.getElementById('recipes-view');
+  const settingsView = document.getElementById('settings-view');
+  const editView = document.getElementById('edit-view');
+
+  // Hide all views
+  mainView.style.display = 'none';
+  recipesView.style.display = 'none';
+  settingsView.style.display = 'none';
+  editView.style.display = 'none';
+
+  // Update tab states
+  document.querySelectorAll('.nav-tab').forEach(tab => {
+    tab.classList.remove('active');
+  });
+
+  // Show selected view and update tabs
+  if (view === 'tasks') {
+    mainView.style.display = 'flex';
+    document.getElementById('nav-tasks')?.classList.add('active');
+    document.getElementById('nav-tasks-recipes')?.classList.add('active');
+    taskInput.focus();
+  } else if (view === 'recipes') {
+    recipesView.style.display = 'flex';
+    document.getElementById('nav-recipes')?.classList.add('active');
+    document.getElementById('nav-recipes-recipes')?.classList.add('active');
+    loadRecipes();
+  }
+}
+
+// Set up navigation tab handlers
+document.querySelectorAll('.nav-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const view = tab.dataset.view;
+    switchView(view);
+  });
+});
+
+// Load and render recipes
+async function loadRecipes() {
+  try {
+    const recipes = await ipcRenderer.invoke('scan-recipes');
+    renderRecipes(recipes);
+  } catch (error) {
+    console.error('Error loading recipes:', error);
+    recipesList.innerHTML = '<div class="empty-state">Error loading recipes</div>';
+  }
+}
+
+function renderRecipes(recipes) {
+  if (recipes.length === 0) {
+    recipesList.innerHTML = '<div class="empty-state">No recipes found</div>';
+    return;
+  }
+
+  recipesList.innerHTML = '';
+
+  // Group recipes by category (directory)
+  const grouped = {};
+  recipes.forEach(recipe => {
+    const parts = recipe.path.split('/');
+    const category = parts.length > 2 ? parts[1] : 'Other';
+    if (!grouped[category]) {
+      grouped[category] = [];
+    }
+    grouped[category].push(recipe);
+  });
+
+  // Render grouped recipes
+  Object.keys(grouped).sort().forEach(category => {
+    const categoryDiv = document.createElement('div');
+    categoryDiv.className = 'recipe-category';
+
+    const categoryTitle = document.createElement('div');
+    categoryTitle.className = 'recipe-category-title';
+    categoryTitle.textContent = category.split('-').map(word =>
+      word.charAt(0).toUpperCase() + word.slice(1)
+    ).join(' ');
+    categoryDiv.appendChild(categoryTitle);
+
+    const categoryList = document.createElement('div');
+    categoryList.className = 'recipe-category-list';
+
+    grouped[category].forEach(recipe => {
+      categoryList.appendChild(createRecipeButton(recipe));
+    });
+
+    categoryDiv.appendChild(categoryList);
+    recipesList.appendChild(categoryDiv);
+  });
+}
+
+function createRecipeButton(recipe) {
+  const button = document.createElement('button');
+  button.className = 'recipe-button';
+  button.type = 'button';
+
+  const icon = document.createElement('div');
+  icon.className = 'recipe-icon';
+  icon.innerHTML = `
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M8 2L3 5V13C3 13.5523 3.44772 14 4 14H12C12.5523 14 13 13.5523 13 13V5L8 2Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M8 2V14M3 5H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+  `;
+
+  const label = document.createElement('span');
+  label.className = 'recipe-label';
+  label.textContent = recipe.displayName;
+
+  button.appendChild(icon);
+  button.appendChild(label);
+
+  button.addEventListener('click', async () => {
+    await runRecipe(recipe);
+  });
+
+  return button;
+}
+
+async function runRecipe(recipe) {
+  try {
+    showStatus(`Running ${recipe.displayName}...`, 'info');
+
+    const result = await ipcRenderer.invoke('run-recipe', recipe.path);
+
+    if (result.success) {
+      showStatus(`${recipe.displayName} started successfully!`, 'success');
+      // Close window after a short delay
+      setTimeout(() => {
+        ipcRenderer.send('close-window');
+      }, 1500);
+    } else {
+      showStatus(`Error: ${result.error}`, 'error');
+    }
+  } catch (error) {
+    console.error('Error running recipe:', error);
+    showStatus(`Error running recipe: ${error.message || error.error || 'Unknown error'}`, 'error');
+  }
+}
+
+// Refresh recipes button
+refreshRecipesBtn.addEventListener('click', () => {
+  loadRecipes();
+});
 
