@@ -5,7 +5,7 @@ Generate a new feedback entry by synthesizing information from collected analysi
 
 ## Input Files
 
-Read all files from the most recent date-stamped directory in the `feedback/` folder (e.g., `feedback/27-10-2025/`):
+Read all files from the most recent date-stamped directory in `files/output/` matching `feedback-*` (e.g., `files/output/feedback-27-10-2025/`):
 
 ### Required Files for Each Team Member:
 - `current-doc.md` - Current state of the feedback document
@@ -126,12 +126,12 @@ Generate a new entry section in this exact format:
 
 ## Instructions
 
-1. Identify the most recent `feedback/dd-mm-yyyy/` directory
+1. Identify the most recent `files/output/feedback-dd-mm-yyyy/` directory
 2. Read all the analysis files in that directory
 3. Read `current-doc.md` to understand previous context
 4. For each team member, synthesize their information across all sources
 5. Generate the new entry in the exact format shown above
-6. Save the output as `feedback/dd-mm-yyyy/OUTPUT.md` (using the same date as the source directory)
+6. Save the output as `files/output/feedback-dd-mm-yyyy/OUTPUT.md` (using the same date as the source directory)
 7. Include ONLY the new entry section (the date header and content)
 
 ## Synthesis Guidelines
@@ -185,7 +185,7 @@ Make it:
 
 ## Expected Output
 
-- File: `feedback/dd-mm-yyyy/OUTPUT.md` (where dd-mm-yyyy matches the source directory)
+- File: `files/output/feedback-dd-mm-yyyy/OUTPUT.md` (where dd-mm-yyyy matches the source directory)
 - Format: Matches the entry structure from current-doc.md
 - Content: New entry for today's date with synthesized information for all 5 team members
 - Sections: Complete for Matt, Ana, Niko, Ai, and Shannon

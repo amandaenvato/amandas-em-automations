@@ -14,7 +14,7 @@ If for whatever reason the task cannot be completed, explain the issue and ask i
 
 ## Output Structure
 
-All output goes into `communication-log/dd-mm-yyyy/`:
+All output goes into `files/output/communication-log-dd-mm-yyyy/`:
 - `current-communication-log.md` - Current state from Google Drive
 - `slack-communications.md` - Collected Slack communications
 - `OUTPUT.md` - **Final output**: New table rows ready to append
@@ -33,7 +33,7 @@ All output goes into `communication-log/dd-mm-yyyy/`:
    - What counts as substantive stakeholder communication
    - Communication channels and their purposes
    - Escalation patterns and risk signals
-2. **Read the `recipes-config/people-info.md` file** to get information about the subject person (Jonathan Williams).
+2. **Read the `files/recipe-config/people-info.md` file** to get information about the subject person (Jonathan Williams).
 
 ## Step 1: Read Current Communication Log
 
@@ -50,7 +50,7 @@ Read the existing Communication Log table from Google Drive to determine:
 3. Extract the table and convert to markdown
 4. **Identify the date of the most recent entry** - this sets your collection period
 5. **Extract all unique channels** from the table to identify key communication channels
-6. Save to `communication-log/dd-mm-yyyy/current-communication-log.md`
+6. Save to `files/output/communication-log-dd-mm-yyyy/current-communication-log.md`
 
 ### Expected Output
 Save the current Communication Log table as a markdown file. The file should contain:
@@ -87,7 +87,7 @@ After the table, add a section listing all unique channels found:
 - The last entry in the table determines how far back to search for new communications
 - The list of channels will guide where to search for communications
 
-**Save as**: `communication-log/dd-mm-yyyy/current-communication-log.md`
+**Save as**: `files/output/communication-log-dd-mm-yyyy/current-communication-log.md`
 
 ## Step 2: Collect Slack Communications
 
@@ -101,7 +101,7 @@ Search for Slack messages from the subject person across key channels and organi
    - What counts as substantive stakeholder communication vs casual chat
    - Key channels and their purposes
    - Escalation patterns and risk signals to highlight
-2. **Read the `recipes-config/people-info.md` file** to get information about the subject person (identified in the "Subject Person" section).
+2. **Read the `files/recipe-config/people-info.md` file** to get information about the subject person (identified in the "Subject Person" section).
 
 ### Instructions
 1. Search for messages since the most recent entry in the current Communication Log (typically last 7 days)
@@ -112,7 +112,7 @@ Search for Slack messages from the subject person across key channels and organi
 ### Process
 - First, read `current-communication-log.md` to identify the key channels from the "Key Channels Identified" section
 - Use those channels to guide your Slack search
-- Use Slack MCP tools to search for messages from the subject person (get their details from `recipes-config/people-info.md`)
+- Use Slack MCP tools to search for messages from the subject person (get their details from `files/recipe-config/people-info.md`)
 - Search across all of Slack for most recent messages
 - Additionally, search specifically in the channels identified from the Communication Log
 
@@ -158,7 +158,7 @@ You can use GitHub tools to verify PR links mentioned in Slack messages:
 
 Organize all communications by stakeholder group with full details.
 
-**Save as**: `communication-log/dd-mm-yyyy/slack-communications.md`
+**Save as**: `files/output/communication-log-dd-mm-yyyy/slack-communications.md`
 
 ### File Structure
 
@@ -202,7 +202,7 @@ Combines collected communication data into new table rows ready to append to the
 
 ### Input Files
 
-Read from the most recent `communication-log/dd-mm-yyyy/` directory:
+Read from the most recent `files/output/communication-log-dd-mm-yyyy/` directory:
 
 - `current-communication-log.md` - Existing log entries (for format and duplicate checking)
 - `slack-communications.md` - Collected Slack communications
@@ -225,7 +225,7 @@ Create new Communication Log entries that:
 
 ### Output
 
-**Save as**: `communication-log/dd-mm-yyyy/OUTPUT.md`
+**Save as**: `files/output/communication-log-dd-mm-yyyy/OUTPUT.md`
 
 ### Example Output Format
 

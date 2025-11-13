@@ -38,14 +38,14 @@ Based on the `#shoutouts` channel style:
 
 ## Output Structure
 
-All output goes into `shoutouts/dd-mm-yyyy/`:
+All output goes into `files/output/shoutouts-dd-mm-yyyy/`:
 - `OUTPUT.md` - **Final output**: 2 shoutouts ready to post in the `#shoutouts` channel
 
 ## Step 1: Review Recent Feedback
 
 ### Instructions
 
-1. Find the most recent date-stamped directory in `feedback/` (e.g., `feedback/03-11-2025/`)
+1. Find the most recent date-stamped directory in `files/output/` matching `feedback-*` (e.g., `files/output/feedback-03-11-2025/`)
 2. Read the `OUTPUT.md` file from that directory
 3. Review the "Feedback ideas" sections for each team member
 4. Look for achievements that would make good shoutouts:
@@ -141,7 +141,7 @@ Before finalizing, ensure each shoutout:
 
 ## Output
 
-**Save as**: `shoutouts/dd-mm-yyyy/OUTPUT.md`
+**Save as**: `files/output/shoutouts-dd-mm-yyyy/OUTPUT.md`
 
 Provide 2 shoutouts ready to post in the `#shoutouts` channel, formatted as shown in the examples above.
 

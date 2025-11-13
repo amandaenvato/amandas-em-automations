@@ -15,7 +15,7 @@ If for whatever reason the task cannot be completed, explain the issue and ask i
 
 ## Output Structure
 
-All output goes into `feedback/dd-mm-yyyy/`:
+All output goes into `files/output/feedback-dd-mm-yyyy/`:
 - `current-doc.md` - Current feedback document from Google Drive
 - `slack-{firstname}.md` - Slack activity analysis for each team member (5 files)
 - `jira-{firstname}.md` - Jira work analysis for each team member (5 files)
@@ -35,7 +35,7 @@ All output goes into `feedback/dd-mm-yyyy/`:
    - What types of contributions matter most
    - Communication patterns and collaboration indicators
    - Performance indicators and growth signals
-2. **Read the `recipes-config/people-info.md` file** to get information about:
+2. **Read the `files/recipe-config/people-info.md` file** to get information about:
 - Manager information (Jonathan Williams)
 - Team member details (Matt, Ana, Ai, Niko, Shannon) including:
   - Email addresses
@@ -49,8 +49,8 @@ All output goes into `feedback/dd-mm-yyyy/`:
 Copy the current feedback document from the most recent run and update it to match the Google Drive version.
 
 ### Instructions
-1. Find the most recent date-stamped directory in `feedback/` (e.g., `feedback/03-11-2025/`)
-2. Copy `current-doc.md` from that directory to `feedback/dd-mm-yyyy/current-doc.md`
+1. Find the most recent date-stamped directory in `files/output/` matching `feedback-*` (e.g., `files/output/feedback-03-11-2025/`)
+2. Copy `current-doc.md` from that directory to `files/output/feedback-dd-mm-yyyy/current-doc.md`
 3. Read the Google Drive document with ID `1JRQS1rBc7XmNJkt28ZvKFB4oIY239vyv5HaOaGwjhiY` (document named "Feedback To Reports")
 4. Update the copied file to match the Google Drive version (typically just the most recent entry section needs updating)
 
@@ -61,7 +61,7 @@ Copy the current feedback document from the most recent run and update it to mat
   - If the Google Drive tool responds with a message containing "Large output has been written to:" followed by a file path (e.g., "Large output has been written to: /Users/jonathanwilliams/.cursor/projects/.../file.txt (55.9 KB, 871 lines)")
   - **DO NOT recreate the file** - instead, extract the file path from the message and simply copy it using:
     ```bash
-    cp /extracted/path/to/file.txt feedback/dd-mm-yyyy/current-doc.md
+    cp /extracted/path/to/file.txt files/output/feedback-dd-mm-yyyy/current-doc.md
     ```
   - Extract the full file path from the message (everything between "Large output has been written to: " and the opening parenthesis)
   - This is much more efficient than recreating large files and avoids unnecessary processing
@@ -70,7 +70,7 @@ Copy the current feedback document from the most recent run and update it to mat
 - Note the date of the last feedback entry for each person
 
 ### Expected Output
-- File: `feedback/dd-mm-yyyy/current-doc.md`
+- File: `files/output/feedback-dd-mm-yyyy/current-doc.md`
 - Contains: The entire current state of the feedback document, updated to match Google Drive
 
 ## Step 2: Collect Slack Activity
@@ -85,7 +85,7 @@ Generate individual Slack activity reports for each team member.
    - Team health signals and engagement patterns
    - What types of contributions demonstrate value
    - Channels where meaningful activity occurs
-2. **Read the `recipes-config/people-info.md` file** to get information about all team members.
+2. **Read the `files/recipe-config/people-info.md` file** to get information about all team members.
 
 ### Instructions
 For each team member:
@@ -105,7 +105,7 @@ For each team member:
   - Any notable achievements or concerns
 
 ### Output Format
-For each person, create `feedback/dd-mm-yyyy/slack-{firstname}.md` with:
+For each person, create `files/output/feedback-dd-mm-yyyy/slack-{firstname}.md` with:
 - Summary of activity
 - Key messages and contributions
 - Communication patterns
@@ -113,11 +113,11 @@ For each person, create `feedback/dd-mm-yyyy/slack-{firstname}.md` with:
 - Any concerns or areas for improvement
 
 ### Expected Files
-- `feedback/dd-mm-yyyy/slack-matt.md`
-- `feedback/dd-mm-yyyy/slack-ana.md`
-- `feedback/dd-mm-yyyy/slack-ai.md`
-- `feedback/dd-mm-yyyy/slack-niko.md`
-- `feedback/dd-mm-yyyy/slack-shannon.md`
+- `files/output/feedback-dd-mm-yyyy/slack-matt.md`
+- `files/output/feedback-dd-mm-yyyy/slack-ana.md`
+- `files/output/feedback-dd-mm-yyyy/slack-ai.md`
+- `files/output/feedback-dd-mm-yyyy/slack-niko.md`
+- `files/output/feedback-dd-mm-yyyy/slack-shannon.md`
 
 ## Step 3: Collect Jira Work Activity
 
@@ -131,7 +131,7 @@ Generate individual Jira work activity reports for each team member.
    - Types of work that demonstrate impact and value
    - Key systems and their business importance
    - Compliance and SOX work that requires recognition
-2. **Read the `recipes-config/people-info.md` file** to get Jira account IDs and email addresses for all team members.
+2. **Read the `files/recipe-config/people-info.md` file** to get Jira account IDs and email addresses for all team members.
 
 ### Instructions
 For each team member:
@@ -173,7 +173,7 @@ You can use GitHub tools to find pull requests related to completed Jira tickets
 - Search for PRs by author if you know their GitHub username
 
 ### Output Format
-For each person, create `feedback/dd-mm-yyyy/jira-{firstname}.md` with:
+For each person, create `files/output/feedback-dd-mm-yyyy/jira-{firstname}.md` with:
 - Summary of completed work
 - List of key issues/tickets completed
 - Analysis of work patterns
@@ -182,11 +182,11 @@ For each person, create `feedback/dd-mm-yyyy/jira-{firstname}.md` with:
 - Notable achievements
 
 ### Expected Files
-- `feedback/dd-mm-yyyy/jira-matt.md`
-- `feedback/dd-mm-yyyy/jira-ana.md`
-- `feedback/dd-mm-yyyy/jira-ai.md`
-- `feedback/dd-mm-yyyy/jira-niko.md`
-- `feedback/dd-mm-yyyy/jira-shannon.md`
+- `files/output/feedback-dd-mm-yyyy/jira-matt.md`
+- `files/output/feedback-dd-mm-yyyy/jira-ana.md`
+- `files/output/feedback-dd-mm-yyyy/jira-ai.md`
+- `files/output/feedback-dd-mm-yyyy/jira-niko.md`
+- `files/output/feedback-dd-mm-yyyy/jira-shannon.md`
 
 ## Step 4: Collect Culture Amp 1-on-1 Data
 
@@ -194,7 +194,7 @@ For each person, create `feedback/dd-mm-yyyy/jira-{firstname}.md` with:
 Generate individual Culture Amp 1-on-1 conversation reports for each team member using the `cultureamp_get_conversation` MCP tool.
 
 ### Important: Read People Information First
-**Before starting**, read the `recipes-config/people-info.md` file to get Culture Amp conversation IDs and email addresses for all team members.
+**Before starting**, read the `files/recipe-config/people-info.md` file to get Culture Amp conversation IDs and email addresses for all team members.
 
 ### Instructions
 For each team member:
@@ -238,7 +238,7 @@ extract_cookies({
 Call the `cultureamp_get_conversation` tool for each team member with the extracted tokens:
 ```javascript
 cultureamp_get_conversation({
-  conversation_id: "0190791e-69f0-7057-939d-8bd02ca7b7b3", // Extract from recipes-config/people-info.md URL
+  conversation_id: "0190791e-69f0-7057-939d-8bd02ca7b7b3", // Extract from files/recipe-config/people-info.md URL
   token: "eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCIsImtpZCI6InY3WF93UUxKTDNPSDBHRC1WQkhMTkctZGlHYyJ9...", // From extract_cookies
   refresh_token: "h666XzNjOHS55nsWlzim5iz7p3QGiOfd-iUU23LsxSbeJGwTXvn6btXOGJV_zbJ-" // From extract_cookies
 })
@@ -269,7 +269,7 @@ The tool returns a formatted markdown summary with:
 - Overall engagement level and patterns (from check-ins and response frequency)
 
 ### Output Format
-For each person, create `feedback/dd-mm-yyyy/culture-{firstname}.md` with:
+For each person, create `files/output/feedback-dd-mm-yyyy/culture-{firstname}.md` with:
 
 ### Conversation Summary
 - Recent conversation dates
@@ -293,19 +293,19 @@ For each person, create `feedback/dd-mm-yyyy/culture-{firstname}.md` with:
 - Growth areas
 
 ### Expected Files
-- `feedback/dd-mm-yyyy/culture-matt.md`
-- `feedback/dd-mm-yyyy/culture-ana.md`
-- `feedback/dd-mm-yyyy/culture-ai.md`
-- `feedback/dd-mm-yyyy/culture-niko.md`
-- `feedback/dd-mm-yyyy/culture-shannon.md`
+- `files/output/feedback-dd-mm-yyyy/culture-matt.md`
+- `files/output/feedback-dd-mm-yyyy/culture-ana.md`
+- `files/output/feedback-dd-mm-yyyy/culture-ai.md`
+- `files/output/feedback-dd-mm-yyyy/culture-niko.md`
+- `files/output/feedback-dd-mm-yyyy/culture-shannon.md`
 
 ## How It Works
 
 ### Step 1: Get Current Feedback Document
 Copy the most recent `current-doc.md` from the previous run and update it to match Google Drive:
-- Copy from the most recent date-stamped directory in `feedback/`
+- Copy from the most recent date-stamped directory in `files/output/` matching `feedback-*`
 - Read the Google Drive document to get the latest version
-- **If the tool writes to a temp file** (response contains "Large output has been written to:"), extract the file path from the message and copy it: `cp /extracted/path/to/file.txt feedback/dd-mm-yyyy/current-doc.md` (extract path between "Large output has been written to: " and the opening parenthesis)
+- **If the tool writes to a temp file** (response contains "Large output has been written to:"), extract the file path from the message and copy it: `cp /extracted/path/to/file.txt files/output/feedback-dd-mm-yyyy/current-doc.md` (extract path between "Large output has been written to: " and the opening parenthesis)
 - If content is returned directly, update the copied file to match (typically only the most recent entry section needs updating)
 - Determine the last feedback entry date for each team member
 - Note the format and structure of existing entries
@@ -342,7 +342,7 @@ Use the `cultureamp_get_conversation` MCP tool to fetch conversation data for ea
   - `url: "https://envato.cultureamp.com/app/home"`
   - `cookieNames: ["cultureamp.production-us.token", "cultureamp.production-us.refresh-token"]`
   - `waitForIndicators: ["JW"]`
-- Extract conversation IDs from `recipes-config/people-info.md` URLs
+- Extract conversation IDs from `files/recipe-config/people-info.md` URLs
 - Call `cultureamp_get_conversation` with each conversation ID and the extracted tokens
 - Extract and analyze:
   - Conversation topics discussed (from completed topics)

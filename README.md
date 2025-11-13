@@ -22,7 +22,7 @@ This repository contains instruction recipes for AI agents (like Claude Code, Cu
    - Update the `local-mcp` command path to match your repository location
 
 2. **Configure Team Information:**
-   - Copy `recipes-config/people-info.example.md` to `recipes-config/people-info.md`
+   - Copy `files/recipe-config/people-info.example.md` to `files/recipe-config/people-info.md`
    - Fill in your team member information and personal details
    - This configuration is required for recipes that reference team members (Feedback Collection, Shoutouts, etc.)
 
@@ -42,7 +42,7 @@ See the [Local MCP README](local-mcp/README.md) for installation, configuration,
 
 ### Task Manager
 
-A simple Electron menu bar app for quickly capturing tasks. Tasks are written to `tasks.jsonl` format. See [Task Manager README](task-manager/README.md) for setup and usage details.
+A simple Electron menu bar app for quickly capturing tasks. Tasks are written to `files/tasks/pending.jsonl` format. See [Task Manager README](task-manager/README.md) for setup and usage details.
 
 ### External MCP Dependencies
 
@@ -82,7 +82,7 @@ Automates team feedback collection from Slack, Jira, and Culture Amp for 1-on-1 
 2. Collects team member data from Slack, Jira, and Culture Amp
 3. Synthesizes comprehensive feedback entry ready to append
 
-**Output:** `recipes/feedback/dd-mm-yyyy/`
+**Output:** `files/output/feedback-dd-mm-yyyy/`
 - `current-doc.md` - Current state from Google Drive
 - `slack-[name].md` - Collected Slack activity per team member
 - `jira-[name].md` - Completed work per team member
@@ -100,7 +100,7 @@ Automates the Communication Log section of the Stakeholder Communication Plan do
 2. Collects Slack communications for the relevant period
 3. Synthesizes new log entries ready to append
 
-**Output:** `recipes/communication-log/dd-mm-yyyy/`
+**Output:** `files/output/communication-log-dd-mm-yyyy/`
 - `current-communication-log.md` - Current state from Google Drive
 - `slack-communications.md` - Collected communications
 - `OUTPUT.md` - **Final output**: New table rows ready to append
@@ -118,7 +118,7 @@ Enhances draft sprint reports by gathering context and creating more executive-f
 3. Collects relevant Slack discussions from the sprint period
 4. Synthesizes an improved draft with better context and executive-friendly language
 
-**Output:** `recipes/sprint-report/dd-mm-yyyy/`
+**Output:** `files/output/sprint-report-dd-mm-yyyy/`
 - `draft-report.md` - Current draft from Confluence
 - `draft-analysis.md` - Analysis of the existing draft
 - `jira-work.md` - Detailed analysis of completed work items
@@ -137,14 +137,14 @@ Performs comprehensive daily status checks across multiple systems and provides 
 2. Searches Jira for active tickets assigned to you (excluding Done/Closed/Resolved statuses)
 3. Checks for pending AWS access request notifications from the TEAM bot
 4. Checks BambooHR inbox for pending time off approval requests
-5. Reads tasks from `task-manager/tasks.jsonl` and organizes them by category
+5. Reads tasks from `files/tasks/pending.jsonl` and organizes them by category
 6. Checks Slack saved messages for action items
 7. Searches Slack mentions for unaddressed action items
 8. Checks additional Slack pages (AWS requests channel, Activity, DMs) for concerning messages
 9. Checks Google Calendar for facilitate meetings scheduled today
 10. Provides a comprehensive summary with direct links and status counts
 
-**Output:** `recipes/daily-checkup/dd-mm-yyyy/`
+**Output:** `files/output/daily-checkup-dd-mm-yyyy/`
 - `OUTPUT.md` - **Final output**: Comprehensive daily status report
 - Direct conversation summary with:
   - Author helpline status (unaddressed issues count and details)
@@ -187,7 +187,7 @@ Identifies shoutout opportunities from recent feedback, formatted for the #shout
 2. Identifies 2 shoutout opportunities based on achievements and impact
 3. Formats shoutouts following Leadership Essentials framework and Slack channel style
 
-**Output:** `recipes/shoutouts/dd-mm-yyyy/`
+**Output:** `files/output/shoutouts-dd-mm-yyyy/`
 - `OUTPUT.md` - **Final output**: 2 formatted shoutouts ready to post in the #shoutouts channel
 
 ### 7. Cursor Agent Recipe

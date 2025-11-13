@@ -14,7 +14,7 @@ This context will help you prioritize issues and identify what needs immediate a
 
 ## Output Structure
 
-1. **Create a dated directory**: `recipes/daily-checkup/dd-mm-yyyy/` (e.g., `recipes/daily-checkup/15-01-2025/`)
+1. **Create a dated directory**: `files/output/daily-checkup-dd-mm-yyyy/` (e.g., `files/output/daily-checkup-15-01-2025/`)
 2. **Create OUTPUT.md** in that directory with the full comprehensive analysis (using the format below)
 3. **Respond in conversation** with ONLY the "Action Required" section formatted as markdown with working links
 
@@ -175,9 +175,9 @@ Do not create any documents - just provide the information directly in the conve
 
 ### Instructions
 
-1. Read the tasks from `task-manager/tasks.jsonl` file
+1. Read the tasks from `files/tasks/pending.jsonl` file
 2. Parse the JSONL format (each line is a JSON object)
-3. **Only include active tasks** - completed tasks are in `completed-tasks.jsonl` and should be ignored
+3. **Only include active tasks** - completed tasks are in `completed.jsonl` and should be ignored (they are not in pending.jsonl)
 4. Analyze the tasks and group them into logical categories such as:
    - Team Management & People Development
    - On-Call & Operations
@@ -197,7 +197,7 @@ Do not create any documents - just provide the information directly in the conve
 
 ### Important Notes
 
-- Read tasks directly from `task-manager/tasks.jsonl` file
+- Read tasks directly from `files/tasks/pending.jsonl` file
 - Focus only on active tasks - completed tasks are in a separate file
 - Group tasks logically to make the summary more actionable
 - Highlight tasks that need immediate attention (due soon, overdue, or stale)
@@ -433,8 +433,8 @@ Do not create any documents - just provide the information directly in the conve
 
 After completing all seven checks:
 
-1. **Create the dated directory**: `recipes/daily-checkup/dd-mm-yyyy/` (format: DD-MM-YYYY, e.g., `15-01-2025`)
-2. **Write the full comprehensive summary** to `recipes/daily-checkup/dd-mm-yyyy/OUTPUT.md` using the format below
+1. **Create the dated directory**: `files/output/daily-checkup-dd-mm-yyyy/` (format: DD-MM-YYYY, e.g., `15-01-2025`)
+2. **Write the full comprehensive summary** to `files/output/daily-checkup-dd-mm-yyyy/OUTPUT.md` using the format below
 3. **Respond in conversation** with ONLY the "Action Required" section (see format at the end) formatted as markdown with working links
 
 ---
@@ -621,7 +621,7 @@ After writing the full OUTPUT.md file, respond in the conversation with ONLY thi
 **Quick Links:**
 - [AWS Access Request Channel](https://app.slack.com/client/E04LQRTKFNH/D07N5KT40MT)
 - [Author Helpline](https://envato.slack.com/archives/C02175EGYP2)
-- [Tasks Manager](file:///Users/jonathanwilliams/Development/envato/em-automations/task-manager/tasks.jsonl)
+- [Tasks Manager](file:///Users/jonathanwilliams/Development/envato/em-automations/files/tasks/)
 ```
 
 **Important**:

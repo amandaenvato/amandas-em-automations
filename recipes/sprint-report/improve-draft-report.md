@@ -12,7 +12,7 @@ This prompt orchestrates gathering context about a draft sprint report and rewri
 **Step 1: Read the draft from Confluence**
 - Use `confluence_get_page` with the extracted page ID
 - Convert to markdown format
-- Save as `sprint-report/dd-mm-yyyy/draft-report.md`
+- Save as `files/output/sprint-report-dd-mm-yyyy/draft-report.md`
 
 **Steps 2-5: Execute the workflow**
 
@@ -39,7 +39,7 @@ If you hit an error:
 
 ## Output Structure
 
-All output goes into `sprint-report/dd-mm-yyyy/`:
+All output goes into `files/output/sprint-report-dd-mm-yyyy/`:
 - `draft-report.md` - Current draft from Confluence
 - `draft-analysis.md` - Analysis of the draft
 - `jira-work.md` - Detailed analysis of completed work items
@@ -128,7 +128,7 @@ You can use GitHub tools to verify PR links mentioned in the draft:
 
 ### Output Format
 
-Save as `sprint-report/dd-mm-yyyy/draft-analysis.md`:
+Save as `files/output/sprint-report-dd-mm-yyyy/draft-analysis.md`:
 
 ```markdown
 # Draft Sprint Report Analysis
@@ -162,7 +162,7 @@ Save as `sprint-report/dd-mm-yyyy/draft-analysis.md`:
 
 ### Expected Output
 
-- File: `sprint-report/dd-mm-yyyy/draft-analysis.md`
+- File: `files/output/sprint-report-dd-mm-yyyy/draft-analysis.md`
 - Contains sprint dates and all ticket numbers
 - Identifies improvement opportunities
 - Notes missing context or unclear areas
@@ -181,7 +181,7 @@ Before gathering work details, review the em-knowledgebase to understand:
 Fetch ALL work items from the sprint (committed at start, completed, and not completed) to understand scope, delivery, and scope evolution.
 
 ### Important: Read People Information First
-**Before starting**, read the `recipes-config/people-info.md` file to get information about the Author team.
+**Before starting**, read the `files/recipe-config/people-info.md` file to get information about the Author team.
 
 ### Task
 
@@ -271,7 +271,7 @@ Look for patterns:
 
 ### Output Format
 
-Save as `sprint-report/dd-mm-yyyy/jira-work.md`:
+Save as `files/output/sprint-report-dd-mm-yyyy/jira-work.md`:
 
 ```markdown
 # Sprint Work Analysis - [dates]
@@ -327,7 +327,7 @@ Save as `sprint-report/dd-mm-yyyy/jira-work.md`:
 
 ### Expected Output
 
-- File: `sprint-report/dd-mm-yyyy/jira-work.md`
+- File: `files/output/sprint-report-dd-mm-yyyy/jira-work.md`
 - ALL work items from sprint (completed and not completed)
 - Clear scope evolution narrative
 - Business value for completed work
@@ -454,7 +454,7 @@ You can use GitHub tools to verify PR links mentioned in Slack messages:
 
 ### Output Format
 
-Save as `sprint-report/dd-mm-yyyy/slack-context.md`:
+Save as `files/output/sprint-report-dd-mm-yyyy/slack-context.md`:
 
 ```markdown
 # Slack Context for Sprint [dates]
@@ -493,7 +493,7 @@ Save as `sprint-report/dd-mm-yyyy/slack-context.md`:
 
 ### Expected Output
 
-- File: `sprint-report/dd-mm-yyyy/slack-context.md`
+- File: `files/output/sprint-report-dd-mm-yyyy/slack-context.md`
 - Relevant Slack messages from the sprint period
 - Organized by theme (deployments, blockers, discussions, achievements)
 - Provides context for improving the draft report
@@ -672,7 +672,7 @@ Additional Notes:
 
 ## Output Format
 
-Save as `sprint-report/dd-mm-yyyy/OUTPUT.md`:
+Save as `files/output/sprint-report-dd-mm-yyyy/OUTPUT.md`:
 
 ```markdown
 **Domain: Author**
@@ -733,7 +733,7 @@ Key Metrics:
 
 ## Expected Output
 
-- File: `sprint-report/dd-mm-yyyy/OUTPUT.md` (where dd-mm-yyyy matches the source directory)
+- File: `files/output/sprint-report-dd-mm-yyyy/OUTPUT.md` (where dd-mm-yyyy matches the source directory)
 - Format: Matches the sprint report template from Confluence
 - Content: Improved draft with better context and executive-friendly language
 - Language: Simple, direct, accessible to non-native English speakers

@@ -6,8 +6,8 @@ const form = document.getElementById('task-form');
 const taskInput = document.getElementById('task-input');
 const status = document.getElementById('status');
 
-// Get the tasks file path (in the same directory as this file)
-const tasksFile = path.join(__dirname, 'tasks.jsonl');
+// Get the tasks directory path (relative to this file)
+const tasksDir = '../files/tasks';
 
 // Task list elements
 const tasksList = document.getElementById('tasks-list');
@@ -17,7 +17,7 @@ let editingTaskId = null;
 // Load and render tasks
 async function loadTasks() {
   try {
-    const tasks = taskWriter.readTasks(tasksFile);
+    const tasks = taskWriter.readTasks(tasksDir);
     renderTasks(tasks);
   } catch (error) {
     console.error('Error loading tasks:', error);
@@ -72,7 +72,7 @@ function createTaskElement(task) {
   checkbox.addEventListener('change', async (e) => {
     e.stopPropagation(); // Prevent triggering the item click
     try {
-      await taskWriter.markTaskDone(tasksFile, task._lineNumber, checkbox.checked);
+      await taskWriter.markTaskDone(tasksDir, task._lineNumber, checkbox.checked);
       await loadTasks();
     } catch (error) {
       console.error('Error updating task:', error);
@@ -327,7 +327,7 @@ document.getElementById('edit-form').addEventListener('submit', async (e) => {
       from: fromInput.value || null,
       description: descriptionInput.value.trim() || null
     };
-    await taskWriter.updateTask(tasksFile, currentTask._lineNumber, updates);
+    await taskWriter.updateTask(tasksDir, currentTask._lineNumber, updates);
     goBack();
     await loadTasks();
     showStatus('Task updated', 'success');
@@ -466,7 +466,7 @@ form.addEventListener('submit', async (e) => {
   }
 
   try {
-    await taskWriter.addTask(tasksFile, taskText, {});
+    await taskWriter.addTask(tasksDir, taskText, {});
     showStatus('Task added!', 'success');
 
     // Clear form
