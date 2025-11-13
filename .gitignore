@@ -14,3 +14,6 @@ people-info.md
 scratch/**/*
 
 .cursor/**/*
+
+# Task manager data files
+task-manager/*.jsonl
