@@ -10,6 +10,12 @@ This repository contains instruction recipes for AI agents (like Claude Code, Cu
 
 **How it works:** Simply tell your agent to follow the instructions in a recipe file, and it will execute the workflow, gather necessary data, and produce formatted outputs ready for use.
 
+## Quick Start
+
+1. Copy `recipes-config/people-info.example.md` to `recipes-config/people-info.md`
+2. Fill in your team member information and personal details
+3. This configuration is required for recipes that reference team members (Feedback Collection, Shoutouts, etc.)
+
 ## Components
 
 ### Local MCP Server
@@ -23,6 +29,10 @@ This project includes a custom [Local MCP Server](local-mcp/README.md) that prov
 - **Culture Amp** - Conversation and feedback analysis
 
 See the [Local MCP README](local-mcp/README.md) for installation, configuration, and usage details.
+
+### Task Manager
+
+A simple Electron menu bar app for quickly capturing tasks. Tasks are written to `tasks.jsonl` format. See [Task Manager README](task-manager/README.md) for setup and usage details.
 
 ### External MCP Dependencies
 
@@ -153,7 +163,21 @@ Finds pending action items where you've been directly pinged or assigned in Slac
 - Specific action requirements and due dates
 - Additional context for each action
 
-### 6. Cursor Agent Recipe
+### 6. Shoutouts Recipe
+Identifies shoutout opportunities from recent feedback, formatted for the #shoutouts Slack channel.
+
+**How to Use:**
+- Ask your agent to follow the instructions in `recipes/shoutouts/identify-shoutouts.md`
+
+**What the Agent Does:**
+1. Reviews the most recent feedback OUTPUT file
+2. Identifies 2 shoutout opportunities based on achievements and impact
+3. Formats shoutouts following Leadership Essentials framework and Slack channel style
+
+**Output:** `recipes/shoutouts/dd-mm-yyyy/`
+- `OUTPUT.md` - **Final output**: 2 formatted shoutouts ready to post in the #shoutouts channel
+
+### 7. Cursor Agent Recipe
 Identifies Jira tickets suitable for autonomous Cursor agent work and starts agents to complete them.
 
 **How to Use:**
@@ -175,11 +199,26 @@ Identifies Jira tickets suitable for autonomous Cursor agent work and starts age
 - Agent details (ID, status, repository)
 - Next steps for monitoring and review
 
+### 8. Decisions Recipe
+Extracts decisions from DSA project circle meeting notes and records them in the decision log spreadsheet.
+
+**How to Use:**
+- Ask your agent to follow the instructions in `recipes/decisions/record-dsa-decisions.md`
+
+**What the Agent Does:**
+1. Reads DSA project circle meeting notes from Google Drive
+2. Identifies decisions made in recent meetings
+3. Reads the decision log spreadsheet structure
+4. Records decisions with proper IDs, context, and formatting
+
+**Output:** Updates Google Sheets decision log with properly formatted entries including decision IDs, titles, context, rationale, risks, and mitigation strategies.
+
 ## Output Locations
 
 Most recipes create dated directories with collected data and final synthesized outputs:
 - `recipes/feedback/dd-mm-yyyy/` - Analysis files and synthesized feedback entry
 - `recipes/communication-log/dd-mm-yyyy/` - Communication analysis and log entries ready to append
 - `recipes/sprint-report/dd-mm-yyyy/` - Draft analysis and improved sprint report
+- `recipes/shoutouts/dd-mm-yyyy/` - Formatted shoutouts ready to post
 
-**Note:** Some recipes (Daily Checkup, Action Items) provide output directly in the conversation rather than creating files. Others create dated directories with intermediate analysis files and final synthesized outputs.
+**Note:** Some recipes (Daily Checkup, Action Items) provide output directly in the conversation rather than creating files. Others create dated directories with intermediate analysis files and final synthesized outputs. The Decisions Recipe updates Google Sheets directly rather than creating local files.
