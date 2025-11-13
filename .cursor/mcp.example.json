@@ -1,0 +1,80 @@
+{
+  "mcpServers": {
+    "slack-mcp-server": {
+      "command": "npx -y slack-mcp-server@latest --transport stdio",
+      "args": [],
+      "env": {
+        "SLACK_MCP_CUSTOM_TLS": "true",
+        "SLACK_MCP_XOXC_TOKEN": "<REPLACE>",
+        "SLACK_MCP_XOXD_TOKEN": "<REPLACE>",
+        "SLACK_MCP_USER_AGENT": "<REPLACE>",
+        "SLACK_MCP_USERS_CACHE": "<REPLACE>",
+        "SLACK_MCP_CHANNELS_CACHE": "<REPLACE>"
+      }
+    },
+    "gdrive": {
+      "command": "npx -y @isaacphi/mcp-gdrive",
+      "args": [],
+      "env": {
+        "CLIENT_ID": "<REPLACE>",
+        "CLIENT_SECRET": "<REPLACE>",
+        "GDRIVE_CREDS_DIR": "<REPLACE>"
+      }
+    },
+    "google-calendar": {
+      "command": "npx",
+      "args": ["@cocal/google-calendar-mcp"],
+      "env": {
+        "GOOGLE_OAUTH_CREDENTIALS": "<REPLACE>"
+      }
+    },
+    "mcp-atlassian": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "CONFLUENCE_URL",
+        "-e",
+        "CONFLUENCE_USERNAME",
+        "-e",
+        "CONFLUENCE_API_TOKEN",
+        "-e",
+        "JIRA_URL",
+        "-e",
+        "JIRA_USERNAME",
+        "-e",
+        "JIRA_API_TOKEN",
+        "-e",
+        "ENABLED_TOOLS",
+        "ghcr.io/sooperset/mcp-atlassian:latest"
+      ],
+      "env": {
+        "CONFLUENCE_URL": "https://envato.atlassian.net/wiki",
+        "JIRA_URL": "https://envato.atlassian.net",
+        "ENABLED_TOOLS": "jira_search,jira_get_all_projects,jira_get_issue,jira_get_project,jira_get_agile_boards,jira_get_sprints_from_board,jira_get_sprint_issues,jira_get_user_profile,confluence_search,confluence_get_page,jira_update_issue,jira_add_comment",
+        "CONFLUENCE_USERNAME": "<REPLACE>",
+        "CONFLUENCE_API_TOKEN": "<REPLACE>",
+        "JIRA_USERNAME": "<REPLACE>",
+        "JIRA_API_TOKEN": "<REPLACE>"
+      }
+    },
+    "gmail": {
+      "command": "npx",
+      "args": [
+        "@gongrzhe/server-gmail-autoauth-mcp"
+      ]
+    },
+    "local-mcp": {
+      "command": "node",
+      "args": [
+        "/Users/jonathanwilliams/Development/envato/em-automations/local-mcp/index.js"
+      ],
+      "env": {
+        "CURSOR_API_KEY": "<REPLACE>",
+        "OPENAI_API_KEY": "<REPLACE>"
+      }
+    }
+  }
+}
