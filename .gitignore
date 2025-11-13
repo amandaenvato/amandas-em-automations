@@ -12,3 +12,5 @@ people-info.md
 **/.env
 
 scratch/**/*
+
+.cursor/**/*

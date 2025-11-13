@@ -2,7 +2,7 @@
 
 This file contains sensitive personal information. This example file shows the structure needed.
 
-**Instructions:** Copy this file to `recipes/people-info.md` and fill in the actual information for your team members and yourself.
+**Instructions:** Copy this file to `recipes-config/people-info.md` and fill in the actual information for your team members and yourself.
 
 ## Team Members
 
