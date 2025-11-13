@@ -33,10 +33,10 @@ This repository contains instruction recipes for AI agents (like Claude Code, Cu
 This project includes a custom [Local MCP Server](local-mcp/README.md) that provides additional tools beyond standard MCP servers:
 
 - **Cursor Agent API** - Start autonomous Cursor agents to work on GitHub repositories
-- **GitHub CLI** - Search code, PRs, commits, and manage repositories
-- **TickTick** - Task management integration
+- **GitHub CLI** - Execute read-only GitHub CLI commands (repo, PR, code, commit, and issue search)
 - **OpenAI** - Direct API access for additional AI capabilities
-- **Culture Amp** - Conversation and feedback analysis
+- **Browser Automation** - Extract cookies and fetch pages for systems without APIs (Culture Amp, BambooHR, etc.)
+- **Culture Amp** - Conversation and feedback analysis (via browser cookie extraction)
 
 See the [Local MCP README](local-mcp/README.md) for installation, configuration, and usage details.
 
@@ -60,7 +60,7 @@ Your AI agent must have access to the following external MCP servers (read/searc
 - **Atlassian Jira** - Work tracking, ticket management, and completed work
 
 **Browser Automation:**
-- **Playwright** - Browser automation for systems without APIs:
+- Browser automation tools (via local-mcp) for systems without APIs:
   - Culture Amp (feedback and conversation analysis)
   - BambooHR (time off request approvals)
   - Slack saved messages page
@@ -119,6 +119,7 @@ Enhances draft sprint reports by gathering context and creating more executive-f
 4. Synthesizes an improved draft with better context and executive-friendly language
 
 **Output:** `recipes/sprint-report/dd-mm-yyyy/`
+- `draft-report.md` - Current draft from Confluence
 - `draft-analysis.md` - Analysis of the existing draft
 - `jira-work.md` - Detailed analysis of completed work items
 - `slack-context.md` - Relevant Slack discussions from sprint period
@@ -136,23 +137,25 @@ Performs comprehensive daily status checks across multiple systems and provides 
 2. Searches Jira for active tickets assigned to you (excluding Done/Closed/Resolved statuses)
 3. Checks for pending AWS access request notifications from the TEAM bot
 4. Checks BambooHR inbox for pending time off approval requests
-5. Retrieves TickTick pending tasks and organizes them by category
+5. Reads tasks from `task-manager/tasks.jsonl` and organizes them by category
 6. Checks Slack saved messages for action items
 7. Searches Slack mentions for unaddressed action items
 8. Checks additional Slack pages (AWS requests channel, Activity, DMs) for concerning messages
 9. Checks Google Calendar for facilitate meetings scheduled today
 10. Provides a comprehensive summary with direct links and status counts
 
-**Output:** Direct conversation summary with:
-- Author helpline status (unaddressed issues count and details)
-- Jira tickets status (active tickets organized by status)
-- AWS access request status (pending notifications requiring approval)
-- BambooHR time off request status (pending approvals)
-- TickTick tasks summary (organized by category with priorities)
-- Saved Slack messages requiring action
-- Slack mentions and action items status
-- Calendar facilitate meetings for today
-- Overall status summary with action items and priorities
+**Output:** `recipes/daily-checkup/dd-mm-yyyy/`
+- `OUTPUT.md` - **Final output**: Comprehensive daily status report
+- Direct conversation summary with:
+  - Author helpline status (unaddressed issues count and details)
+  - Jira tickets status (active tickets organized by status)
+  - AWS access request status (pending notifications requiring approval)
+  - BambooHR time off request status (pending approvals)
+  - Task Manager tasks summary (organized by category with priorities)
+  - Saved Slack messages requiring action
+  - Slack mentions and action items status
+  - Calendar facilitate meetings for today
+  - Overall status summary with action items and priorities
 
 ### 5. Action Items Recipe
 Finds pending action items where you've been directly pinged or assigned in Slack and emails.
@@ -219,16 +222,9 @@ Extracts decisions from DSA project circle meeting notes and records them in the
 1. Reads DSA project circle meeting notes from Google Drive
 2. Identifies decisions made in recent meetings
 3. Reads the decision log spreadsheet structure
-4. Records decisions with proper IDs, context, and formatting
+4. Formats decisions as table rows ready to be added to the spreadsheet
+5. Creates a Slack message summarizing the decisions
 
-**Output:** Updates Google Sheets decision log with properly formatted entries including decision IDs, titles, context, rationale, risks, and mitigation strategies.
-
-## Output Locations
-
-Most recipes create dated directories with collected data and final synthesized outputs:
-- `recipes/feedback/dd-mm-yyyy/` - Analysis files and synthesized feedback entry
-- `recipes/communication-log/dd-mm-yyyy/` - Communication analysis and log entries ready to append
-- `recipes/sprint-report/dd-mm-yyyy/` - Draft analysis and improved sprint report
-- `recipes/shoutouts/dd-mm-yyyy/` - Formatted shoutouts ready to post
-
-**Note:** Some recipes (Daily Checkup, Action Items) provide output directly in the conversation rather than creating files. Others create dated directories with intermediate analysis files and final synthesized outputs. The Decisions Recipe updates Google Sheets directly rather than creating local files.
+**Output:** Direct conversation output with:
+- Formatted table rows (markdown) ready to be copied into the decision log spreadsheet
+- Slack message ready to post with decision summaries and link to the decision log
