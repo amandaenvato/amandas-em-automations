@@ -12,9 +12,19 @@ This repository contains instruction recipes for AI agents (like Claude Code, Cu
 
 ## Quick Start
 
-1. Copy `recipes-config/people-info.example.md` to `recipes-config/people-info.md`
-2. Fill in your team member information and personal details
-3. This configuration is required for recipes that reference team members (Feedback Collection, Shoutouts, etc.)
+1. **Configure MCP Servers:**
+   - Copy `.cursor/mcp.example.json` to `.cursor/mcp.json`
+   - Fill in all required credentials and tokens for each MCP server:
+     - Slack tokens (XOXC and XOXD)
+     - Google Drive OAuth credentials
+     - Atlassian (Jira/Confluence) API tokens
+     - Cursor API key, OpenAI API key (for local-mcp)
+   - Update the `local-mcp` command path to match your repository location
+
+2. **Configure Team Information:**
+   - Copy `recipes-config/people-info.example.md` to `recipes-config/people-info.md`
+   - Fill in your team member information and personal details
+   - This configuration is required for recipes that reference team members (Feedback Collection, Shoutouts, etc.)
 
 ## Components
 
