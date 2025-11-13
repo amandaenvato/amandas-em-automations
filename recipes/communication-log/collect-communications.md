@@ -33,7 +33,7 @@ All output goes into `communication-log/dd-mm-yyyy/`:
    - What counts as substantive stakeholder communication
    - Communication channels and their purposes
    - Escalation patterns and risk signals
-2. **Read the `recipes/people-info.md` file** to get information about the subject person (Jonathan Williams).
+2. **Read the `recipes-config/people-info.md` file** to get information about the subject person (Jonathan Williams).
 
 ## Step 1: Read Current Communication Log
 
@@ -101,7 +101,7 @@ Search for Slack messages from the subject person across key channels and organi
    - What counts as substantive stakeholder communication vs casual chat
    - Key channels and their purposes
    - Escalation patterns and risk signals to highlight
-2. **Read the `recipes/people-info.md` file** to get information about the subject person (identified in the "Subject Person" section).
+2. **Read the `recipes-config/people-info.md` file** to get information about the subject person (identified in the "Subject Person" section).
 
 ### Instructions
 1. Search for messages since the most recent entry in the current Communication Log (typically last 7 days)
@@ -112,7 +112,7 @@ Search for Slack messages from the subject person across key channels and organi
 ### Process
 - First, read `current-communication-log.md` to identify the key channels from the "Key Channels Identified" section
 - Use those channels to guide your Slack search
-- Use Slack MCP tools to search for messages from the subject person (get their details from `recipes/people-info.md`)
+- Use Slack MCP tools to search for messages from the subject person (get their details from `recipes-config/people-info.md`)
 - Search across all of Slack for most recent messages
 - Additionally, search specifically in the channels identified from the Communication Log
 

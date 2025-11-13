@@ -36,6 +36,11 @@ Based on the `#shoutouts` channel style:
    - End-to-end ownership
 3. **Draft 2 Shoutouts** - Write 2 shoutouts following the format guidelines
 
+## Output Structure
+
+All output goes into `shoutouts/dd-mm-yyyy/`:
+- `OUTPUT.md` - **Final output**: 2 shoutouts ready to post in the `#shoutouts` channel
+
 ## Step 1: Review Recent Feedback
 
 ### Instructions
@@ -136,7 +141,30 @@ Before finalizing, ensure each shoutout:
 
 ## Output
 
+**Save as**: `shoutouts/dd-mm-yyyy/OUTPUT.md`
+
 Provide 2 shoutouts ready to post in the `#shoutouts` channel, formatted as shown in the examples above.
+
+### Output Format
+
+The output file should contain:
+- A header with the date (e.g., `# Shoutouts - Nov 11, 2025`)
+- Two sections, each with a shoutout formatted as shown in the examples
+- Each shoutout should be ready to copy and paste into Slack
+
+### Example Output File Structure
+
+```markdown
+# Shoutouts - Nov 11, 2025
+
+## Shoutout 1
+
+Shoutout to @username for [specific action/achievement]. [Impact description]. [Why it matters/leadership aspect]. :emoji1: :emoji2: :emoji3:
+
+## Shoutout 2
+
+Shoutout to @username for [specific action/achievement]. [Impact description]. [Why it matters/leadership aspect]. :emoji1: :emoji2: :emoji3:
+```
 
 ## Notes
 

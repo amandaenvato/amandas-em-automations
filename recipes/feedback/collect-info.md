@@ -35,7 +35,7 @@ All output goes into `feedback/dd-mm-yyyy/`:
    - What types of contributions matter most
    - Communication patterns and collaboration indicators
    - Performance indicators and growth signals
-2. **Read the `recipes/people-info.md` file** to get information about:
+2. **Read the `recipes-config/people-info.md` file** to get information about:
 - Manager information (Jonathan Williams)
 - Team member details (Matt, Ana, Ai, Niko, Shannon) including:
   - Email addresses
@@ -85,7 +85,7 @@ Generate individual Slack activity reports for each team member.
    - Team health signals and engagement patterns
    - What types of contributions demonstrate value
    - Channels where meaningful activity occurs
-2. **Read the `recipes/people-info.md` file** to get information about all team members.
+2. **Read the `recipes-config/people-info.md` file** to get information about all team members.
 
 ### Instructions
 For each team member:
@@ -131,7 +131,7 @@ Generate individual Jira work activity reports for each team member.
    - Types of work that demonstrate impact and value
    - Key systems and their business importance
    - Compliance and SOX work that requires recognition
-2. **Read the `recipes/people-info.md` file** to get Jira account IDs and email addresses for all team members.
+2. **Read the `recipes-config/people-info.md` file** to get Jira account IDs and email addresses for all team members.
 
 ### Instructions
 For each team member:
@@ -194,7 +194,7 @@ For each person, create `feedback/dd-mm-yyyy/jira-{firstname}.md` with:
 Generate individual Culture Amp 1-on-1 conversation reports for each team member using the `cultureamp_get_conversation` MCP tool.
 
 ### Important: Read People Information First
-**Before starting**, read the `recipes/people-info.md` file to get Culture Amp conversation IDs and email addresses for all team members.
+**Before starting**, read the `recipes-config/people-info.md` file to get Culture Amp conversation IDs and email addresses for all team members.
 
 ### Instructions
 For each team member:
@@ -238,7 +238,7 @@ extract_cookies({
 Call the `cultureamp_get_conversation` tool for each team member with the extracted tokens:
 ```javascript
 cultureamp_get_conversation({
-  conversation_id: "0190791e-69f0-7057-939d-8bd02ca7b7b3", // Extract from people-info.md URL
+  conversation_id: "0190791e-69f0-7057-939d-8bd02ca7b7b3", // Extract from recipes-config/people-info.md URL
   token: "eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCIsImtpZCI6InY3WF93UUxKTDNPSDBHRC1WQkhMTkctZGlHYyJ9...", // From extract_cookies
   refresh_token: "h666XzNjOHS55nsWlzim5iz7p3QGiOfd-iUU23LsxSbeJGwTXvn6btXOGJV_zbJ-" // From extract_cookies
 })
@@ -342,7 +342,7 @@ Use the `cultureamp_get_conversation` MCP tool to fetch conversation data for ea
   - `url: "https://envato.cultureamp.com/app/home"`
   - `cookieNames: ["cultureamp.production-us.token", "cultureamp.production-us.refresh-token"]`
   - `waitForIndicators: ["JW"]`
-- Extract conversation IDs from `recipes/people-info.md` URLs
+- Extract conversation IDs from `recipes-config/people-info.md` URLs
 - Call `cultureamp_get_conversation` with each conversation ID and the extracted tokens
 - Extract and analyze:
   - Conversation topics discussed (from completed topics)

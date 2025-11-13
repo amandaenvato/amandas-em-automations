@@ -181,7 +181,7 @@ Before gathering work details, review the em-knowledgebase to understand:
 Fetch ALL work items from the sprint (committed at start, completed, and not completed) to understand scope, delivery, and scope evolution.
 
 ### Important: Read People Information First
-**Before starting**, read the `recipes/people-info.md` file to get information about the Author team.
+**Before starting**, read the `recipes-config/people-info.md` file to get information about the Author team.
 
 ### Task
 
