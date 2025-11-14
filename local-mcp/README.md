@@ -1,15 +1,15 @@
 # Local MCP Server
 
-A custom MCP (Model Context Protocol) server that provides tools for interacting with the Cursor Agent API, GitHub CLI, TickTick, OpenAI, and Culture Amp.
+A custom MCP (Model Context Protocol) server that provides tools for interacting with the Cursor Agent API, GitHub CLI, OpenAI, Browser automation, and Culture Amp.
 
 ## Overview
 
-This server provides **13 tools** organized into 5 categories:
+This server provides **6 tools** organized into 5 categories:
 - **Cursor Agent API** (1 tool) - Autonomous agent management
-- **GitHub CLI** (7 tools) - Repository, PR, code, and commit search
-- **TickTick** (3 tools) - Task management and tracking
+- **GitHub CLI** (1 tool) - Read-only GitHub operations via whitelisted commands
 - **OpenAI** (1 tool) - Direct AI API access
-- **Culture Amp** (1 tool, optional) - Conversation analysis
+- **Browser** (2 tools) - Cookie extraction and page fetching with authentication
+- **Culture Amp** (1 tool) - Conversation analysis
 
 ## Features
 
@@ -31,67 +31,42 @@ This server provides the following tools organized by category:
 
 ### GitHub CLI Tools
 
-- **`gh_repo_list`** - List repositories in the envato organization using gh CLI
-  - **Optional Parameters:**
-    - `limit` (number): Maximum number of repositories to return
-
-- **`gh_repo_view`** - View details of a specific repository using gh CLI
+- **`gh_execute`** - Execute a read-only GitHub CLI command. Only commands from the whitelist are permitted. Write operations are blocked.
   - **Required Parameters:**
-    - `repo` (string): Repository in format `'owner/repo'` (e.g., `'envato/repo-name'`)
-
-- **`gh_pr_list`** - List pull requests using gh CLI
+    - `command` (string): The command key to execute. Must be one of the allowed read-only command keys:
+      - `branch-list`, `branch-view`
+      - `commit-view`
+      - `issue-list`, `issue-view`
+      - `pr-checks`, `pr-diff`, `pr-files`, `pr-list`, `pr-status`, `pr-view`
+      - `release-download`, `release-list`, `release-view`
+      - `repo-list`, `repo-view`
+      - `search-code`, `search-commits`, `search-issues`, `search-prs`, `search-repos`, `search-users`
   - **Optional Parameters:**
-    - `repo` (string): Repository in format `'owner/repo'` (optional, defaults to current repo)
-    - `state` (string): Filter by state: `'open'`, `'closed'`, or `'all'`
-    - `author` (string): Filter by author username
-    - `limit` (number): Maximum number of PRs to return
+    - `args` (array): Array of arguments to pass to the command (e.g., `['envato', '--limit', '10']`). Defaults to empty array.
 
-- **`gh_pr_view`** - View details of a specific pull request using gh CLI
+  **Example Usage:**
+  - List repositories: `command: 'repo-list', args: ['envato', '--limit', '10']`
+  - View a PR: `command: 'pr-view', args: ['123', '--repo', 'envato/repo-name']`
+  - Search code: `command: 'search-code', args: ['--query', 'functionName', '--repo', 'envato/repo-name']`
+
+### Browser Automation
+
+- **`extract_cookies`** - Extract cookies from a page after navigating to it and waiting for indicators that it has loaded and logged in
   - **Required Parameters:**
-    - `pr_number` (number): Pull request number
+    - `url` (string): The URL to navigate to
+    - `waitForIndicators` (array): Array of text patterns (regex) or CSS selectors (prefixed with `'css:'`) to wait for. Examples: `['JW', 'css:.home-container', 'jonathan.williams@envato.com']`. At least one indicator is required.
   - **Optional Parameters:**
-    - `repo` (string): Repository in format `'owner/repo'` (optional, defaults to current repo)
+    - `cookieNames` (array): Array of cookie names to extract (e.g., `['token', 'refresh-token']`). If empty, extracts all cookies.
+    - `maxWaitTime` (number): Maximum time to wait for indicators in milliseconds (default: `120000`)
+    - `headless` (boolean): Whether to run browser in headless mode (default: `false`)
 
-- **`gh_search_code`** - Search code using gh CLI
+- **`fetch_page`** - Fetch a single page, wait for indicators that it has loaded and logged in, then return the page contents (HTML and text)
   - **Required Parameters:**
-    - `query` (string): Search query string
+    - `url` (string): The URL to fetch
+    - `waitForIndicators` (array): Array of text patterns (regex) or CSS selectors (prefixed with `'css:'`) to wait for. Examples: `['Saved', 'In progress', 'css:.inbox-container', 'jonathan.williams@envato.com']`
   - **Optional Parameters:**
-    - `repo` (string): Repository in format `'owner/repo'` to search within
-    - `limit` (number): Maximum number of results to return
-
-- **`gh_search_prs`** - Search pull requests using gh CLI
-  - **Required Parameters:**
-    - `query` (string): Search query string
-  - **Optional Parameters:**
-    - `repo` (string): Repository in format `'owner/repo'` to search within
-    - `state` (string): Filter by state: `'open'`, `'closed'`, or `'all'`
-    - `author` (string): Filter by author username
-    - `limit` (number): Maximum number of results to return
-
-- **`gh_search_commits`** - Search commits using gh CLI
-  - **Required Parameters:**
-    - `query` (string): Search query string
-  - **Optional Parameters:**
-    - `repo` (string): Repository in format `'owner/repo'` to search within
-    - `author` (string): Filter by author username
-    - `limit` (number): Maximum number of results to return
-
-### TickTick Task Management
-
-- **`ticktick_get_pending_tasks`** - Get pending (incomplete) tasks from TickTick
-  - **Optional Parameters:**
-    - `project` (string): Filter by project name
-    - `priority` (string): Filter by priority: `'none'`, `'low'`, `'medium'`, or `'high'`
-    - `limit` (number): Maximum number of tasks to return
-
-- **`ticktick_get_task_summary`** - Get summary statistics of all tasks in TickTick
-  - **Parameters:** None
-
-- **`ticktick_get_all_tasks`** - Get all tasks (both complete and incomplete) from TickTick
-  - **Optional Parameters:**
-    - `project` (string): Filter by project name
-    - `status` (string): Filter by status: `'incomplete'` or `'complete'`
-    - `limit` (number): Maximum number of tasks to return
+    - `maxWaitTime` (number): Maximum time to wait for indicators in milliseconds (default: `120000`)
+    - `headless` (boolean): Whether to run browser in headless mode (default: `false`)
 
 ### OpenAI Integration
 
@@ -99,15 +74,32 @@ This server provides the following tools organized by category:
   - **Required Parameters:**
     - `prompt` (string): The prompt/question to send to OpenAI
   - **Optional Parameters:**
-    - `model` (string): The model to use (default: `'gpt-5-nano'`)
+    - `model` (string): The model to use (default: `'gpt-5'`)
 
-### Culture Amp (Optional)
+### Culture Amp
 
 - **`cultureamp_get_conversation`** - Get details about a Culture Amp conversation by its ID
   - **Required Parameters:**
     - `conversation_id` (string): The conversation ID (UUID format, e.g., `'0190791e-69f0-7057-939d-8bd02ca7b7b3'`)
+    - `token` (string): Culture Amp JWT token (extracted from browser cookies via `extract_cookies`)
+    - `refresh_token` (string): Culture Amp refresh token (extracted from browser cookies via `extract_cookies`)
 
-  **Note**: Culture Amp tools require `CULTUREAMP_TOKEN` and `CULTUREAMP_REFRESH_TOKEN` environment variables. If not configured, this tool will not be available (server will start without error).
+  **Note**: Tokens must be extracted from browser cookies using the `extract_cookies` tool. Example usage:
+  ```javascript
+  // First, extract cookies from Culture Amp
+  extract_cookies({
+    url: 'https://envato.cultureamp.com/app/home',
+    cookieNames: ['cultureamp.production-us.token', 'cultureamp.production-us.refresh-token'],
+    waitForIndicators: ['JW']
+  })
+
+  // Then use the tokens to get conversation details
+  cultureamp_get_conversation({
+    conversation_id: '0190791e-69f0-7057-939d-8bd02ca7b7b3',
+    token: '<extracted-token>',
+    refresh_token: '<extracted-refresh-token>'
+  })
+  ```
 
 ## Prerequisites
 
@@ -120,14 +112,13 @@ Different tools require different environment variables:
 - `OPENAI_API_KEY` - Required for `ask_openai` tool. Get your API key from [OpenAI Platform](https://platform.openai.com/api-keys).
 
 **Optional:**
-- `CULTUREAMP_TOKEN` - Required for `cultureamp_get_conversation` tool (if using Culture Amp features).
-- `CULTUREAMP_REFRESH_TOKEN` - Required for `cultureamp_get_conversation` tool (if using Culture Amp features).
-- `CULTUREAMP_BASE_URL` - Optional, defaults to `https://envato.cultureamp.com` if not set.
+- `CULTUREAMP_BROWSER_DATA_DIR` - Custom directory for Culture Amp browser session data (defaults to `~/.local-mcp/cultureamp-browser-data`)
+- `BROWSER_DATA_DIR` - Custom directory for general browser session data (defaults to `~/.local-mcp/browser-data`)
 
 ### External Dependencies
 
 - **GitHub CLI (`gh`)** - Must be installed and authenticated. Run `gh auth login` before using GitHub tools.
-- **SQLite3** - Required for TickTick tools (reads from local TickTick database on macOS).
+- **Playwright** - Automatically installed via npm dependencies. Used for browser automation.
 
 ## Installation
 
@@ -178,3 +169,7 @@ npm run test:run
 Tests cover:
 - `CursorAgentClient` class methods (validation, API calls, error handling)
 - `LocalMCPServer` MCP handlers (tool registration, request handling)
+
+## Architecture
+
+The server is built using the Model Context Protocol SDK and provides tools through a unified interface. Browser-based tools use Playwright for automation and maintain session state between requests for authenticated operations.

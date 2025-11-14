@@ -31,7 +31,6 @@ This repository contains instruction recipes for AI agents (like Claude Code, Cu
 
    **Communication & Collaboration:**
    - **Slack** - Team messages, communications, mentions, and saved messages
-   - **Gmail** - Email assignments, notifications, and document sharing
 
    **Documentation & Storage:**
    - **Google Drive** - Document storage, reading, and updates

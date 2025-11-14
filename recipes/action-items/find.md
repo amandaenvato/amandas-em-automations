@@ -1,6 +1,6 @@
 # Find Action Items Recipe
 
-This recipe explains how to find pending action items where a user has been directly pinged or assigned in Slack and emails.
+This recipe explains how to find pending action items where a user has been directly pinged or assigned in Slack.
 
 ## Before Starting
 
@@ -30,25 +30,7 @@ Search Slack messages to find all messages mentioning the user's handle.
 - Use `filter_date_after` to focus on recent items
 - Search for action-oriented keywords like `@username action`, `@username task`, `@username please`, `@username need`, `@username help`, `@username follow up`
 
-### 2. Search Emails for Google Docs/Sheets Assignments
-
-Search Gmail for assignment notifications from Google Docs and Sheets.
-
-**Key Parameters:**
-- `query`: Use specific queries like:
-  - `from:comments-noreply@docs.google.com "assigned you an action"`
-  - `from:comments-noreply@docs.google.com "assigned you"`
-  - `from:comments-noreply@docs.google.com "action item"`
-- `maxResults`: Set to 10-20 for focused results
-
-### 3. Read Specific Emails for Details
-
-For emails that contain assignments, read them to extract specific action details.
-
-**Key Parameters:**
-- `messageId`: Use the message ID from search results
-
-### 4. Get Channel Information for Correct Links
+### 2. Get Channel Information for Correct Links
 
 To create proper Slack links, get channel information from Slack.
 
@@ -62,14 +44,13 @@ To create proper Slack links, get channel information from Slack.
 
 1. **Action Title** (bold)
 2. **Date**
-3. **Source** with clickable link to Slack channel or email
+3. **Source** with clickable link to Slack channel
 4. **Action** description
 5. **Due Date** (if specified)
 6. **Context** (additional details)
 
 **Link Format Examples:**
 - Slack: `[#channel-name](https://envato.enterprise.slack.com/archives/CHANNEL_ID)`
-- Email: `[Email Subject](mailto:recipient@domain.com)`
 - Documents: `[Document Name](https://docs.google.com/document/d/DOC_ID)`
 
 ## Key Learnings
@@ -81,11 +62,6 @@ To create proper Slack links, get channel information from Slack.
 - Set `limit` to 100 for comprehensive coverage
 - Search multiple variations to catch different phrasings
 
-### Email Search Patterns
-- Focus on `comments-noreply@docs.google.com` for Google Docs assignments
-- Use specific phrases like "assigned you an action" or "action item"
-- Read individual emails to extract detailed action requirements
-
 ### Link Generation
 - Always use `envato.enterprise.slack.com` domain for Slack links
 - Include channel ID in the URL format: `/archives/CHANNEL_ID`
@@ -95,6 +71,14 @@ To create proper Slack links, get channel information from Slack.
 - Focus on recent items (last 2 days) unless specifically asked for longer timeframe
 - Look for direct assignments, not general mentions
 - Prioritize items with specific action requirements over general discussions
+
+## Common Pitfalls to Avoid
+
+1. **Incorrect Slack Links**: Always use `envato.enterprise.slack.com` not `envato.slack.com`
+2. **Missing Channel IDs**: Get channel list to find correct IDs for links
+3. **Too Broad Results**: Use date filters and specific search terms
+4. **Missing Context**: Read individual messages for full action details
+5. **Output Format**: Always use Markdown in chat response, not separate files
 
 ## Example Output Structure
 
@@ -108,11 +92,3 @@ To create proper Slack links, get channel information from Slack.
 **Due Date**: YYYY-MM-DD (if specified)
 **Context**: Additional details
 ```
-
-## Common Pitfalls to Avoid
-
-1. **Incorrect Slack Links**: Always use `envato.enterprise.slack.com` not `envato.slack.com`
-2. **Missing Channel IDs**: Get channel list to find correct IDs for links
-3. **Too Broad Results**: Use date filters and specific search terms
-4. **Missing Context**: Read individual emails/messages for full action details
-5. **Output Format**: Always use Markdown in chat response, not separate files

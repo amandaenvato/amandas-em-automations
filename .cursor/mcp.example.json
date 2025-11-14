@@ -60,12 +60,6 @@
         "JIRA_API_TOKEN": "<REPLACE>"
       }
     },
-    "gmail": {
-      "command": "npx",
-      "args": [
-        "@gongrzhe/server-gmail-autoauth-mcp"
-      ]
-    },
     "local-mcp": {
       "command": "node",
       "args": [
