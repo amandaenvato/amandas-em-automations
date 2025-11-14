@@ -163,6 +163,12 @@ ipcMain.on('quit-app', () => {
   app.quit();
 });
 
+// IPC handler for restart
+ipcMain.on('restart-app', () => {
+  app.relaunch();
+  app.exit(0);
+});
+
 // Track output windows
 const outputWindows = new Map();
 

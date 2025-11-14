@@ -300,6 +300,11 @@ document.getElementById('auto-launch-toggle').addEventListener('change', (e) => 
   toggleAutoLaunch(e.target.checked);
 });
 
+// Restart button handler
+document.getElementById('restart-button').addEventListener('click', () => {
+  ipcRenderer.send('restart-app');
+});
+
 // Quit button handler
 document.getElementById('quit-button').addEventListener('click', () => {
   ipcRenderer.send('quit-app');
