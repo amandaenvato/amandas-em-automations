@@ -26,7 +26,7 @@ This repository contains instruction recipes for AI agents (like Claude Code, Cu
    
    **Google Calendar** (`google-calendar`)
    - Configure Google OAuth credentials
-   - _Configuration instructions: [Add link to Google Calendar MCP server documentation]_
+   - For instructions about how to configure Google Calendar, please follow these instructions: https://github.com/nspady/google-calendar-mcp
    
    **Atlassian** (`mcp-atlassian`)
    - Configure Jira and Confluence URLs, usernames, and API tokens
