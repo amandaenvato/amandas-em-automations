@@ -13,13 +13,29 @@ This repository contains instruction recipes for AI agents (like Claude Code, Cu
 ## Quick Start
 
 1. **Configure MCP Servers:**
-   - Copy `.cursor/mcp.example.json` to `.cursor/mcp.json`
-   - Fill in all required credentials and tokens for each MCP server:
-     - Slack tokens (XOXC and XOXD)
-     - Google Drive OAuth credentials
-     - Atlassian (Jira/Confluence) API tokens
-     - Cursor API key, OpenAI API key (for local-mcp)
-   - Update the `local-mcp` command path to match your repository location
+   
+   Start by copying `.cursor/mcp.example.json` to `.cursor/mcp.json`, then configure each MCP server below:
+   
+   **Slack MCP Server** (`slack-mcp-server`)
+   - Configure Slack tokens (XOXC and XOXD), user agent, and cache paths
+   - _Configuration instructions: [Add link to Slack MCP server documentation]_
+   
+   **Google Drive** (`gdrive`)
+   - Configure OAuth credentials (CLIENT_ID, CLIENT_SECRET) and credentials directory
+   - For instructions about how to configure Google Drive, please follow these instructions: https://github.com/isaacphi/mcp-gdrive
+   
+   **Google Calendar** (`google-calendar`)
+   - Configure Google OAuth credentials
+   - _Configuration instructions: [Add link to Google Calendar MCP server documentation]_
+   
+   **Atlassian** (`mcp-atlassian`)
+   - Configure Jira and Confluence URLs, usernames, and API tokens
+   - _Configuration instructions: [Add link to Atlassian MCP server documentation]_
+   
+   **Local MCP Server** (`local-mcp`)
+   - Configure Cursor API key and OpenAI API key
+   - Update the `local-mcp` command path in `mcp.json` to match your repository location (replace `/Users/jonathanwilliams/Development/envato/em-automations/local-mcp/index.js` with your path)
+   - See the [Local MCP README](local-mcp/README.md) for detailed configuration instructions
 
 2. **Configure Team Information:**
    - Copy `files/recipe-config/people-info.example.md` to `files/recipe-config/people-info.md`
