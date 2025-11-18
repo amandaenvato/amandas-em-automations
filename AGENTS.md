@@ -48,6 +48,104 @@ Guidelines for AI agents working in this codebase.
 - **Error checking**: Run linters and check for obvious syntax errors before marking work as done
 - **User confirmation**: If you're unsure whether code works (e.g., requires manual testing or user interaction), explicitly state what needs to be verified rather than assuming it's complete
 
+## Allowlist Preferences
+
+User preferences for tool permissions and allowed operations. Document specific allowlist choices here for reference.
+
+**Note**: When you explicitly allow an operation (e.g., "yes, commit that", "go ahead and delete it", "you can use that tool"), the agent will update this section to reflect your preference for future similar operations.
+
+### Tool Permissions
+
+- ✅ **Always allowed**: 
+  - Reading files and searching codebase
+  - Running linters and checking for errors
+  - Reading configuration files (`.cursor/mcp.json`, `AGENTS.md`, etc.)
+  - Using codebase search and grep tools
+  - Reading terminal output and checking git status
+
+- ✅ **Allowed with context** (proceed when task requires it):
+  - Creating new files in appropriate directories (`files/output/`, `files/scratch/`, `files/recipe-config/`)
+  - Editing existing files (code, config, documentation)
+  - Running terminal commands for development tasks
+  - Creating and editing recipes
+  - Committing changes to feature branches
+  - Creating pull requests
+  - Merging pull requests (when explicitly requested)
+
+- ⚠️ **Requires explicit confirmation**:
+  - Deleting files (always ask first)
+  - Force pushing to any branch
+  - Committing to main/master branch
+  - Modifying critical config files (`.cursor/mcp.json` with actual secrets)
+  - Creating files outside standard directories without clear purpose
+
+- ❌ **Never allowed**:
+  - Force pushing to main/master
+  - Deleting git history
+  - Modifying files in `node_modules/` or other dependency directories
+  - Running destructive git operations without explicit request
+
+### MCP Tool Allowlists
+
+#### Slack MCP
+- ✅ **Allowed**: Reading messages, searching channels, listing channels
+- ✅ **Allowed**: Posting messages when explicitly requested
+- ⚠️ **Requires confirmation**: Posting to public channels, sending DMs
+- **Preferred channels**: Use channel names (e.g., `#metadata-unpacking-project`) when possible
+
+#### GitHub MCP (via local-mcp)
+- ✅ **Allowed**: All read-only commands defined in `local-mcp/src/github-cli.js`:
+  - `repo-list`, `repo-view`
+  - `pr-list`, `pr-view`, `pr-diff`, `pr-files`, `pr-checks`, `pr-status`
+  - `issue-list`, `issue-view`
+  - `search-code`, `search-prs`, `search-commits`, `search-issues`, `search-repos`, `search-users`
+  - `release-list`, `release-view`, `release-download`
+  - `branch-list`, `branch-view`
+  - `commit-view`
+- ❌ **Never allowed**: Write operations (all blocked by design in `local-mcp/src/github-cli.js`)
+
+#### Google Calendar MCP
+- ✅ **Allowed**: Reading calendar events, searching events
+- ⚠️ **Requires confirmation**: Creating, updating, or deleting calendar events
+
+#### Browser Automation (via local-mcp)
+- ✅ **Allowed**: Extracting cookies for authentication
+- ✅ **Allowed**: Fetching pages for data extraction (Culture Amp, BambooHR, etc.)
+- ⚠️ **Requires confirmation**: Navigating to external/untrusted sites
+
+#### Other MCPs
+- **Cursor Agent API**: ✅ Allowed for starting agents when explicitly requested
+- **OpenAI API**: ✅ Allowed for AI operations
+- **Culture Amp**: ✅ Allowed for conversation analysis
+
+### File Operations
+
+#### File Creation
+- ✅ **Standard locations** (auto-approved):
+  - `files/output/{recipe-name}-{dd-mm-yyyy}/` - Recipe outputs
+  - `files/scratch/` - Temporary analysis and documentation
+  - `files/recipe-config/` - Configuration files
+  - `recipes/` - New recipe files
+- ⚠️ **Other locations**: Ask before creating files outside standard directories
+- **Naming conventions**: Use kebab-case for filenames (e.g., `user-disablement-investigation.md`)
+
+#### File Modification
+- ✅ **Allowed**: Editing code files, documentation, config files, recipes
+- ✅ **Allowed**: Updating `AGENTS.md` to reflect new preferences
+- ⚠️ **Requires confirmation**: Modifying files with secrets or sensitive data
+
+#### File Deletion
+- ⚠️ **Always requires explicit confirmation**: Never delete files without explicit user approval
+- **Exception**: Temporary files created during a task can be cleaned up if explicitly mentioned
+
+### Preference Update Log
+
+When you explicitly allow an operation, it will be documented here:
+
+- **2025-11-18**: ✅ Committing changes to feature branches and creating PRs - allowed
+- **2025-11-18**: ✅ Merging PRs when explicitly requested - allowed
+- **2025-11-18**: ✅ Using Slack MCP to read messages and search channels - allowed
+
 ## Additional Guidelines
 
 - **Error handling**: If an MCP call fails or data is unavailable, document the issue in scratch files and continue with available data when possible
