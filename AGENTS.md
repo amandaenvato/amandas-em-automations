@@ -37,6 +37,7 @@ Guidelines for AI agents working in this codebase.
 - **Directory naming**: Use consistent naming conventions for output directories: `{recipe-name}-{dd-mm-yyyy}/` (e.g., `daily-checkup-15-01-2025/`, `feedback-03-11-2025/`)
 - **File structure**: Most recipes create an `OUTPUT.md` file as the main result, plus supporting files as needed (e.g., individual team member files, context files, draft documents)
 - **Date format**: Always use `dd-mm-yyyy` format for dates in directory names (e.g., `15-01-2025` for January 15, 2025)
+- **Time format**: All times in outputs, activity logs, and documentation must be expressed in Melbourne time (AEDT/AEST). Convert UTC or other timezones to Melbourne time when displaying timestamps
 - **Consistency**: Follow the existing output structure patterns you see in `files/output/` - maintain consistency with previous runs
 
 ## Code Verification
