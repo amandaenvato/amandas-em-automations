@@ -89,7 +89,7 @@ User preferences for tool permissions and allowed operations. Document specific 
 
 #### Slack MCP
 - ✅ **Allowed**: Reading messages, searching channels, listing channels
-- ✅ **Allowed**: Posting messages when explicitly requested
+- ⚠️ **Requires confirmation**: Posting messages when explicitly requested
 - ⚠️ **Requires confirmation**: Posting to public channels, sending DMs
 - **Preferred channels**: Use channel names (e.g., `#metadata-unpacking-project`) when possible
 
@@ -145,6 +145,7 @@ When you explicitly allow an operation, it will be documented here:
 - **2025-11-18**: ✅ Committing changes to feature branches and creating PRs - allowed
 - **2025-11-18**: ✅ Merging PRs when explicitly requested - allowed
 - **2025-11-18**: ✅ Using Slack MCP to read messages and search channels - allowed
+- **2025-11-18**: ⚠️ Posting Slack messages (even when explicitly requested) - now requires confirmation
 
 ## Additional Guidelines
 
