@@ -13,6 +13,7 @@ Guidelines for AI agents working in this codebase.
 
 - **Documentation**: Unless otherwise stated, create files in `files/scratch/` to document your thoughts, analysis, and decision-making process
 - **Recipe generation**: After completing a task, ask if the user would like to generate a recipe from the activity for future reuse
+- **Data masquerading**: When generating recipe files, always masquerade any PII (Personally Identifiable Information) such as real names, email addresses, Slack IDs, Jira account IDs, or other identifiers. Replace them with fake example identifiers (e.g., "Alex Johnson", "alex.johnson@example.com", "U1234567890")
 - **File naming**: Use descriptive, kebab-case filenames in the scratch directory (e.g., `user-disablement-investigation.md`)
 
 ## Iterating on Code in `local-mcp/`
