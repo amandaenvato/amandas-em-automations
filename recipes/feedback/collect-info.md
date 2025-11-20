@@ -24,7 +24,7 @@ All output goes into `files/output/feedback-dd-mm-yyyy/`:
 ## Context
 
 ### Target Document
-- File ID: `1JRQS1rBc7XmNJkt28ZvKFB4oIY239vyv5HaOaGwjhiY`
+- File ID: `1-pWdIcr5fVz7oYI1MAsQhzrT5jYbxTzo6hmEiUaDe00`
 - Document: "Feedback To Reports"
 - Contains: Historical feedback entries for each team member
 
@@ -51,14 +51,14 @@ Copy the current feedback document from the most recent run and update it to mat
 ### Instructions
 1. Find the most recent date-stamped directory in `files/output/` matching `feedback-*` (e.g., `files/output/feedback-03-11-2025/`)
 2. Copy `current-doc.md` from that directory to `files/output/feedback-dd-mm-yyyy/current-doc.md`
-3. Read the Google Drive document with ID `1JRQS1rBc7XmNJkt28ZvKFB4oIY239vyv5HaOaGwjhiY` (document named "Feedback To Reports")
+3. Read the Google Drive document with ID `1-pWdIcr5fVz7oYI1MAsQhzrT5jYbxTzo6hmEiUaDe00` (document named "Feedback To Reports")
 4. Update the copied file to match the Google Drive version (typically just the most recent entry section needs updating)
 
 ### Process
 - Copy the existing `current-doc.md` from the most recent date directory
 - Use the MCP Google Drive tools to read the document
 - **Important: Handle Large File Responses**
-  - If the Google Drive tool responds with a message containing "Large output has been written to:" followed by a file path (e.g., "Large output has been written to: /Users/jonathanwilliams/.cursor/projects/.../file.txt (55.9 KB, 871 lines)")
+  - If the Google Drive tool responds with a message containing "Large output has been written to:" followed by a file path (e.g., "Large output has been written to: /Users/amandavarella/.cursor/projects/.../file.txt (55.9 KB, 871 lines)")
   - **DO NOT recreate the file** - instead, extract the file path from the message and simply copy it using:
     ```bash
     cp /extracted/path/to/file.txt files/output/feedback-dd-mm-yyyy/current-doc.md

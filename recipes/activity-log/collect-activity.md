@@ -82,15 +82,20 @@ Collect all Slack messages from the team member during the specified time period
 For each message, note:
 - Date and time (convert to Melbourne time)
 - Channel name
+- **Channel link** (e.g., `https://envato.slack.com/archives/C1234567890`)
+- **Message link** (e.g., `https://envato.slack.com/archives/C1234567890/p1234567890123456`)
 - Message content
 - Thread context (if applicable)
+- Thread link (if in a thread)
 - Key themes and topics
 - Collaborations with other team members
+- **Document links** (if any Google Drive, Confluence, or other documents are mentioned in messages)
 
 ### Expected Output
-- List of Slack messages with dates, channels, and content
-- Summary of key activities by date
+- List of Slack messages with dates, channels, content, and **all relevant links**
+- Summary of key activities by date with channel links
 - Identification of main themes and collaborations
+- Links to all referenced documents and resources
 
 ## Step 3: Collect Jira Activity
 
@@ -126,13 +131,16 @@ For each issue, extract:
 - Updated date (convert to Melbourne time)
 - Reporter
 - Description/context
-- Link to issue
-- Related PRs (if mentioned in Slack or description)
+- **Jira issue link** (e.g., `https://envato.atlassian.net/browse/PROJ-123`) - **REQUIRED**
+- **Related PRs** (if mentioned in Slack or description) - include GitHub PR links
+- **Document links** (if any Google Drive, Confluence, or other documents are referenced in description)
+- **Slack thread links** (if any Slack discussions are referenced in description)
 
 ### Expected Output
 - List of Jira issues updated during the period
 - Issue details including status, priority, and context
-- Links to related pull requests or documentation
+- **Jira issue links for every issue**
+- Links to related pull requests, documentation, and referenced resources
 
 ## Step 4: Collect Confluence Activity
 
@@ -163,10 +171,11 @@ For each page found, extract:
 - Space key
 - Created date
 - Last modified date (convert to Melbourne time)
-- Link to page
+- **Confluence page link** (e.g., `https://envato.atlassian.net/wiki/spaces/SPACE/pages/123456789/Page+Title`) - **REQUIRED**
+- Page ID (for constructing links if not provided)
 
 ### Expected Output
-- List of Confluence pages created or modified (if any)
+- List of Confluence pages created or modified (if any) with **links to each page**
 - Note if no activity found during the period
 
 ## Step 5: Generate Activity Report
@@ -180,14 +189,20 @@ Create a comprehensive markdown report combining all collected activity.
 3. Structure the report with the following sections:
    - Title and date range
    - Executive Summary
-   - Slack Activity (with message count, key channels, activities by date, themes)
-   - Jira Activity (with issues updated, details, and links)
-   - Confluence Activity (with pages created/modified or note if none)
-   - Pull Requests (if any mentioned)
-   - Key Collaborations
-   - Notable Achievements
-   - Areas of Focus
+   - Slack Activity (with message count, key channels with links, activities by date with message links, themes)
+   - Jira Activity (with issues updated, details, and **Jira issue links for every issue**)
+   - Confluence Activity (with pages created/modified with **Confluence page links** or note if none)
+   - Pull Requests (if any mentioned, with GitHub PR links)
+   - Key Collaborations (with links to Slack conversations and related issues)
+   - Notable Achievements (with links to related resources)
+   - Areas of Focus (with links to related resources)
    - Data Sources
+4. **CRITICAL**: Ensure every piece of information includes its reference link:
+   - Every Slack message/channel → Slack link
+   - Every Jira issue → Jira link
+   - Every Confluence page → Confluence link
+   - Every PR mentioned → GitHub PR link
+   - Every document referenced → Document link (Google Drive, Confluence, etc.)
 
 ### Report Format
 ```markdown
@@ -208,19 +223,25 @@ Create a comprehensive markdown report combining all collected activity.
 ### Message Count
 - **Total messages**: {count} messages identified
 - **Key channels**: 
-  - `#channel-1`
-  - `#channel-2`
+  - [`#channel-1`](https://envato.slack.com/archives/C1234567890)
+  - [`#channel-2`](https://envato.slack.com/archives/C9876543210)
 
 ### Key Activities by Date
 
 #### {Date}
 - **Topic**: Description
   - Details
-  - Messages in `#channel`
+  - Messages in [`#channel`](https://envato.slack.com/archives/C1234567890)
+  - [Link to specific message/thread](https://envato.slack.com/archives/C1234567890/p1234567890123456)
 
 ### Key Themes from Slack
 1. **Theme 1**: Description
+   - [Related Slack thread](https://envato.slack.com/archives/C1234567890/p1234567890123456)
 2. **Theme 2**: Description
+   - [Related Slack thread](https://envato.slack.com/archives/C1234567890/p1234567890123456)
+
+### Referenced Documents
+- [Document Name](https://docs.google.com/document/d/...) - Referenced in [`#channel`](https://envato.slack.com/archives/C1234567890)
 
 ---
 
@@ -232,15 +253,19 @@ Create a comprehensive markdown report combining all collected activity.
 
 **Results**: Found {count} issues updated:
 
-1. **{ISSUE-KEY}** - {Summary}
+1. **[{ISSUE-KEY}]({JIRA_URL})** - {Summary}
    - **Status**: {Status}
    - **Updated**: {Date} at {Time} (Melbourne time)
    - **Created**: {Date}
    - **Priority**: {Priority}
    - **Issue Type**: {Type}
    - **Reporter**: {Name}
-   - **Link**: {URL}
+   - **Jira Link**: [{ISSUE-KEY} on Jira]({JIRA_URL})
    - **Context**: {Description}
+   - **Related Resources**:
+     - [Related PR](https://github.com/org/repo/pull/123) (if applicable)
+     - [Related Document](https://docs.google.com/document/d/...) (if applicable)
+     - [Related Slack Thread](https://envato.slack.com/archives/C1234567890/p1234567890123456) (if applicable)
 
 ---
 
@@ -250,31 +275,51 @@ Create a comprehensive markdown report combining all collected activity.
 
 **Search Query**: `{cql_query}`
 
-**Results**: {List of pages or "No Confluence pages were found..."}
+**Results**: 
+- [{Page Title}]({CONFLUENCE_URL}) - {Space Key}
+  - **Created**: {Date}
+  - **Last Modified**: {Date} at {Time} (Melbourne time)
+  - **Confluence Link**: [{Page Title}]({CONFLUENCE_URL})
+
+OR
+
+**Results**: No Confluence pages were found during this period.
 
 ---
 
 ## Pull Requests
 
-{List of PRs with links}
+1. **[PR Title](https://github.com/org/repo/pull/123)** - {Description}
+   - **Repository**: {repo-name}
+   - **Status**: {merged/open/closed}
+   - **Related Jira**: [{ISSUE-KEY}]({JIRA_URL}) (if applicable)
+   - **GitHub Link**: [PR #123](https://github.com/org/repo/pull/123)
 
 ---
 
 ## Key Collaborations
 
 - **{Name}** ({Slack ID}): {Description}
+  - [Slack conversation in `#channel`](https://envato.slack.com/archives/C1234567890/p1234567890123456)
+  - [Related Jira issue]({JIRA_URL}) (if applicable)
 
 ---
 
 ## Notable Achievements
 
 1. ✅ {Achievement}
+   - [Related Jira issue]({JIRA_URL}) (if applicable)
+   - [Related Slack discussion](https://envato.slack.com/archives/C1234567890/p1234567890123456) (if applicable)
+   - [Related PR](https://github.com/org/repo/pull/123) (if applicable)
 
 ---
 
 ## Areas of Focus
 
 1. **{Area}**: {Description}
+   - [Related Jira issues]({JIRA_URL}) (if applicable)
+   - [Related Slack channels](https://envato.slack.com/archives/C1234567890) (if applicable)
+   - [Related documentation]({CONFLUENCE_URL}) (if applicable)
 
 ---
 
@@ -389,4 +434,12 @@ To collect activity for Alex Johnson:
 - It's normal for some team members to have no Confluence activity
 - The report should highlight both technical work and collaboration/communication
 - Include context about why work was done (from Slack discussions or Jira descriptions)
+- **IMPORTANT**: Every piece of information must include its reference link:
+  - Slack channels and messages must have Slack links
+  - Jira issues must have Jira links
+  - Confluence pages must have Confluence links
+  - Pull requests must have GitHub links
+  - Documents mentioned must have their respective links (Google Drive, Confluence, etc.)
+- Links should be formatted as markdown links: `[Display Text](URL)`
+- When extracting information from Slack messages, look for URLs to documents, Jira issues, PRs, etc., and include them in the report
 
