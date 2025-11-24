@@ -52,12 +52,13 @@ Guidelines for AI agents working in this codebase.
 
 ## Git Workflow Preferences
 
-- **Branch and PR creation**: When the user asks to "create a branch and PR" (or similar requests), automatically:
+- **Branch and PR creation**: When the user asks to "create a branch and PR" (or similar requests like "branch PR"), automatically:
   1. Create a new branch with a descriptive name (or use existing branch if already on one)
   2. Stage and commit any relevant changes
   3. Push the branch to origin
   4. Create a pull request with an appropriate title and description
   5. Open the PR in the browser using `gh pr view --web`
+- **Merging PRs**: **NEVER automatically merge PRs** unless the user explicitly says "merge" (or "merge it", "merge the PR", etc.). When the user says "branch PR" or "create a branch and PR", only create the branch and PR - do NOT merge it.
 - **Branch naming**: Use descriptive, kebab-case branch names that reflect the changes (e.g., `enhance-activity-report-links`, `fix-date-format`)
 - **PR description**: Include a clear title and description explaining what changed and why
 
@@ -83,9 +84,9 @@ User preferences for tool permissions and allowed operations. Document specific 
   - Creating and editing recipes
   - Committing changes to feature branches
   - Creating pull requests
-  - Merging pull requests (when explicitly requested)
 
 - ⚠️ **Requires explicit confirmation**:
+  - **Merging pull requests** - Only merge when the user explicitly says "merge" (or "merge it", "merge the PR", etc.). When user says "branch PR" or "create a branch and PR", do NOT merge automatically - only create the branch and PR.
   - Deleting files (always ask first)
   - Force pushing to any branch
   - Committing to main/master branch
@@ -160,6 +161,7 @@ When you explicitly allow an operation, it will be documented here:
 - **2025-11-18**: ✅ Using Slack MCP to read messages and search channels - allowed
 - **2025-11-18**: ⚠️ Posting Slack messages (even when explicitly requested) - now requires confirmation
 - **2025-11-20**: ✅ Automatic branch and PR creation workflow - when user asks for "branch and PR", automatically create branch, commit changes, push, create PR, and open in browser
+- **2025-11-25**: ⚠️ Merging PRs - Only merge when user explicitly says "merge". When user says "branch PR" or "create a branch and PR", do NOT automatically merge - only create the branch and PR.
 
 ## Additional Guidelines
 
