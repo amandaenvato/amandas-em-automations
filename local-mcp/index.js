@@ -214,6 +214,78 @@ class LocalMCPServer {
               required: ["url", "waitForIndicators"],
             },
           },
+          {
+            name: "cultureamp_add_topic",
+            description: "Add a topic to a Culture Amp conversation using browser automation",
+            inputSchema: {
+              type: "object",
+              properties: {
+                conversation_url: {
+                  type: "string",
+                  description: "The full URL to the Culture Amp conversation (e.g., 'https://envato.cultureamp.com/app/conversations/019a25d1-97d6-707b-8c0e-c46015a0b082')",
+                },
+                topic_title: {
+                  type: "string",
+                  description: "The title of the topic to add",
+                },
+                waitForIndicators: {
+                  type: "array",
+                  items: {
+                    type: "string",
+                  },
+                  description: "Array of text patterns (regex) or CSS selectors (prefixed with 'css:') to wait for (default: ['JW'])",
+                  default: ["JW"],
+                },
+                maxWaitTime: {
+                  type: "number",
+                  description: "Maximum time to wait for indicators in milliseconds (default: 120000)",
+                  default: 120000,
+                },
+                headless: {
+                  type: "boolean",
+                  description: "Whether to run browser in headless mode (default: false)",
+                  default: false,
+                },
+              },
+              required: ["conversation_url", "topic_title"],
+            },
+          },
+          {
+            name: "cultureamp_add_private_note",
+            description: "Add a private note to a Culture Amp conversation Personal notes tab using browser automation",
+            inputSchema: {
+              type: "object",
+              properties: {
+                conversation_url: {
+                  type: "string",
+                  description: "The full URL to the Culture Amp conversation (e.g., 'https://envato.cultureamp.com/app/conversations/019a25d1-97d6-707b-8c0e-c46015a0b082')",
+                },
+                note_text: {
+                  type: "string",
+                  description: "The text of the private note to add",
+                },
+                waitForIndicators: {
+                  type: "array",
+                  items: {
+                    type: "string",
+                  },
+                  description: "Array of text patterns (regex) or CSS selectors (prefixed with 'css:') to wait for (default: ['JW'])",
+                  default: ["JW"],
+                },
+                maxWaitTime: {
+                  type: "number",
+                  description: "Maximum time to wait for indicators in milliseconds (default: 120000)",
+                  default: 120000,
+                },
+                headless: {
+                  type: "boolean",
+                  description: "Whether to run browser in headless mode (default: false)",
+                  default: false,
+                },
+              },
+              required: ["conversation_url", "note_text"],
+            },
+          },
         ],
       };
     };
@@ -271,6 +343,32 @@ class LocalMCPServer {
           args?.url,
           args?.waitForIndicators || [],
           args?.maxWaitTime || 60000,
+          args?.headless || false
+        );
+      }
+
+      if (name === "cultureamp_add_topic") {
+        if (!args?.conversation_url || !args?.topic_title) {
+          throw new Error("conversation_url and topic_title are required");
+        }
+        return await this.browserClient.addCultureAmpTopic(
+          args.conversation_url,
+          args.topic_title,
+          args?.waitForIndicators || ['JW'],
+          args?.maxWaitTime || 120000,
+          args?.headless || false
+        );
+      }
+
+      if (name === "cultureamp_add_private_note") {
+        if (!args?.conversation_url || !args?.note_text) {
+          throw new Error("conversation_url and note_text are required");
+        }
+        return await this.browserClient.addCultureAmpPrivateNote(
+          args.conversation_url,
+          args.note_text,
+          args?.waitForIndicators || ['JW'],
+          args?.maxWaitTime || 120000,
           args?.headless || false
         );
       }
