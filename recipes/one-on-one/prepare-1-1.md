@@ -8,8 +8,9 @@ When the user says "1-1 [Person Name]", execute these steps in sequence:
 
 1. **Step 1: Get Team Member Information** (see details below)
 2. **Step 2: Execute Activity Collection** (see details below)
-3. **Step 3: Open Culture Amp Page** (see details below)
-4. **Step 4: Open Google Drive Page** (see details below)
+3. **Step 3: Generate HTML and Open in Browser** (see details below)
+4. **Step 4: Open Culture Amp Page** (see details below)
+5. **Step 5: Open Google Drive Page** (see details below)
 
 ## Context
 
@@ -66,7 +67,39 @@ Execute the activity collection recipe to gather all recent activity data for th
 - Activity report generated in `files/output/{firstname}-activity-dd-mm-yyyy/{firstname}-activity-dd-mm-yyyy.md`
 - Report copied to Google Drive Activity folder
 
-## Step 3: Open Culture Amp Page
+## Step 3: Generate HTML and Open in Browser
+
+### Goal
+Generate an HTML version of the activity report and open it in the browser for easy viewing during the 1-on-1 meeting.
+
+### Instructions
+1. After the markdown report is generated, convert it to HTML
+2. Use the markdown-to-HTML converter script (`files/scratch/md_to_html.py`)
+3. The script will automatically extract the person's name from the markdown title and use it in the HTML page title
+4. Generate the HTML file in the same directory as the markdown file
+5. Open the HTML file in the default browser
+
+### Process
+```bash
+# Generate HTML from markdown
+python3 files/scratch/md_to_html.py "files/output/{firstname}-activity-dd-mm-yyyy/{firstname}-activity-dd-mm-yyyy.md"
+
+# Open HTML in browser
+open "files/output/{firstname}-activity-dd-mm-yyyy/{firstname}-activity-dd-mm-yyyy.html"
+```
+
+### Important Notes
+- The HTML file is **disposable** - it's only generated for viewing during the 1-on-1
+- The HTML file is **NOT** copied to Google Drive (only the markdown file is copied)
+- The HTML file will be generated in the same output directory as the markdown file
+- If the markdown-to-HTML converter script doesn't exist, create it first (see script location: `files/scratch/md_to_html.py`)
+
+### Expected Output
+- HTML file generated: `files/output/{firstname}-activity-dd-mm-yyyy/{firstname}-activity-dd-mm-yyyy.html`
+- HTML file opens in the default browser with styled, readable formatting
+- HTML page title reflects the person's name (e.g., "Victor Chang - Activity Report")
+
+## Step 4: Open Culture Amp Page
 
 ### Goal
 Open the team member's Culture Amp conversation page in the default browser.
@@ -90,7 +123,7 @@ open "https://envato.cultureamp.com/app/conversations/0196779c-da88-702d-9105-05
 - Culture Amp page opens in the default browser (if URL is configured)
 - Or a note that the URL is not configured
 
-## Step 4: Open Google Drive Page
+## Step 5: Open Google Drive Page
 
 ### Goal
 Open the team member's Google Drive folder page in the default browser.
@@ -121,15 +154,17 @@ To prepare for a 1-on-1 with Sam Gold:
    - Culture Amp URL: `https://envato.cultureamp.com/app/conversations/0196779c-da88-702d-9105-05a3a02ed337?tab=history`
    - Google Drive URL: `https://drive.google.com/drive/folders/15PUviwhwfAf6pNzb1TVvah4NH0aN4A_V`
 2. Execute `collect-activity.md` recipe for Sam
-3. Open Culture Amp page: `open "https://envato.cultureamp.com/app/conversations/0196779c-da88-702d-9105-05a3a02ed337?tab=history"`
-4. Open Google Drive page: `open "https://drive.google.com/drive/folders/15PUviwhwfAf6pNzb1TVvah4NH0aN4A_V"`
+3. Generate HTML and open in browser: `python3 files/scratch/md_to_html.py "files/output/sam-activity-dd-mm-yyyy/sam-activity-dd-mm-yyyy.md" && open "files/output/sam-activity-dd-mm-yyyy/sam-activity-dd-mm-yyyy.html"`
+4. Open Culture Amp page: `open "https://envato.cultureamp.com/app/conversations/0196779c-da88-702d-9105-05a3a02ed337?tab=history"`
+5. Open Google Drive page: `open "https://drive.google.com/drive/folders/15PUviwhwfAf6pNzb1TVvah4NH0aN4A_V"`
 
 ## Notes
 
 - The activity collection uses the default date range (last 7 days ending yesterday) unless specified
 - If Culture Amp or Google Drive URLs are not configured for a team member, those steps will be skipped
 - URLs are opened in the default browser using the macOS `open` command
-- The activity report will be available in both the local output directory and Google Drive
+- The markdown activity report will be available in both the local output directory and Google Drive
+- The HTML version is generated temporarily for browser viewing and is **not** copied to Google Drive (disposable)
 
 ## Troubleshooting
 
@@ -146,4 +181,5 @@ To prepare for a 1-on-1 with Sam Gold:
 ### Activity Collection Issues
 - Refer to troubleshooting section in `recipes/activity-log/collect-activity.md`
 - Common issues: missing Slack IDs, incorrect Jira account IDs, date format issues
+
 
