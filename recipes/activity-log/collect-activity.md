@@ -2,6 +2,12 @@
 
 This recipe collects Slack, Jira, and Confluence activity for a team member over a specified time period (default: last week) and generates a comprehensive activity report.
 
+## ⚠️ IMPORTANT: Use Template Format
+
+**Every new agent call MUST use the formatting template**: `recipes/activity-log/templates/activity-report-template.md`
+
+This template shows the correct format for all sections with all PII removed. Always reference this template when generating new reports to ensure consistent formatting.
+
 ## Task
 
 Execute these steps in sequence:
@@ -193,12 +199,15 @@ Create a comprehensive markdown report combining all collected activity.
 - ✅ **Key Collaborations**: NO bullet points for names - use bullet points only for details, two blank lines between collaborations
 - ✅ **Areas of Focus**: NO numbered lists - use bullet points for details, two blank lines between areas
 
+**📋 TEMPLATE REFERENCE**: Use `recipes/activity-log/templates/activity-report-template.md` as the formatting template for all new reports. This template shows the correct format for all sections.
+
 **See detailed formatting requirements below (items 4-9) and Report Format examples (starting at line ~253).**
 
 ### Instructions
-1. Create output directory: `files/output/{firstname}-activity-dd-mm-yyyy/`
-2. Generate markdown file: `{firstname}-activity-dd-mm-yyyy.md` (where dd-mm-yyyy is the end date of the activity period)
-3. Structure the report with the following sections:
+1. **Reference the template**: Review `recipes/activity-log/templates/activity-report-template.md` to see the correct formatting for all sections
+2. Create output directory: `files/output/{firstname}-activity-dd-mm-yyyy/`
+3. Generate markdown file: `{firstname}-activity-dd-mm-yyyy.md` (where dd-mm-yyyy is the end date of the activity period)
+4. Structure the report with the following sections, following the template format:
    - Title and date range
    - Executive Summary
    - Slack Activity (with message count, key channels with links, activities by date with message links, themes)
@@ -530,5 +539,6 @@ To collect activity for Alex Johnson:
   - **Notable Achievements**: NO numbered lists - use ✅ emoji + bullet points, two blank lines between achievements
   - **Key Collaborations**: NO bullet points for names - use bullet points only for details, two blank lines between collaborations
   - **Areas of Focus**: NO numbered lists - use bullet points for details, two blank lines between areas
-- **Formatting Reference**: See the "Report Format" section above (starting at line ~241) for detailed examples of the correct formatting for each section
+- **📋 TEMPLATE REFERENCE**: Always use `recipes/activity-log/templates/activity-report-template.md` as the formatting template. This template contains the correct format for all sections with all PII removed. Every new agent call should reference this template to ensure consistent formatting.
+- **Formatting Reference**: See the "Report Format" section above (starting at line ~253) for detailed examples of the correct formatting for each section
 
