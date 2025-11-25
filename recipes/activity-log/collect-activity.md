@@ -183,6 +183,18 @@ For each page found, extract:
 ### Goal
 Create a comprehensive markdown report combining all collected activity.
 
+### ⚠️ IMPORTANT: Formatting Requirements Checklist
+**Before generating the report, ensure you follow these formatting requirements:**
+
+- ✅ **Jira Activity**: NO bullet points or numbered lists - use line breaks with double spaces, two blank lines between issues
+- ✅ **Pull Requests**: NO bullet points or numbered lists - use line breaks with double spaces, two blank lines between PRs  
+- ✅ **Key Themes from Slack**: NO numbered lists - use bullet points for details, two blank lines between themes
+- ✅ **Notable Achievements**: NO numbered lists - use ✅ emoji + bullet points for details, two blank lines between achievements
+- ✅ **Key Collaborations**: NO bullet points for names - use bullet points only for details, two blank lines between collaborations
+- ✅ **Areas of Focus**: NO numbered lists - use bullet points for details, two blank lines between areas
+
+**See detailed formatting requirements below (items 4-9).**
+
 ### Instructions
 1. Create output directory: `files/output/{firstname}-activity-dd-mm-yyyy/`
 2. Generate markdown file: `{firstname}-activity-dd-mm-yyyy.md` (where dd-mm-yyyy is the end date of the activity period)
@@ -508,5 +520,12 @@ To collect activity for Alex Johnson:
   - Documents mentioned must have their respective links (Google Drive, Confluence, etc.)
 - Links should be formatted as markdown links: `[Display Text](URL)`
 - When extracting information from Slack messages, look for URLs to documents, Jira issues, PRs, etc., and include them in the report
-- **Jira Activity Formatting**: Format Jira issues without bullet points or numbered lists. Use double spaces at the end of each field line to create line breaks, and include two blank lines between issues for better readability in HTML output
+- **⚠️ CRITICAL FORMATTING REQUIREMENTS**: When generating reports, you MUST follow the formatting requirements in Step 5:
+  - **Jira Activity**: NO bullet points or numbered lists - use line breaks with double spaces, two blank lines between issues
+  - **Pull Requests**: NO bullet points or numbered lists - use line breaks with double spaces, two blank lines between PRs
+  - **Key Themes**: NO numbered lists - use bullet points for details, two blank lines between themes
+  - **Notable Achievements**: NO numbered lists - use ✅ emoji + bullet points, two blank lines between achievements
+  - **Key Collaborations**: NO bullet points for names - use bullet points only for details, two blank lines between collaborations
+  - **Areas of Focus**: NO numbered lists - use bullet points for details, two blank lines between areas
+- **Reference Format**: See `files/output/peter-activity-25-11-2025/peter-activity-24-11-2025.md` for a correctly formatted example
 
