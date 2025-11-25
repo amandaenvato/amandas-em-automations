@@ -26,7 +26,29 @@ This repository contains instruction recipes for AI agents (like Claude Code, Cu
    
    **Google Calendar** (`google-calendar`)
    - Configure Google OAuth credentials
-   - For instructions about how to configure Google Calendar, please follow these instructions: https://github.com/nspady/google-calendar-mcp
+   - **Setup Steps:**
+     1. **OAuth Credentials**: You can reuse the same OAuth credentials file used for Google Drive MCP. If you don't have one yet, create OAuth credentials in [Google Cloud Console](https://console.cloud.google.com/):
+        - Create a project (or use existing)
+        - Enable the Google Calendar API
+        - Create OAuth 2.0 credentials (Desktop app type)
+        - Download the credentials JSON file (typically named `gcp-oauth.keys.json`)
+     2. **Update MCP Configuration**: In `.cursor/mcp.json`, set `GOOGLE_OAUTH_CREDENTIALS` to the path of your credentials file:
+        ```json
+        "google-calendar": {
+          "command": "npx",
+          "args": ["@cocal/google-calendar-mcp"],
+          "env": {
+            "GOOGLE_OAUTH_CREDENTIALS": "/path/to/your/gcp-oauth.keys.json"
+          }
+        }
+        ```
+     3. **Run Authentication**: Execute the authentication flow to generate tokens:
+        ```bash
+        GOOGLE_OAUTH_CREDENTIALS=/path/to/your/gcp-oauth.keys.json npx @cocal/google-calendar-mcp auth
+        ```
+        This will open a browser for OAuth authentication. Tokens will be saved to `~/.config/google-calendar-mcp/tokens.json`.
+     4. **Restart Cursor**: After completing authentication, restart Cursor to load the updated MCP configuration.
+   - For additional details, see: https://github.com/nspady/google-calendar-mcp
    
    **Atlassian** (`mcp-atlassian`)
    - Configure Jira and Confluence URLs, usernames, and API tokens
