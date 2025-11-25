@@ -527,5 +527,5 @@ To collect activity for Alex Johnson:
   - **Notable Achievements**: NO numbered lists - use ✅ emoji + bullet points, two blank lines between achievements
   - **Key Collaborations**: NO bullet points for names - use bullet points only for details, two blank lines between collaborations
   - **Areas of Focus**: NO numbered lists - use bullet points for details, two blank lines between areas
-- **Reference Format**: See `files/output/peter-activity-25-11-2025/peter-activity-24-11-2025.md` for a correctly formatted example
+- **Formatting Reference**: See the "Report Format" section above (starting at line ~241) for detailed examples of the correct formatting for each section
 
