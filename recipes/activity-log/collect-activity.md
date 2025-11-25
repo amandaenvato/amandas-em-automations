@@ -197,7 +197,13 @@ Create a comprehensive markdown report combining all collected activity.
    - Notable Achievements (with links to related resources)
    - Areas of Focus (with links to related resources)
    - Data Sources
-4. **CRITICAL**: Ensure every piece of information includes its reference link:
+4. **Jira Activity Formatting Requirements**:
+   - **Do NOT use bullet points or numbered lists** for Jira issues
+   - Format each issue as a paragraph with fields separated by line breaks (use double space + newline at end of each field line)
+   - Use **two blank lines** between each issue for clear visual separation
+   - Format Related Resources as comma-separated inline links (not a bullet list)
+   - Each field should be on its own line with a double space at the end to create a line break in HTML
+5. **CRITICAL**: Ensure every piece of information includes its reference link:
    - Every Slack message/channel → Slack link
    - Every Jira issue → Jira link
    - Every Confluence page → Confluence link
@@ -253,19 +259,28 @@ Create a comprehensive markdown report combining all collected activity.
 
 **Results**: Found {count} issues updated:
 
-1. **[{ISSUE-KEY}]({JIRA_URL})** - {Summary}
-   - **Status**: {Status}
-   - **Updated**: {Date} at {Time} (Melbourne time)
-   - **Created**: {Date}
-   - **Priority**: {Priority}
-   - **Issue Type**: {Type}
-   - **Reporter**: {Name}
-   - **Jira Link**: [{ISSUE-KEY} on Jira]({JIRA_URL})
-   - **Context**: {Description}
-   - **Related Resources**:
-     - [Related PR](https://github.com/org/repo/pull/123) (if applicable)
-     - [Related Document](https://docs.google.com/document/d/...) (if applicable)
-     - [Related Slack Thread](https://envato.slack.com/archives/C1234567890/p1234567890123456) (if applicable)
+**[{ISSUE-KEY}]({JIRA_URL})** - {Summary}  
+**Status**: {Status}  
+**Updated**: {Date} at {Time} (Melbourne time)  
+**Created**: {Date}  
+**Priority**: {Priority}  
+**Issue Type**: {Type}  
+**Reporter**: {Name}  
+**Jira Link**: [{ISSUE-KEY} on Jira]({JIRA_URL})  
+**Context**: {Description}  
+**Related Resources**: [Related PR](https://github.com/org/repo/pull/123), [Related Document](https://docs.google.com/document/d/...), [Related Slack Thread](https://envato.slack.com/archives/C1234567890/p1234567890123456) (if applicable)
+
+
+**[{ISSUE-KEY}]({JIRA_URL})** - {Summary}  
+**Status**: {Status}  
+**Updated**: {Date} at {Time} (Melbourne time)  
+**Created**: {Date}  
+**Priority**: {Priority}  
+**Issue Type**: {Type}  
+**Reporter**: {Name}  
+**Jira Link**: [{ISSUE-KEY} on Jira]({JIRA_URL})  
+**Context**: {Description}  
+**Related Resources**: [Related PR](https://github.com/org/repo/pull/123), [Related Document](https://docs.google.com/document/d/...), [Related Slack Thread](https://envato.slack.com/archives/C1234567890/p1234567890123456) (if applicable)
 
 ---
 
@@ -442,4 +457,5 @@ To collect activity for Alex Johnson:
   - Documents mentioned must have their respective links (Google Drive, Confluence, etc.)
 - Links should be formatted as markdown links: `[Display Text](URL)`
 - When extracting information from Slack messages, look for URLs to documents, Jira issues, PRs, etc., and include them in the report
+- **Jira Activity Formatting**: Format Jira issues without bullet points or numbered lists. Use double spaces at the end of each field line to create line breaks, and include two blank lines between issues for better readability in HTML output
 
