@@ -203,7 +203,35 @@ Create a comprehensive markdown report combining all collected activity.
    - Use **two blank lines** between each issue for clear visual separation
    - Format Related Resources as comma-separated inline links (not a bullet list)
    - Each field should be on its own line with a double space at the end to create a line break in HTML
-5. **CRITICAL**: Ensure every piece of information includes its reference link:
+5. **Pull Requests Formatting Requirements**:
+   - **Do NOT use bullet points or numbered lists** for Pull Requests
+   - Format each PR as a paragraph with fields separated by line breaks (use double space + newline at end of each field line)
+   - Use **two blank lines** between each PR for clear visual separation
+   - Each field should be on its own line with a double space at the end to create a line break in HTML
+6. **Key Themes from Slack Formatting Requirements**:
+   - **Do NOT use numbered lists** for themes (use bullet points for details within each theme)
+   - Format each theme with a bold title followed by bullet points for details
+   - Use **two blank lines** between each theme for clear visual separation
+   - Format Related Resources as comma-separated inline links within a bullet point
+   - Each theme should start with a bold title, followed by bullet points for details
+7. **Notable Achievements Formatting Requirements**:
+   - **Do NOT use numbered lists** for achievements (use bullet points for details within each achievement)
+   - Format each achievement with ✅ emoji and bold title followed by bullet points for details
+   - Use **two blank lines** between each achievement for clear visual separation
+   - Format Related Resources as comma-separated inline links within a bullet point
+   - Each achievement should start with ✅ emoji and bold title, followed by bullet points for details
+8. **Key Collaborations Formatting Requirements**:
+   - **Do NOT use bullet points** for collaborator names (use bullet points only for details/links within each collaboration)
+   - Format each collaboration with bold name followed by bullet points for details
+   - Use **two blank lines** between each collaboration for clear visual separation
+   - Each collaboration should start with bold name and description, followed by bullet points for links/details
+9. **Areas of Focus Formatting Requirements**:
+   - **Do NOT use numbered lists** for areas (use bullet points for details within each area)
+   - Format each area with bold title followed by bullet points for details
+   - Use **two blank lines** between each area for clear visual separation
+   - Format Related Resources as comma-separated inline links within a bullet point
+   - Each area should start with a bold title, followed by bullet points for details
+10. **CRITICAL**: Ensure every piece of information includes its reference link:
    - Every Slack message/channel → Slack link
    - Every Jira issue → Jira link
    - Every Confluence page → Confluence link
@@ -241,10 +269,16 @@ Create a comprehensive markdown report combining all collected activity.
   - [Link to specific message/thread](https://envato.slack.com/archives/C1234567890/p1234567890123456)
 
 ### Key Themes from Slack
-1. **Theme 1**: Description
-   - [Related Slack thread](https://envato.slack.com/archives/C1234567890/p1234567890123456)
-2. **Theme 2**: Description
-   - [Related Slack thread](https://envato.slack.com/archives/C1234567890/p1234567890123456)
+
+**Theme 1**: Description  
+- Details about theme 1
+- Additional details
+- **Related Resources**: [Related Slack thread](https://envato.slack.com/archives/C1234567890/p1234567890123456), [Related Jira issue](https://envato.atlassian.net/browse/PROJ-123)
+
+
+**Theme 2**: Description  
+- Details about theme 2
+- **Related Resources**: [Related Slack thread](https://envato.slack.com/archives/C1234567890/p1234567890123456)
 
 ### Referenced Documents
 - [Document Name](https://docs.google.com/document/d/...) - Referenced in [`#channel`](https://envato.slack.com/archives/C1234567890)
@@ -304,37 +338,54 @@ OR
 
 ## Pull Requests
 
-1. **[PR Title](https://github.com/org/repo/pull/123)** - {Description}
-   - **Repository**: {repo-name}
-   - **Status**: {merged/open/closed}
-   - **Related Jira**: [{ISSUE-KEY}]({JIRA_URL}) (if applicable)
-   - **GitHub Link**: [PR #123](https://github.com/org/repo/pull/123)
+**[PR Title](https://github.com/org/repo/pull/123)** - {Description}  
+**Repository**: {repo-name}  
+**Status**: {merged/open/closed}  
+**Related Jira**: [{ISSUE-KEY}]({JIRA_URL}) (if applicable)  
+**GitHub Link**: [PR #123](https://github.com/org/repo/pull/123)
+
+
+**[PR Title](https://github.com/org/repo/pull/456)** - {Description}  
+**Repository**: {repo-name}  
+**Status**: {merged/open/closed}  
+**Related Jira**: [{ISSUE-KEY}]({JIRA_URL}) (if applicable)  
+**GitHub Link**: [PR #456](https://github.com/org/repo/pull/456)
 
 ---
 
 ## Key Collaborations
 
-- **{Name}** ({Slack ID}): {Description}
-  - [Slack conversation in `#channel`](https://envato.slack.com/archives/C1234567890/p1234567890123456)
-  - [Related Jira issue]({JIRA_URL}) (if applicable)
+**{Name}** ({Slack ID}): {Description}  
+- [Slack conversation in `#channel`](https://envato.slack.com/archives/C1234567890/p1234567890123456)
+- [Related Jira issue]({JIRA_URL}) (if applicable)
+
+
+**{Name}** ({Slack ID}): {Description}  
+- [Slack conversation in `#channel`](https://envato.slack.com/archives/C1234567890/p1234567890123456)
 
 ---
 
 ## Notable Achievements
 
-1. ✅ {Achievement}
-   - [Related Jira issue]({JIRA_URL}) (if applicable)
-   - [Related Slack discussion](https://envato.slack.com/archives/C1234567890/p1234567890123456) (if applicable)
-   - [Related PR](https://github.com/org/repo/pull/123) (if applicable)
+✅ **{Achievement}**: {Description}  
+- **Related Resources**: [Related Jira issue]({JIRA_URL}), [Related PR](https://github.com/org/repo/pull/123), [Related Slack discussion](https://envato.slack.com/archives/C1234567890/p1234567890123456) (if applicable)
+
+
+✅ **{Achievement}**: {Description}  
+- [Related link]({URL})
+- **Related Resources**: [Related Jira issue]({JIRA_URL}) (if applicable)
 
 ---
 
 ## Areas of Focus
 
-1. **{Area}**: {Description}
-   - [Related Jira issues]({JIRA_URL}) (if applicable)
-   - [Related Slack channels](https://envato.slack.com/archives/C1234567890) (if applicable)
-   - [Related documentation]({CONFLUENCE_URL}) (if applicable)
+**{Area}**: {Description}  
+- **Related Resources**: [Related Jira issues]({JIRA_URL}), [Related Slack channels](https://envato.slack.com/archives/C1234567890), [Related documentation]({CONFLUENCE_URL}) (if applicable)
+
+
+**{Area}**: {Description}  
+- [Related link]({URL})
+- Additional details
 
 ---
 

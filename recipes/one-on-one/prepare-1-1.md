@@ -98,6 +98,34 @@ open "files/output/{firstname}-activity-dd-mm-yyyy/{firstname}-activity-dd-mm-yy
 - HTML file generated: `files/output/{firstname}-activity-dd-mm-yyyy/{firstname}-activity-dd-mm-yyyy.html`
 - HTML file opens in the default browser with styled, readable formatting
 - HTML page title reflects the person's name (e.g., "Victor Chang - Activity Report")
+- **Jira Activity Formatting**: The HTML will display Jira issues with improved readability:
+  - No bullet points or numbered lists
+  - Line breaks between each field (Status, Updated, Created, etc.)
+  - Two blank lines between each issue for clear visual separation
+  - Related Resources formatted as comma-separated inline links
+- **Pull Requests Formatting**: The HTML will display Pull Requests with the same improved readability:
+  - No bullet points or numbered lists
+  - Line breaks between each field (Repository, Status, Related Jira, etc.)
+  - Two blank lines between each PR for clear visual separation
+- **Key Themes Formatting**: The HTML will display Key Themes from Slack with improved readability:
+  - No numbered lists (use bullet points for details within each theme)
+  - Bold theme title followed by bullet points for details
+  - Two blank lines between each theme for clear visual separation
+  - Related Resources formatted as comma-separated inline links within a bullet point
+- **Notable Achievements Formatting**: The HTML will display Notable Achievements with the same improved readability:
+  - No numbered lists (use bullet points for details within each achievement)
+  - ✅ emoji and bold achievement title followed by bullet points for details
+  - Two blank lines between each achievement for clear visual separation
+  - Related Resources formatted as comma-separated inline links within a bullet point
+- **Key Collaborations Formatting**: The HTML will display Key Collaborations with improved readability:
+  - No bullet points for collaborator names (use bullet points only for details/links)
+  - Bold collaborator name and description followed by bullet points for links
+  - Two blank lines between each collaboration for clear visual separation
+- **Areas of Focus Formatting**: The HTML will display Areas of Focus with the same improved readability:
+  - No numbered lists (use bullet points for details within each area)
+  - Bold area title followed by bullet points for details
+  - Two blank lines between each area for clear visual separation
+  - Related Resources formatted as comma-separated inline links within a bullet point
 
 ## Step 4: Open Culture Amp Page
 
