@@ -186,14 +186,14 @@ Create a comprehensive markdown report combining all collected activity.
 ### ⚠️ IMPORTANT: Formatting Requirements Checklist
 **Before generating the report, ensure you follow these formatting requirements:**
 
-- ✅ **Jira Activity**: NO bullet points or numbered lists - use line breaks with double spaces, two blank lines between issues
-- ✅ **Pull Requests**: NO bullet points or numbered lists - use line breaks with double spaces, two blank lines between PRs  
+- ✅ **Jira Activity**: NO bullet points or numbered lists - use line breaks with double spaces (`  `) at end of each field line, two blank lines between issues
+- ✅ **Pull Requests**: NO bullet points or numbered lists - use line breaks with double spaces (`  `) at end of each field line, two blank lines between PRs  
 - ✅ **Key Themes from Slack**: NO numbered lists - use bullet points for details, two blank lines between themes
 - ✅ **Notable Achievements**: NO numbered lists - use ✅ emoji + bullet points for details, two blank lines between achievements
 - ✅ **Key Collaborations**: NO bullet points for names - use bullet points only for details, two blank lines between collaborations
 - ✅ **Areas of Focus**: NO numbered lists - use bullet points for details, two blank lines between areas
 
-**See detailed formatting requirements below (items 4-9).**
+**See detailed formatting requirements below (items 4-9) and Report Format examples (starting at line ~253).**
 
 ### Instructions
 1. Create output directory: `files/output/{firstname}-activity-dd-mm-yyyy/`
@@ -251,6 +251,9 @@ Create a comprehensive markdown report combining all collected activity.
    - Every document referenced → Document link (Google Drive, Confluence, etc.)
 
 ### Report Format
+
+**Important**: In the examples below, lines ending with `  ` (double space) will create line breaks in HTML. Make sure to include two spaces at the end of each field line for Jira Activity and Pull Requests sections.
+
 ```markdown
 # {Full Name} - Activity Report ({start_date} - {end_date})
 **Date Range**: {start_date} - {end_date}  
