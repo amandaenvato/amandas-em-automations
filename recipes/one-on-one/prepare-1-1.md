@@ -65,7 +65,7 @@ Execute the activity collection recipe to gather all recent activity data for th
 
 ### Expected Output
 - Activity report generated in `files/output/{firstname}-activity-dd-mm-yyyy/{firstname}-activity-dd-mm-yyyy.md`
-- Report copied to Google Drive Activity folder
+- Report copied to local Google Drive Activity folder: `{Local Google Drive Path}/Activity/{firstname}-activity-dd-mm-yyyy.md`
 
 ## Step 3: Generate HTML and Open in Browser
 
@@ -89,9 +89,10 @@ open "files/output/{firstname}-activity-dd-mm-yyyy/{firstname}-activity-dd-mm-yy
 ```
 
 ### Important Notes
-- The HTML file is **disposable** - it's only generated for viewing during the 1-on-1
-- The HTML file is **NOT** copied to Google Drive (only the markdown file is copied)
-- The HTML file will be generated in the same output directory as the markdown file
+- The HTML file is **temporary and disposable** - it's only generated for viewing during the 1-on-1 meeting
+- The HTML file is **NOT** copied to Google Drive or the local Activity directory (only the markdown file is saved)
+- The HTML file will be generated in the temporary output directory: `files/output/{firstname}-activity-dd-mm-yyyy/{firstname}-activity-dd-mm-yyyy.html`
+- The HTML file can be deleted after the 1-on-1 meeting - it's for temporary consumption only
 - If the markdown-to-HTML converter script doesn't exist, create it first (see script location: `files/scratch/md_to_html.py`)
 
 ### Expected Output
@@ -191,8 +192,10 @@ To prepare for a 1-on-1 with Sam Gold:
 - The activity collection uses the default date range (last 7 days ending yesterday) unless specified
 - If Culture Amp or Google Drive URLs are not configured for a team member, those steps will be skipped
 - URLs are opened in the default browser using the macOS `open` command
-- The markdown activity report will be available in both the local output directory and Google Drive
-- The HTML version is generated temporarily for browser viewing and is **not** copied to Google Drive (disposable)
+- **File Storage**:
+  - The markdown activity report is saved in the local Google Drive Activity folder: `{Local Google Drive Path}/Activity/{firstname}-activity-dd-mm-yyyy.md`
+  - The HTML file is generated temporarily in `files/output/{firstname}-activity-dd-mm-yyyy/` for browser viewing only
+  - The HTML file is **not** copied to Google Drive or the Activity directory - it's disposable and can be deleted after the meeting
 
 ## Troubleshooting
 

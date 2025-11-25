@@ -27,7 +27,7 @@ All output goes into `files/output/{firstname}-activity-dd-mm-yyyy/` (where dd-m
 - `{firstname}-activity-dd-mm-yyyy.md` - Comprehensive activity report with Slack, Jira, and Confluence activity (where dd-mm-yyyy is the end date of the activity period)
 
 The report is also copied to the team member's Activity folder in Google Drive:
-- `{Local Google Drive Path}/{firstname}/Activity/{firstname}-activity-dd-mm-yyyy.md` (where dd-mm-yyyy is the end date of the activity period)
+- `{Local Google Drive Path}/Activity/{firstname}-activity-dd-mm-yyyy.md` (where dd-mm-yyyy is the end date of the activity period)
 
 **Note**: The directory name uses the generation date (when the report is created), while the filename uses the end date of the activity period being reported on.
 
@@ -436,17 +436,17 @@ Copy the generated report to the team member's Activity folder in their Google D
 
 ### Instructions
 1. Get the team member's Local Google Drive Path from `people-info.md`
-2. Create the Activity folder if it doesn't exist: `{Local Google Drive Path}/{firstname}/Activity/`
+2. Create the Activity folder if it doesn't exist: `{Local Google Drive Path}/Activity/`
 3. Copy the report file to that location
 
 ### Process
 ```bash
 # Create Activity folder if needed
-mkdir -p "{Local Google Drive Path}/{firstname}/Activity"
+mkdir -p "{Local Google Drive Path}/Activity"
 
 # Copy the report
 cp "files/output/{firstname}-activity-dd-mm-yyyy/{firstname}-activity-dd-mm-yyyy.md" \
-   "{Local Google Drive Path}/{firstname}/Activity/{firstname}-activity-dd-mm-yyyy.md"
+   "{Local Google Drive Path}/Activity/{firstname}-activity-dd-mm-yyyy.md"
 ```
 
 ### Expected Output
@@ -515,7 +515,7 @@ To collect activity for Alex Johnson:
 3. Search Jira for issues assigned to Alex's account_id updated in that period
 4. Search Confluence for pages created/modified by alex.johnson@example.com
 5. Generate report: `files/output/alex-activity-20-11-2025/alex-activity-19-11-2025.md` (end date: Nov 19, 2025)
-6. Copy to: `{Alex's Local Google Drive Path}/Alex/Activity/alex-activity-19-11-2025.md`
+6. Copy to: `{Alex's Local Google Drive Path}/Activity/alex-activity-19-11-2025.md`
 
 ## Notes
 
