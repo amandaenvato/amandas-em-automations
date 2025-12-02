@@ -12,6 +12,7 @@ import { GitHubCLI, ALLOWED_COMMANDS } from "./src/github-cli.js";
 import { OpenAIClient } from "./src/openai-client.js";
 import { CultureAmpClient } from "./src/cultureamp-client.js";
 import { BrowserClient } from "./src/browser-client.js";
+import { BambooHRClient } from "./src/bamboohr-client.js";
 
 class LocalMCPServer {
   constructor() {
@@ -32,6 +33,7 @@ class LocalMCPServer {
     this.openAIClient = new OpenAIClient();
     this.browserClient = new BrowserClient();
     // Culture Amp client is created on-demand with tokens from browser extraction
+    // BambooHR client is created on-demand with subdomain and API key from env vars
     this.setupToolHandlers();
   }
 
@@ -228,6 +230,10 @@ class LocalMCPServer {
                   type: "string",
                   description: "The title of the topic to add",
                 },
+                topic_notes: {
+                  type: "string",
+                  description: "Optional notes/description to add to the topic (can include links)",
+                },
                 waitForIndicators: {
                   type: "array",
                   items: {
@@ -284,6 +290,54 @@ class LocalMCPServer {
                 },
               },
               required: ["conversation_url", "note_text"],
+            },
+          },
+          {
+            name: "bamboohr_list_employees",
+            description: "List all employees from the BambooHR directory",
+            inputSchema: {
+              type: "object",
+              properties: {
+                limit: {
+                  type: "number",
+                  description: "Limit the number of results returned",
+                },
+                fields: {
+                  type: "string",
+                  description: "Comma-separated list of fields to return (e.g., 'firstName,lastName,workEmail,jobTitle')",
+                },
+              },
+            },
+          },
+          {
+            name: "bamboohr_get_employee",
+            description: "Get a specific employee by ID from BambooHR",
+            inputSchema: {
+              type: "object",
+              properties: {
+                employee_id: {
+                  type: "string",
+                  description: "The employee ID to retrieve",
+                },
+                fields: {
+                  type: "string",
+                  description: "Comma-separated list of fields to return (e.g., 'firstName,lastName,workEmail,jobTitle,department')",
+                },
+              },
+              required: ["employee_id"],
+            },
+          },
+          {
+            name: "bamboohr_get_current_employee",
+            description: "Get the current employee (API key owner) from BambooHR",
+            inputSchema: {
+              type: "object",
+              properties: {
+                fields: {
+                  type: "string",
+                  description: "Comma-separated list of fields to return (e.g., 'firstName,lastName,workEmail,jobTitle,department')",
+                },
+              },
             },
           },
         ],
@@ -354,6 +408,7 @@ class LocalMCPServer {
         return await this.browserClient.addCultureAmpTopic(
           args.conversation_url,
           args.topic_title,
+          args?.topic_notes || null,
           args?.waitForIndicators || ['JW'],
           args?.maxWaitTime || 120000,
           args?.headless || false
@@ -371,6 +426,76 @@ class LocalMCPServer {
           args?.maxWaitTime || 120000,
           args?.headless || false
         );
+      }
+
+      if (name === "bamboohr_list_employees") {
+        const subdomain = process.env.BAMBOOHR_SUBDOMAIN;
+        const apiKey = process.env.BAMBOOHR_API_KEY;
+        if (!subdomain || !apiKey) {
+          throw new Error(
+            "BambooHR configuration required. Set BAMBOOHR_SUBDOMAIN and BAMBOOHR_API_KEY environment variables."
+          );
+        }
+        const bamboohrClient = new BambooHRClient(subdomain, apiKey);
+        const data = await bamboohrClient.listEmployees({
+          limit: args?.limit,
+          fields: args?.fields,
+        });
+        return {
+          content: [
+            {
+              type: "text",
+              text: bamboohrClient.formatEmployeeDirectory(data),
+            },
+          ],
+        };
+      }
+
+      if (name === "bamboohr_get_employee") {
+        const subdomain = process.env.BAMBOOHR_SUBDOMAIN;
+        const apiKey = process.env.BAMBOOHR_API_KEY;
+        if (!subdomain || !apiKey) {
+          throw new Error(
+            "BambooHR configuration required. Set BAMBOOHR_SUBDOMAIN and BAMBOOHR_API_KEY environment variables."
+          );
+        }
+        if (!args?.employee_id) {
+          throw new Error("employee_id is required");
+        }
+        const bamboohrClient = new BambooHRClient(subdomain, apiKey);
+        const data = await bamboohrClient.getEmployee(args.employee_id, {
+          fields: args?.fields,
+        });
+        return {
+          content: [
+            {
+              type: "text",
+              text: bamboohrClient.formatEmployee(data),
+            },
+          ],
+        };
+      }
+
+      if (name === "bamboohr_get_current_employee") {
+        const subdomain = process.env.BAMBOOHR_SUBDOMAIN;
+        const apiKey = process.env.BAMBOOHR_API_KEY;
+        if (!subdomain || !apiKey) {
+          throw new Error(
+            "BambooHR configuration required. Set BAMBOOHR_SUBDOMAIN and BAMBOOHR_API_KEY environment variables."
+          );
+        }
+        const bamboohrClient = new BambooHRClient(subdomain, apiKey);
+        const data = await bamboohrClient.getCurrentEmployee({
+          fields: args?.fields,
+        });
+        return {
+          content: [
+            {
+              type: "text",
+              text: bamboohrClient.formatEmployee(data),
+            },
+          ],
+        };
       }
 
       throw new Error(`Unknown tool: ${name}`);

@@ -1,15 +1,16 @@
 # Local MCP Server
 
-A custom MCP (Model Context Protocol) server that provides tools for interacting with the Cursor Agent API, GitHub CLI, OpenAI, Browser automation, and Culture Amp.
+A custom MCP (Model Context Protocol) server that provides tools for interacting with the Cursor Agent API, GitHub CLI, OpenAI, Browser automation, Culture Amp, and BambooHR.
 
 ## Overview
 
-This server provides **6 tools** organized into 5 categories:
+This server provides **9 tools** organized into 6 categories:
 - **Cursor Agent API** (1 tool) - Autonomous agent management
 - **GitHub CLI** (1 tool) - Read-only GitHub operations via whitelisted commands
 - **OpenAI** (1 tool) - Direct AI API access
 - **Browser** (2 tools) - Cookie extraction and page fetching with authentication
 - **Culture Amp** (1 tool) - Conversation analysis
+- **BambooHR** (3 tools) - Employee directory and information queries
 
 ## Features
 
@@ -101,6 +102,25 @@ This server provides the following tools organized by category:
   })
   ```
 
+### BambooHR
+
+- **`bamboohr_list_employees`** - List all employees from the BambooHR directory
+  - **Optional Parameters:**
+    - `limit` (number): Limit the number of results returned
+    - `fields` (string): Comma-separated list of fields to return (e.g., `'firstName,lastName,workEmail,jobTitle'`)
+
+- **`bamboohr_get_employee`** - Get a specific employee by ID from BambooHR
+  - **Required Parameters:**
+    - `employee_id` (string): The employee ID to retrieve
+  - **Optional Parameters:**
+    - `fields` (string): Comma-separated list of fields to return (e.g., `'firstName,lastName,workEmail,jobTitle,department'`)
+
+- **`bamboohr_get_current_employee`** - Get the current employee (API key owner) from BambooHR
+  - **Optional Parameters:**
+    - `fields` (string): Comma-separated list of fields to return (e.g., `'firstName,lastName,workEmail,jobTitle,department'`)
+
+  **Note**: BambooHR credentials must be configured via environment variables. See Prerequisites section below.
+
 ## Prerequisites
 
 ### Environment Variables
@@ -110,6 +130,8 @@ Different tools require different environment variables:
 **Required:**
 - `CURSOR_API_KEY` - Required for `start_cursor_agent` tool. Get your API key from [Cursor Dashboard](https://cursor.com/dashboard).
 - `OPENAI_API_KEY` - Required for `ask_openai` tool. Get your API key from [OpenAI Platform](https://platform.openai.com/api-keys).
+- `BAMBOOHR_SUBDOMAIN` - Required for BambooHR tools. Your company subdomain (e.g., if your URL is `https://mycompany.bamboohr.com`, use `"mycompany"`).
+- `BAMBOOHR_API_KEY` - Required for BambooHR tools. Your BambooHR API key (160-bit hexadecimal string). Get it from BambooHR Settings → API Keys.
 
 **Optional:**
 - `CULTUREAMP_BROWSER_DATA_DIR` - Custom directory for Culture Amp browser session data (defaults to `~/.local-mcp/cultureamp-browser-data`)
@@ -138,11 +160,19 @@ The server is configured in your MCP configuration file (`~/.cursor/mcp.json`) a
       "command": "node",
       "args": [
         "/Users/jonathanwilliams/Development/envato/em-automations/local-mcp/index.js"
-      ]
+      ],
+      "env": {
+        "CURSOR_API_KEY": "<your-cursor-api-key>",
+        "OPENAI_API_KEY": "<your-openai-api-key>",
+        "BAMBOOHR_SUBDOMAIN": "<your-company-subdomain>",
+        "BAMBOOHR_API_KEY": "<your-bamboohr-api-key>"
+      }
     }
   }
 }
 ```
+
+**Note**: Update the path in `args` to match your repository location. Replace the placeholder values in `env` with your actual API keys and credentials.
 
 ## Development
 
