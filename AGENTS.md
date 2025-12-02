@@ -16,6 +16,13 @@ Guidelines for AI agents working in this codebase.
 - **Data masquerading**: When generating recipe files, always masquerade any PII (Personally Identifiable Information) such as real names, email addresses, Slack IDs, Jira account IDs, or other identifiers. Replace them with fake example identifiers (e.g., "Alex Johnson", "alex.johnson@example.com", "U1234567890")
 - **File naming**: Use descriptive, kebab-case filenames in the scratch directory (e.g., `user-disablement-investigation.md`)
 
+## Atlassian MCP (Jira/Confluence) Usage
+
+- **Docker-first approach**: Always try Docker MCP server first when accessing Jira or Confluence APIs
+- **Docker not running**: If Docker is not running, alert the user with a clear warning message (e.g., "⚠️ WARNING: Docker is installed but the daemon is not running. Please start Docker Desktop.") and attempt to use Docker anyway (in case the user starts it)
+- **Fallback to direct API**: Only fall back to direct API clients (`jira_api_client.py` and `confluence_api_client.py`) if Docker MCP server fails after attempting to use it
+- **Error handling**: If both Docker and direct API fail, provide clear error messages explaining what failed and what the user should do
+
 ## Iterating on Code in `local-mcp/`
 
 - **Restart required**: Remember that the user will need to restart the MCP server tool before you attempt to rerun the tool with new code
