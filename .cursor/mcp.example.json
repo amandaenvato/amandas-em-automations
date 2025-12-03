@@ -74,9 +74,12 @@
     },
     "pagerduty": {
       "command": "npx",
-      "args": ["-y", "@pagerduty/mcp-server"],
+      "args": ["-y", "pagerduty-mcp"],
       "env": {
-        "PAGERDUTY_API_TOKEN": "<REPLACE>"
+        "PAGERDUTY_CLIENT_ID": "<REPLACE>",
+        "PAGERDUTY_CLIENT_SECRET": "<REPLACE>",
+        "PAGERDUTY_OAUTH_TOKEN_URL": "https://identity.pagerduty.com/oauth/token",
+        "PAGERDUTY_OAUTH_SCOPES": "<REPLACE>"
       }
     }
   }

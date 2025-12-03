@@ -60,9 +60,11 @@ This repository contains instruction recipes for AI agents (like Claude Code, Cu
    - See the [Local MCP README](local-mcp/README.md) for detailed configuration instructions
    
    **PagerDuty** (`pagerduty`)
-   - Configure PagerDuty API token
+   - Configure PagerDuty OAuth credentials (CLIENT_ID and CLIENT_SECRET)
    - For instructions about how to configure PagerDuty MCP remote server, please follow these instructions: https://developer.pagerduty.com/docs/mcp-tooling-remote-server
-   - Set `PAGERDUTY_API_TOKEN` in the environment variables with your PagerDuty API token
+   - Set `PAGERDUTY_CLIENT_ID` and `PAGERDUTY_CLIENT_SECRET` in the environment variables with your OAuth app credentials
+   - Set `PAGERDUTY_OAUTH_SCOPES` with the space-separated scopes you selected during app registration
+   - The `PAGERDUTY_OAUTH_TOKEN_URL` is pre-configured to `https://identity.pagerduty.com/oauth/token`
 
 2. **Configure Team Information:**
    - Copy `files/recipe-config/people-info.example.md` to `files/recipe-config/people-info.md`
