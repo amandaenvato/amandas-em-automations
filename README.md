@@ -58,6 +58,11 @@ This repository contains instruction recipes for AI agents (like Claude Code, Cu
    - Configure Cursor API key and OpenAI API key
    - Update the `local-mcp` command path in `mcp.json` to match your repository location (replace `/Users/jonathanwilliams/Development/envato/em-automations/local-mcp/index.js` with your path)
    - See the [Local MCP README](local-mcp/README.md) for detailed configuration instructions
+   
+   **PagerDuty** (`pagerduty`)
+   - Configure PagerDuty API token
+   - For instructions about how to configure PagerDuty MCP remote server, please follow these instructions: https://developer.pagerduty.com/docs/mcp-tooling-remote-server
+   - Set `PAGERDUTY_API_TOKEN` in the environment variables with your PagerDuty API token
 
 2. **Configure Team Information:**
    - Copy `files/recipe-config/people-info.example.md` to `files/recipe-config/people-info.md`
@@ -85,6 +90,9 @@ This repository contains instruction recipes for AI agents (like Claude Code, Cu
 
    **Calendar:**
    - **Google Calendar** - Event management and meeting facilitation tracking
+   
+   **Incident Management:**
+   - **PagerDuty** - Incident management, on-call schedules, and alerting
 
 ## Components
 

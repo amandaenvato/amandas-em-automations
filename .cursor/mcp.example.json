@@ -71,6 +71,13 @@
         "BAMBOOHR_SUBDOMAIN": "<REPLACE>",
         "BAMBOOHR_API_KEY": "<REPLACE>"
       }
+    },
+    "pagerduty": {
+      "command": "npx",
+      "args": ["-y", "@pagerduty/mcp-server"],
+      "env": {
+        "PAGERDUTY_API_TOKEN": "<REPLACE>"
+      }
     }
   }
 }
