@@ -343,10 +343,14 @@ class LocalMCPServer {
           },
           {
             name: "pagerduty_list_incidents",
-            description: "List incidents from PagerDuty",
+            description: "List incidents from PagerDuty. Requires browser authentication cookies.",
             inputSchema: {
               type: "object",
               properties: {
+                cookies: {
+                  type: "string",
+                  description: "PagerDuty authentication cookies (extracted from browser using extract_cookies tool)",
+                },
                 statuses: {
                   type: "string",
                   description: "Comma-separated list of statuses (triggered, acknowledged, resolved)",
@@ -364,28 +368,37 @@ class LocalMCPServer {
                   description: "Offset for pagination",
                 },
               },
+              required: ["cookies"],
             },
           },
           {
             name: "pagerduty_get_incident",
-            description: "Get a specific incident by ID from PagerDuty",
+            description: "Get a specific incident by ID from PagerDuty. Requires browser authentication cookies.",
             inputSchema: {
               type: "object",
               properties: {
+                cookies: {
+                  type: "string",
+                  description: "PagerDuty authentication cookies (extracted from browser using extract_cookies tool)",
+                },
                 incident_id: {
                   type: "string",
                   description: "The incident ID",
                 },
               },
-              required: ["incident_id"],
+              required: ["cookies", "incident_id"],
             },
           },
           {
             name: "pagerduty_list_schedules",
-            description: "List on-call schedules from PagerDuty",
+            description: "List on-call schedules from PagerDuty. Requires browser authentication cookies.",
             inputSchema: {
               type: "object",
               properties: {
+                cookies: {
+                  type: "string",
+                  description: "PagerDuty authentication cookies (extracted from browser using extract_cookies tool)",
+                },
                 limit: {
                   type: "number",
                   description: "Number of results per page",
@@ -395,14 +408,19 @@ class LocalMCPServer {
                   description: "Offset for pagination",
                 },
               },
+              required: ["cookies"],
             },
           },
           {
             name: "pagerduty_get_oncall",
-            description: "Get on-call users for a schedule from PagerDuty",
+            description: "Get on-call users for a schedule from PagerDuty. Requires browser authentication cookies.",
             inputSchema: {
               type: "object",
               properties: {
+                cookies: {
+                  type: "string",
+                  description: "PagerDuty authentication cookies (extracted from browser using extract_cookies tool)",
+                },
                 schedule_id: {
                   type: "string",
                   description: "The schedule ID",
@@ -416,15 +434,19 @@ class LocalMCPServer {
                   description: "End of the time range (ISO 8601 format)",
                 },
               },
-              required: ["schedule_id"],
+              required: ["cookies", "schedule_id"],
             },
           },
           {
             name: "pagerduty_list_services",
-            description: "List services from PagerDuty",
+            description: "List services from PagerDuty. Requires browser authentication cookies.",
             inputSchema: {
               type: "object",
               properties: {
+                cookies: {
+                  type: "string",
+                  description: "PagerDuty authentication cookies (extracted from browser using extract_cookies tool)",
+                },
                 limit: {
                   type: "number",
                   description: "Number of results per page",
@@ -434,6 +456,7 @@ class LocalMCPServer {
                   description: "Offset for pagination",
                 },
               },
+              required: ["cookies"],
             },
           },
         ],
@@ -595,16 +618,15 @@ class LocalMCPServer {
       }
 
       if (name === "pagerduty_list_incidents") {
-        const clientId = process.env.PAGERDUTY_CLIENT_ID;
-        const clientSecret = process.env.PAGERDUTY_CLIENT_SECRET;
-        const tokenUrl = process.env.PAGERDUTY_OAUTH_TOKEN_URL || "https://identity.pagerduty.com/oauth/token";
-        const scopes = process.env.PAGERDUTY_OAUTH_SCOPES || "read write";
-        if (!clientId || !clientSecret) {
+        if (!args?.cookies) {
           throw new Error(
-            "PagerDuty configuration required. Set PAGERDUTY_CLIENT_ID and PAGERDUTY_CLIENT_SECRET environment variables."
+            "PagerDuty cookies required. Use extract_cookies tool first: " +
+            "url='https://app.pagerduty.com', " +
+            "waitForIndicators=['Incidents', 'Schedules', 'On-Call'], " +
+            "cookieNames=[] (extract all cookies)"
           );
         }
-        const pagerdutyClient = new PagerDutyClient(clientId, clientSecret, tokenUrl, scopes);
+        const pagerdutyClient = new PagerDutyClient(args.cookies);
         const data = await pagerdutyClient.listIncidents({
           statuses: args?.statuses,
           urgencies: args?.urgencies,
@@ -622,19 +644,18 @@ class LocalMCPServer {
       }
 
       if (name === "pagerduty_get_incident") {
-        const clientId = process.env.PAGERDUTY_CLIENT_ID;
-        const clientSecret = process.env.PAGERDUTY_CLIENT_SECRET;
-        const tokenUrl = process.env.PAGERDUTY_OAUTH_TOKEN_URL || "https://identity.pagerduty.com/oauth/token";
-        const scopes = process.env.PAGERDUTY_OAUTH_SCOPES || "read write";
-        if (!clientId || !clientSecret) {
+        if (!args?.cookies) {
           throw new Error(
-            "PagerDuty configuration required. Set PAGERDUTY_CLIENT_ID and PAGERDUTY_CLIENT_SECRET environment variables."
+            "PagerDuty cookies required. Use extract_cookies tool first: " +
+            "url='https://app.pagerduty.com', " +
+            "waitForIndicators=['Incidents', 'Schedules', 'On-Call'], " +
+            "cookieNames=[] (extract all cookies)"
           );
         }
         if (!args?.incident_id) {
           throw new Error("incident_id is required");
         }
-        const pagerdutyClient = new PagerDutyClient(clientId, clientSecret, tokenUrl, scopes);
+        const pagerdutyClient = new PagerDutyClient(args.cookies);
         const data = await pagerdutyClient.getIncident(args.incident_id);
         return {
           content: [
@@ -647,16 +668,15 @@ class LocalMCPServer {
       }
 
       if (name === "pagerduty_list_schedules") {
-        const clientId = process.env.PAGERDUTY_CLIENT_ID;
-        const clientSecret = process.env.PAGERDUTY_CLIENT_SECRET;
-        const tokenUrl = process.env.PAGERDUTY_OAUTH_TOKEN_URL || "https://identity.pagerduty.com/oauth/token";
-        const scopes = process.env.PAGERDUTY_OAUTH_SCOPES || "read write";
-        if (!clientId || !clientSecret) {
+        if (!args?.cookies) {
           throw new Error(
-            "PagerDuty configuration required. Set PAGERDUTY_CLIENT_ID and PAGERDUTY_CLIENT_SECRET environment variables."
+            "PagerDuty cookies required. Use extract_cookies tool first: " +
+            "url='https://app.pagerduty.com', " +
+            "waitForIndicators=['Incidents', 'Schedules', 'On-Call'], " +
+            "cookieNames=[] (extract all cookies)"
           );
         }
-        const pagerdutyClient = new PagerDutyClient(clientId, clientSecret, tokenUrl, scopes);
+        const pagerdutyClient = new PagerDutyClient(args.cookies);
         const data = await pagerdutyClient.listSchedules({
           limit: args?.limit,
           offset: args?.offset,
@@ -672,19 +692,18 @@ class LocalMCPServer {
       }
 
       if (name === "pagerduty_get_oncall") {
-        const clientId = process.env.PAGERDUTY_CLIENT_ID;
-        const clientSecret = process.env.PAGERDUTY_CLIENT_SECRET;
-        const tokenUrl = process.env.PAGERDUTY_OAUTH_TOKEN_URL || "https://identity.pagerduty.com/oauth/token";
-        const scopes = process.env.PAGERDUTY_OAUTH_SCOPES || "read write";
-        if (!clientId || !clientSecret) {
+        if (!args?.cookies) {
           throw new Error(
-            "PagerDuty configuration required. Set PAGERDUTY_CLIENT_ID and PAGERDUTY_CLIENT_SECRET environment variables."
+            "PagerDuty cookies required. Use extract_cookies tool first: " +
+            "url='https://app.pagerduty.com', " +
+            "waitForIndicators=['Incidents', 'Schedules', 'On-Call'], " +
+            "cookieNames=[] (extract all cookies)"
           );
         }
         if (!args?.schedule_id) {
           throw new Error("schedule_id is required");
         }
-        const pagerdutyClient = new PagerDutyClient(clientId, clientSecret, tokenUrl, scopes);
+        const pagerdutyClient = new PagerDutyClient(args.cookies);
         const data = await pagerdutyClient.getOnCall(args.schedule_id, {
           since: args?.since,
           until: args?.until,
@@ -700,16 +719,15 @@ class LocalMCPServer {
       }
 
       if (name === "pagerduty_list_services") {
-        const clientId = process.env.PAGERDUTY_CLIENT_ID;
-        const clientSecret = process.env.PAGERDUTY_CLIENT_SECRET;
-        const tokenUrl = process.env.PAGERDUTY_OAUTH_TOKEN_URL || "https://identity.pagerduty.com/oauth/token";
-        const scopes = process.env.PAGERDUTY_OAUTH_SCOPES || "read write";
-        if (!clientId || !clientSecret) {
+        if (!args?.cookies) {
           throw new Error(
-            "PagerDuty configuration required. Set PAGERDUTY_CLIENT_ID and PAGERDUTY_CLIENT_SECRET environment variables."
+            "PagerDuty cookies required. Use extract_cookies tool first: " +
+            "url='https://app.pagerduty.com', " +
+            "waitForIndicators=['Incidents', 'Schedules', 'On-Call'], " +
+            "cookieNames=[] (extract all cookies)"
           );
         }
-        const pagerdutyClient = new PagerDutyClient(clientId, clientSecret, tokenUrl, scopes);
+        const pagerdutyClient = new PagerDutyClient(args.cookies);
         const data = await pagerdutyClient.listServices({
           limit: args?.limit,
           offset: args?.offset,

@@ -1,61 +1,46 @@
 export class PagerDutyClient {
-  constructor(clientId, clientSecret, tokenUrl = "https://identity.pagerduty.com/oauth/token", scopes = "read write") {
-    if (!clientId || !clientSecret) {
+  constructor(cookies) {
+    // PagerDuty API authentication via browser cookies
+    // Cookies are extracted from browser after logging into PagerDuty
+    if (!cookies) {
       throw new Error(
-        "PagerDuty authentication required. Both clientId and clientSecret must be provided."
+        "PagerDuty authentication required. Cookies must be provided. " +
+        "Use extract_cookies tool to get authenticated cookies from PagerDuty."
       );
     }
 
-    this.clientId = clientId;
-    this.clientSecret = clientSecret;
-    this.tokenUrl = tokenUrl;
-    this.scopes = scopes;
+    this.cookies = typeof cookies === 'string' ? cookies : this.formatCookies(cookies);
     this.baseUrl = "https://api.pagerduty.com";
-    this.accessToken = null;
-    this.tokenExpiry = null;
   }
 
   /**
-   * Get OAuth access token using client credentials
+   * Format cookies array into cookie string
    * @private
    */
-  async getAccessToken() {
-    // Return cached token if still valid
-    if (this.accessToken && this.tokenExpiry && Date.now() < this.tokenExpiry) {
-      return this.accessToken;
-    }
-
-    try {
-      const response = await fetch(this.tokenUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-          grant_type: "client_credentials",
-          client_id: this.clientId,
-          client_secret: this.clientSecret,
-          scope: this.scopes,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `PagerDuty OAuth error: ${response.status} ${response.statusText}. Response: ${errorText}`
-        );
+  formatCookies(cookies) {
+    // If already a string, return as-is
+    if (typeof cookies === 'string') {
+      // Check if it's a JSON string
+      try {
+        const parsed = JSON.parse(cookies);
+        if (Array.isArray(parsed)) {
+          return parsed.map(c => `${c.name}=${c.value}`).join('; ');
+        }
+        return cookies;
+      } catch (e) {
+        // Not JSON, assume it's already a cookie string
+        return cookies;
       }
-
-      const data = await response.json();
-      this.accessToken = data.access_token;
-      // Set expiry to 5 minutes before actual expiry for safety
-      const expiresIn = (data.expires_in || 3600) * 1000; // Convert to milliseconds
-      this.tokenExpiry = Date.now() + expiresIn - 300000; // 5 minutes buffer
-
-      return this.accessToken;
-    } catch (error) {
-      throw new Error(`Failed to get PagerDuty access token: ${error.message}`);
     }
+    // If it's an array of cookie objects
+    if (Array.isArray(cookies)) {
+      return cookies.map(c => `${c.name}=${c.value}`).join('; ');
+    }
+    // If it's a single cookie object
+    if (cookies && cookies.name && cookies.value) {
+      return `${cookies.name}=${cookies.value}`;
+    }
+    return String(cookies);
   }
 
   /**
@@ -63,17 +48,17 @@ export class PagerDutyClient {
    * @private
    */
   async fetchApi(endpoint, options = {}) {
-    const token = await this.getAccessToken();
     const url = `${this.baseUrl}${endpoint}`;
 
     const response = await fetch(url, {
       ...options,
       headers: {
-        "Authorization": `Bearer ${token}`,
+        "Cookie": this.cookies,
         "Accept": "application/vnd.pagerduty+json;version=2",
         "Content-Type": "application/json",
         ...options.headers,
       },
+      credentials: "include", // Include cookies in request
     });
 
     const text = await response.text();
