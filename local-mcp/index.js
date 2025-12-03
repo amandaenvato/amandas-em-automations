@@ -13,6 +13,7 @@ import { OpenAIClient } from "./src/openai-client.js";
 import { CultureAmpClient } from "./src/cultureamp-client.js";
 import { BrowserClient } from "./src/browser-client.js";
 import { BambooHRClient } from "./src/bamboohr-client.js";
+import { PagerDutyClient } from "./src/pagerduty-client.js";
 
 class LocalMCPServer {
   constructor() {
@@ -340,6 +341,101 @@ class LocalMCPServer {
               },
             },
           },
+          {
+            name: "pagerduty_list_incidents",
+            description: "List incidents from PagerDuty",
+            inputSchema: {
+              type: "object",
+              properties: {
+                statuses: {
+                  type: "string",
+                  description: "Comma-separated list of statuses (triggered, acknowledged, resolved)",
+                },
+                urgencies: {
+                  type: "string",
+                  description: "Comma-separated list of urgencies (high, low)",
+                },
+                limit: {
+                  type: "number",
+                  description: "Number of results per page (default: 25)",
+                },
+                offset: {
+                  type: "number",
+                  description: "Offset for pagination",
+                },
+              },
+            },
+          },
+          {
+            name: "pagerduty_get_incident",
+            description: "Get a specific incident by ID from PagerDuty",
+            inputSchema: {
+              type: "object",
+              properties: {
+                incident_id: {
+                  type: "string",
+                  description: "The incident ID",
+                },
+              },
+              required: ["incident_id"],
+            },
+          },
+          {
+            name: "pagerduty_list_schedules",
+            description: "List on-call schedules from PagerDuty",
+            inputSchema: {
+              type: "object",
+              properties: {
+                limit: {
+                  type: "number",
+                  description: "Number of results per page",
+                },
+                offset: {
+                  type: "number",
+                  description: "Offset for pagination",
+                },
+              },
+            },
+          },
+          {
+            name: "pagerduty_get_oncall",
+            description: "Get on-call users for a schedule from PagerDuty",
+            inputSchema: {
+              type: "object",
+              properties: {
+                schedule_id: {
+                  type: "string",
+                  description: "The schedule ID",
+                },
+                since: {
+                  type: "string",
+                  description: "Start of the time range (ISO 8601 format)",
+                },
+                until: {
+                  type: "string",
+                  description: "End of the time range (ISO 8601 format)",
+                },
+              },
+              required: ["schedule_id"],
+            },
+          },
+          {
+            name: "pagerduty_list_services",
+            description: "List services from PagerDuty",
+            inputSchema: {
+              type: "object",
+              properties: {
+                limit: {
+                  type: "number",
+                  description: "Number of results per page",
+                },
+                offset: {
+                  type: "number",
+                  description: "Offset for pagination",
+                },
+              },
+            },
+          },
         ],
       };
     };
@@ -493,6 +589,136 @@ class LocalMCPServer {
             {
               type: "text",
               text: bamboohrClient.formatEmployee(data),
+            },
+          ],
+        };
+      }
+
+      if (name === "pagerduty_list_incidents") {
+        const clientId = process.env.PAGERDUTY_CLIENT_ID;
+        const clientSecret = process.env.PAGERDUTY_CLIENT_SECRET;
+        const tokenUrl = process.env.PAGERDUTY_OAUTH_TOKEN_URL || "https://identity.pagerduty.com/oauth/token";
+        const scopes = process.env.PAGERDUTY_OAUTH_SCOPES || "read write";
+        if (!clientId || !clientSecret) {
+          throw new Error(
+            "PagerDuty configuration required. Set PAGERDUTY_CLIENT_ID and PAGERDUTY_CLIENT_SECRET environment variables."
+          );
+        }
+        const pagerdutyClient = new PagerDutyClient(clientId, clientSecret, tokenUrl, scopes);
+        const data = await pagerdutyClient.listIncidents({
+          statuses: args?.statuses,
+          urgencies: args?.urgencies,
+          limit: args?.limit,
+          offset: args?.offset,
+        });
+        return {
+          content: [
+            {
+              type: "text",
+              text: pagerdutyClient.formatIncidents(data),
+            },
+          ],
+        };
+      }
+
+      if (name === "pagerduty_get_incident") {
+        const clientId = process.env.PAGERDUTY_CLIENT_ID;
+        const clientSecret = process.env.PAGERDUTY_CLIENT_SECRET;
+        const tokenUrl = process.env.PAGERDUTY_OAUTH_TOKEN_URL || "https://identity.pagerduty.com/oauth/token";
+        const scopes = process.env.PAGERDUTY_OAUTH_SCOPES || "read write";
+        if (!clientId || !clientSecret) {
+          throw new Error(
+            "PagerDuty configuration required. Set PAGERDUTY_CLIENT_ID and PAGERDUTY_CLIENT_SECRET environment variables."
+          );
+        }
+        if (!args?.incident_id) {
+          throw new Error("incident_id is required");
+        }
+        const pagerdutyClient = new PagerDutyClient(clientId, clientSecret, tokenUrl, scopes);
+        const data = await pagerdutyClient.getIncident(args.incident_id);
+        return {
+          content: [
+            {
+              type: "text",
+              text: pagerdutyClient.formatIncident(data),
+            },
+          ],
+        };
+      }
+
+      if (name === "pagerduty_list_schedules") {
+        const clientId = process.env.PAGERDUTY_CLIENT_ID;
+        const clientSecret = process.env.PAGERDUTY_CLIENT_SECRET;
+        const tokenUrl = process.env.PAGERDUTY_OAUTH_TOKEN_URL || "https://identity.pagerduty.com/oauth/token";
+        const scopes = process.env.PAGERDUTY_OAUTH_SCOPES || "read write";
+        if (!clientId || !clientSecret) {
+          throw new Error(
+            "PagerDuty configuration required. Set PAGERDUTY_CLIENT_ID and PAGERDUTY_CLIENT_SECRET environment variables."
+          );
+        }
+        const pagerdutyClient = new PagerDutyClient(clientId, clientSecret, tokenUrl, scopes);
+        const data = await pagerdutyClient.listSchedules({
+          limit: args?.limit,
+          offset: args?.offset,
+        });
+        return {
+          content: [
+            {
+              type: "text",
+              text: pagerdutyClient.formatSchedules(data),
+            },
+          ],
+        };
+      }
+
+      if (name === "pagerduty_get_oncall") {
+        const clientId = process.env.PAGERDUTY_CLIENT_ID;
+        const clientSecret = process.env.PAGERDUTY_CLIENT_SECRET;
+        const tokenUrl = process.env.PAGERDUTY_OAUTH_TOKEN_URL || "https://identity.pagerduty.com/oauth/token";
+        const scopes = process.env.PAGERDUTY_OAUTH_SCOPES || "read write";
+        if (!clientId || !clientSecret) {
+          throw new Error(
+            "PagerDuty configuration required. Set PAGERDUTY_CLIENT_ID and PAGERDUTY_CLIENT_SECRET environment variables."
+          );
+        }
+        if (!args?.schedule_id) {
+          throw new Error("schedule_id is required");
+        }
+        const pagerdutyClient = new PagerDutyClient(clientId, clientSecret, tokenUrl, scopes);
+        const data = await pagerdutyClient.getOnCall(args.schedule_id, {
+          since: args?.since,
+          until: args?.until,
+        });
+        return {
+          content: [
+            {
+              type: "text",
+              text: pagerdutyClient.formatOnCall(data),
+            },
+          ],
+        };
+      }
+
+      if (name === "pagerduty_list_services") {
+        const clientId = process.env.PAGERDUTY_CLIENT_ID;
+        const clientSecret = process.env.PAGERDUTY_CLIENT_SECRET;
+        const tokenUrl = process.env.PAGERDUTY_OAUTH_TOKEN_URL || "https://identity.pagerduty.com/oauth/token";
+        const scopes = process.env.PAGERDUTY_OAUTH_SCOPES || "read write";
+        if (!clientId || !clientSecret) {
+          throw new Error(
+            "PagerDuty configuration required. Set PAGERDUTY_CLIENT_ID and PAGERDUTY_CLIENT_SECRET environment variables."
+          );
+        }
+        const pagerdutyClient = new PagerDutyClient(clientId, clientSecret, tokenUrl, scopes);
+        const data = await pagerdutyClient.listServices({
+          limit: args?.limit,
+          offset: args?.offset,
+        });
+        return {
+          content: [
+            {
+              type: "text",
+              text: pagerdutyClient.formatServices(data),
             },
           ],
         };
