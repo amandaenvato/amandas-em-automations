@@ -69,7 +69,11 @@
         "CURSOR_API_KEY": "<REPLACE>",
         "OPENAI_API_KEY": "<REPLACE>",
         "BAMBOOHR_SUBDOMAIN": "<REPLACE>",
-        "BAMBOOHR_API_KEY": "<REPLACE>"
+        "BAMBOOHR_API_KEY": "<REPLACE>",
+        "PAGERDUTY_CLIENT_ID": "<REPLACE>",
+        "PAGERDUTY_CLIENT_SECRET": "<REPLACE>",
+        "PAGERDUTY_OAUTH_TOKEN_URL": "https://identity.pagerduty.com/oauth/token",
+        "PAGERDUTY_OAUTH_SCOPES": "read write"
       }
     }
   }

@@ -13,6 +13,7 @@ import { OpenAIClient } from "./src/openai-client.js";
 import { CultureAmpClient } from "./src/cultureamp-client.js";
 import { BrowserClient } from "./src/browser-client.js";
 import { BambooHRClient } from "./src/bamboohr-client.js";
+import { PagerDutyClient } from "./src/pagerduty-client.js";
 
 class LocalMCPServer {
   constructor() {
@@ -340,6 +341,124 @@ class LocalMCPServer {
               },
             },
           },
+          {
+            name: "pagerduty_list_incidents",
+            description: "List incidents from PagerDuty. Requires browser authentication cookies.",
+            inputSchema: {
+              type: "object",
+              properties: {
+                cookies: {
+                  type: "string",
+                  description: "PagerDuty authentication cookies (extracted from browser using extract_cookies tool)",
+                },
+                statuses: {
+                  type: "string",
+                  description: "Comma-separated list of statuses (triggered, acknowledged, resolved)",
+                },
+                urgencies: {
+                  type: "string",
+                  description: "Comma-separated list of urgencies (high, low)",
+                },
+                limit: {
+                  type: "number",
+                  description: "Number of results per page (default: 25)",
+                },
+                offset: {
+                  type: "number",
+                  description: "Offset for pagination",
+                },
+              },
+              required: ["cookies"],
+            },
+          },
+          {
+            name: "pagerduty_get_incident",
+            description: "Get a specific incident by ID from PagerDuty. Requires browser authentication cookies.",
+            inputSchema: {
+              type: "object",
+              properties: {
+                cookies: {
+                  type: "string",
+                  description: "PagerDuty authentication cookies (extracted from browser using extract_cookies tool)",
+                },
+                incident_id: {
+                  type: "string",
+                  description: "The incident ID",
+                },
+              },
+              required: ["cookies", "incident_id"],
+            },
+          },
+          {
+            name: "pagerduty_list_schedules",
+            description: "List on-call schedules from PagerDuty. Requires browser authentication cookies.",
+            inputSchema: {
+              type: "object",
+              properties: {
+                cookies: {
+                  type: "string",
+                  description: "PagerDuty authentication cookies (extracted from browser using extract_cookies tool)",
+                },
+                limit: {
+                  type: "number",
+                  description: "Number of results per page",
+                },
+                offset: {
+                  type: "number",
+                  description: "Offset for pagination",
+                },
+              },
+              required: ["cookies"],
+            },
+          },
+          {
+            name: "pagerduty_get_oncall",
+            description: "Get on-call users for a schedule from PagerDuty. Requires browser authentication cookies.",
+            inputSchema: {
+              type: "object",
+              properties: {
+                cookies: {
+                  type: "string",
+                  description: "PagerDuty authentication cookies (extracted from browser using extract_cookies tool)",
+                },
+                schedule_id: {
+                  type: "string",
+                  description: "The schedule ID",
+                },
+                since: {
+                  type: "string",
+                  description: "Start of the time range (ISO 8601 format)",
+                },
+                until: {
+                  type: "string",
+                  description: "End of the time range (ISO 8601 format)",
+                },
+              },
+              required: ["cookies", "schedule_id"],
+            },
+          },
+          {
+            name: "pagerduty_list_services",
+            description: "List services from PagerDuty. Requires browser authentication cookies.",
+            inputSchema: {
+              type: "object",
+              properties: {
+                cookies: {
+                  type: "string",
+                  description: "PagerDuty authentication cookies (extracted from browser using extract_cookies tool)",
+                },
+                limit: {
+                  type: "number",
+                  description: "Number of results per page",
+                },
+                offset: {
+                  type: "number",
+                  description: "Offset for pagination",
+                },
+              },
+              required: ["cookies"],
+            },
+          },
         ],
       };
     };
@@ -493,6 +612,131 @@ class LocalMCPServer {
             {
               type: "text",
               text: bamboohrClient.formatEmployee(data),
+            },
+          ],
+        };
+      }
+
+      if (name === "pagerduty_list_incidents") {
+        if (!args?.cookies) {
+          throw new Error(
+            "PagerDuty cookies required. Use extract_cookies tool first: " +
+            "url='https://app.pagerduty.com', " +
+            "waitForIndicators=['Incidents', 'Schedules', 'On-Call'], " +
+            "cookieNames=[] (extract all cookies)"
+          );
+        }
+        const pagerdutyClient = new PagerDutyClient(args.cookies);
+        const data = await pagerdutyClient.listIncidents({
+          statuses: args?.statuses,
+          urgencies: args?.urgencies,
+          limit: args?.limit,
+          offset: args?.offset,
+        });
+        return {
+          content: [
+            {
+              type: "text",
+              text: pagerdutyClient.formatIncidents(data),
+            },
+          ],
+        };
+      }
+
+      if (name === "pagerduty_get_incident") {
+        if (!args?.cookies) {
+          throw new Error(
+            "PagerDuty cookies required. Use extract_cookies tool first: " +
+            "url='https://app.pagerduty.com', " +
+            "waitForIndicators=['Incidents', 'Schedules', 'On-Call'], " +
+            "cookieNames=[] (extract all cookies)"
+          );
+        }
+        if (!args?.incident_id) {
+          throw new Error("incident_id is required");
+        }
+        const pagerdutyClient = new PagerDutyClient(args.cookies);
+        const data = await pagerdutyClient.getIncident(args.incident_id);
+        return {
+          content: [
+            {
+              type: "text",
+              text: pagerdutyClient.formatIncident(data),
+            },
+          ],
+        };
+      }
+
+      if (name === "pagerduty_list_schedules") {
+        if (!args?.cookies) {
+          throw new Error(
+            "PagerDuty cookies required. Use extract_cookies tool first: " +
+            "url='https://app.pagerduty.com', " +
+            "waitForIndicators=['Incidents', 'Schedules', 'On-Call'], " +
+            "cookieNames=[] (extract all cookies)"
+          );
+        }
+        const pagerdutyClient = new PagerDutyClient(args.cookies);
+        const data = await pagerdutyClient.listSchedules({
+          limit: args?.limit,
+          offset: args?.offset,
+        });
+        return {
+          content: [
+            {
+              type: "text",
+              text: pagerdutyClient.formatSchedules(data),
+            },
+          ],
+        };
+      }
+
+      if (name === "pagerduty_get_oncall") {
+        if (!args?.cookies) {
+          throw new Error(
+            "PagerDuty cookies required. Use extract_cookies tool first: " +
+            "url='https://app.pagerduty.com', " +
+            "waitForIndicators=['Incidents', 'Schedules', 'On-Call'], " +
+            "cookieNames=[] (extract all cookies)"
+          );
+        }
+        if (!args?.schedule_id) {
+          throw new Error("schedule_id is required");
+        }
+        const pagerdutyClient = new PagerDutyClient(args.cookies);
+        const data = await pagerdutyClient.getOnCall(args.schedule_id, {
+          since: args?.since,
+          until: args?.until,
+        });
+        return {
+          content: [
+            {
+              type: "text",
+              text: pagerdutyClient.formatOnCall(data),
+            },
+          ],
+        };
+      }
+
+      if (name === "pagerduty_list_services") {
+        if (!args?.cookies) {
+          throw new Error(
+            "PagerDuty cookies required. Use extract_cookies tool first: " +
+            "url='https://app.pagerduty.com', " +
+            "waitForIndicators=['Incidents', 'Schedules', 'On-Call'], " +
+            "cookieNames=[] (extract all cookies)"
+          );
+        }
+        const pagerdutyClient = new PagerDutyClient(args.cookies);
+        const data = await pagerdutyClient.listServices({
+          limit: args?.limit,
+          offset: args?.offset,
+        });
+        return {
+          content: [
+            {
+              type: "text",
+              text: pagerdutyClient.formatServices(data),
             },
           ],
         };
