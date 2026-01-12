@@ -604,6 +604,29 @@ class LocalMCPServer {
             },
           },
           {
+            name: "trello_archive_lists_by_pattern",
+            description: "Archive lists matching a name pattern (case-insensitive, matches start of list name)",
+            inputSchema: {
+              type: "object",
+              properties: {
+                board_id: {
+                  type: "string",
+                  description: "Board ID or URL",
+                },
+                pattern: {
+                  type: "string",
+                  description: "Name pattern to match (case-insensitive, matches start of list name)",
+                },
+                dry_run: {
+                  type: "boolean",
+                  description: "If true, only preview what would be archived without making changes",
+                  default: false,
+                },
+              },
+              required: ["board_id", "pattern"],
+            },
+          },
+          {
             name: "trello_archive_lists_by_range",
             description: "Archive lists by number range (1-based indexing)",
             inputSchema: {
@@ -1004,6 +1027,23 @@ class LocalMCPServer {
               {
                 type: "text",
                 text: trelloClient.formatMoveListsResult(result),
+              },
+            ],
+          };
+        }
+
+        if (name === "trello_archive_lists_by_pattern") {
+          const boardInfo = await trelloClient.getBoardId(args.board_id);
+          const result = await trelloClient.archiveListsByPattern(
+            boardInfo.fullId,
+            args.pattern,
+            args?.dry_run || false
+          );
+          return {
+            content: [
+              {
+                type: "text",
+                text: trelloClient.formatArchiveListsResult(result),
               },
             ],
           };

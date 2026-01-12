@@ -308,6 +308,50 @@ export class TrelloClient {
   }
 
   /**
+   * Archive lists by name pattern
+   * @param {string} boardId - Board ID (short or full)
+   * @param {string} pattern - Name pattern to match (case-insensitive, matches start of name)
+   * @param {boolean} dryRun - If true, only preview what would be archived
+   * @returns {Promise<Object>} Summary of archived items
+   */
+  async archiveListsByPattern(boardId, pattern, dryRun = false) {
+    const lists = await this.getBoardLists(boardId);
+    const activeLists = lists.filter(list => !list.closed);
+    
+    const patternLower = pattern.toLowerCase();
+    const matchingLists = activeLists.filter(
+      list => list.name.toLowerCase().startsWith(patternLower)
+    );
+
+    const results = {
+      listsFound: activeLists.length,
+      listsMatching: matchingLists.length,
+      listsArchived: 0,
+      errors: [],
+      dryRun,
+    };
+
+    if (dryRun) {
+      results.preview = matchingLists.map(list => ({
+        name: list.name,
+        id: list.id,
+      }));
+      return results;
+    }
+
+    for (const list of matchingLists) {
+      try {
+        await this.archiveList(list.id);
+        results.listsArchived++;
+      } catch (error) {
+        results.errors.push(`Error archiving list "${list.name}": ${error.message}`);
+      }
+    }
+
+    return results;
+  }
+
+  /**
    * Archive lists by number range
    * @param {string} boardId - Board ID
    * @param {number} startNum - Start number (1-based index)
@@ -517,11 +561,17 @@ Use either ID format in API calls:
     let markdown = `# Archive Lists Result\n\n`;
     markdown += `**Total Lists**: ${result.listsFound}\n\n`;
     
+    if (result.listsMatching !== undefined) {
+      markdown += `**Lists Matching Pattern**: ${result.listsMatching}\n\n`;
+    }
+    
     if (result.dryRun) {
       markdown += `## Preview (Dry Run)\n\n`;
       markdown += `The following lists would be archived:\n\n`;
-      result.listsToArchive.forEach(list => {
-        markdown += `${list.number}. **${list.name}** (ID: ${list.id})\n`;
+      const listsToShow = result.preview || result.listsToArchive || [];
+      listsToShow.forEach((list, index) => {
+        const number = list.number !== undefined ? `${list.number}. ` : `${index + 1}. `;
+        markdown += `${number}**${list.name}** (ID: ${list.id})\n`;
       });
     } else {
       markdown += `**Lists Archived**: ${result.listsArchived}\n\n`;
