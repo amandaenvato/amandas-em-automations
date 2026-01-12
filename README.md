@@ -22,7 +22,39 @@ This repository contains instruction recipes for AI agents (like Claude Code, Cu
    
    **Google Drive** (`gdrive`)
    - Configure OAuth credentials (CLIENT_ID, CLIENT_SECRET) and credentials directory
-   - For instructions about how to configure Google Drive, please follow these instructions: https://github.com/isaacphi/mcp-gdrive
+   - **Setup Steps:**
+     1. **Install the Google Drive MCP Server**: Install the `@modelcontextprotocol/server-gdrive` package globally or locally:
+        ```bash
+        npm install -g @modelcontextprotocol/server-gdrive
+        ```
+        Or install it locally in your project:
+        ```bash
+        npm install @modelcontextprotocol/server-gdrive
+        ```
+     2. **OAuth Credentials**: Create OAuth credentials in [Google Cloud Console](https://console.cloud.google.com/):
+        - Create a project (or use existing)
+        - Enable the Google Drive API
+        - Create OAuth 2.0 credentials (Desktop app type)
+        - Download the credentials JSON file or note your CLIENT_ID and CLIENT_SECRET
+     3. **Update MCP Configuration**: In `.cursor/mcp.json`, configure the Google Drive MCP server:
+        ```json
+        "gdrive": {
+          "command": "npx",
+          "args": ["@modelcontextprotocol/server-gdrive"],
+          "env": {
+            "CLIENT_ID": "your-client-id.apps.googleusercontent.com",
+            "CLIENT_SECRET": "your-client-secret",
+            "CREDENTIALS_DIR": "~/.config/gdrive-mcp"
+          }
+        }
+        ```
+     4. **Run Authentication**: Execute the authentication flow to generate tokens:
+        ```bash
+        CLIENT_ID=your-client-id CLIENT_SECRET=your-client-secret CREDENTIALS_DIR=~/.config/gdrive-mcp npx @modelcontextprotocol/server-gdrive auth
+        ```
+        This will open a browser for OAuth authentication. Tokens will be saved to the `CREDENTIALS_DIR` directory.
+     5. **Restart Cursor**: After completing authentication, restart Cursor to load the updated MCP configuration.
+   - For additional details, see: https://github.com/isaacphi/mcp-gdrive
    
    **Google Calendar** (`google-calendar`)
    - Configure Google OAuth credentials
