@@ -4,13 +4,14 @@ A custom MCP (Model Context Protocol) server that provides tools for interacting
 
 ## Overview
 
-This server provides **9 tools** organized into 6 categories:
+This server provides **14 tools** organized into 7 categories:
 - **Cursor Agent API** (1 tool) - Autonomous agent management
 - **GitHub CLI** (1 tool) - Read-only GitHub operations via whitelisted commands
 - **OpenAI** (1 tool) - Direct AI API access
 - **Browser** (2 tools) - Cookie extraction and page fetching with authentication
 - **Culture Amp** (1 tool) - Conversation analysis
 - **BambooHR** (3 tools) - Employee directory and information queries
+- **Trello** (5 tools) - Board, list, and card manipulation
 
 ## Features
 
@@ -121,6 +122,44 @@ This server provides the following tools organized by category:
 
   **Note**: BambooHR credentials must be configured via environment variables. See Prerequisites section below.
 
+### Trello
+
+- **`trello_get_board_id`** - Get Trello board ID from URL or search by name. Returns both short ID (from URL) and full ID (from API).
+  - **Required Parameters:**
+    - `board_identifier` (string): Board URL (e.g., `'https://trello.com/b/abc123/board-name'`), board ID, or board name to search for
+
+- **`trello_copy_lists`** - Copy all lists and their cards from one Trello board to another
+  - **Required Parameters:**
+    - `source_board_id` (string): Source board ID or URL
+    - `destination_board_id` (string): Destination board ID or URL
+
+- **`trello_move_lists_by_pattern`** - Move lists matching a name pattern from source board to destination board. Lists are moved (not copied) with all their cards.
+  - **Required Parameters:**
+    - `source_board_id` (string): Source board ID or URL
+    - `destination_board_id` (string): Destination board ID or URL
+    - `pattern` (string): Name pattern to match (case-insensitive, matches start of list name)
+  - **Optional Parameters:**
+    - `dry_run` (boolean): If true, only preview what would be moved without making changes (default: `false`)
+
+- **`trello_archive_lists_by_range`** - Archive lists by number range (1-based indexing)
+  - **Required Parameters:**
+    - `board_id` (string): Board ID or URL
+    - `start_num` (number): Start list number (1-based)
+    - `end_num` (number): End list number (1-based)
+  - **Optional Parameters:**
+    - `dry_run` (boolean): If true, only preview what would be archived without making changes (default: `false`)
+
+- **`trello_reset_retro_board`** - Reset retrospective board by renaming lists with date and creating new empty lists
+  - **Required Parameters:**
+    - `source_board_id` (string): Source board ID or URL
+    - `destination_board_id` (string): Destination board ID or URL for archived lists
+    - `start_list_num` (number): Start list number (1-based)
+    - `end_list_num` (number): End list number (1-based)
+  - **Optional Parameters:**
+    - `date` (string): Date to append to list names in ISO format (YYYY-MM-DD). Defaults to 2 weeks ago if not provided.
+
+  **Note**: Trello credentials must be configured via environment variables. See Prerequisites section below.
+
 ## Prerequisites
 
 ### Environment Variables
@@ -132,6 +171,8 @@ Different tools require different environment variables:
 - `OPENAI_API_KEY` - Required for `ask_openai` tool. Get your API key from [OpenAI Platform](https://platform.openai.com/api-keys).
 - `BAMBOOHR_SUBDOMAIN` - Required for BambooHR tools. Your company subdomain (e.g., if your URL is `https://mycompany.bamboohr.com`, use `"mycompany"`).
 - `BAMBOOHR_API_KEY` - Required for BambooHR tools. Your BambooHR API key (160-bit hexadecimal string). Get it from BambooHR Settings → API Keys.
+- `TRELLO_API_KEY` - Required for Trello tools. Get your API key from [Trello App Key](https://trello.com/app-key).
+- `TRELLO_API_TOKEN` - Required for Trello tools. Generate a token by visiting: `https://trello.com/1/authorize?key=<your_api_key>&name=TrelloHelper&expiration=never&response_type=token&scope=read,write` (replace `<your_api_key>` with your actual API key).
 
 **Optional:**
 - `CULTUREAMP_BROWSER_DATA_DIR` - Custom directory for Culture Amp browser session data (defaults to `~/.local-mcp/cultureamp-browser-data`)
@@ -165,7 +206,9 @@ The server is configured in your MCP configuration file (`~/.cursor/mcp.json`) a
         "CURSOR_API_KEY": "<your-cursor-api-key>",
         "OPENAI_API_KEY": "<your-openai-api-key>",
         "BAMBOOHR_SUBDOMAIN": "<your-company-subdomain>",
-        "BAMBOOHR_API_KEY": "<your-bamboohr-api-key>"
+        "BAMBOOHR_API_KEY": "<your-bamboohr-api-key>",
+        "TRELLO_API_KEY": "<your-trello-api-key>",
+        "TRELLO_API_TOKEN": "<your-trello-api-token>"
       }
     }
   }

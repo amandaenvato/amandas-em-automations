@@ -14,6 +14,8 @@ import { CultureAmpClient } from "./src/cultureamp-client.js";
 import { BrowserClient } from "./src/browser-client.js";
 import { BambooHRClient } from "./src/bamboohr-client.js";
 import { PagerDutyClient } from "./src/pagerduty-client.js";
+import { PagerDutyOAuth } from "./src/pagerduty-oauth.js";
+import { TrelloClient } from "./src/trello-client.js";
 
 class LocalMCPServer {
   constructor() {
@@ -35,7 +37,31 @@ class LocalMCPServer {
     this.browserClient = new BrowserClient();
     // Culture Amp client is created on-demand with tokens from browser extraction
     // BambooHR client is created on-demand with subdomain and API key from env vars
+    this.pagerDutyOAuth = new PagerDutyOAuth();
     this.setupToolHandlers();
+  }
+
+  /**
+   * Get PagerDuty client with OAuth token or cookies
+   * @private
+   */
+  async getPagerDutyClient(cookies = null) {
+    // Try OAuth token first
+    try {
+      const token = await this.pagerDutyOAuth.getAccessToken(false, true); // Use cached token, headless
+      return new PagerDutyClient(token);
+    } catch (error) {
+      // If OAuth fails, try cookies if provided
+      if (cookies) {
+        return new PagerDutyClient(cookies);
+      }
+      // If no cookies and OAuth fails, throw error with helpful message
+      throw new Error(
+        `PagerDuty authentication failed. OAuth error: ${error.message}. ` +
+        `Either complete OAuth flow (set PAGERDUTY_CLIENT_ID and PAGERDUTY_CLIENT_SECRET) ` +
+        `or provide cookies via extract_cookies tool.`
+      );
+    }
   }
 
   setupToolHandlers() {
@@ -459,6 +485,204 @@ class LocalMCPServer {
               required: ["cookies"],
             },
           },
+          {
+            name: "pagerduty_list_users",
+            description: "List users from PagerDuty. Requires browser authentication cookies.",
+            inputSchema: {
+              type: "object",
+              properties: {
+                cookies: {
+                  type: "string",
+                  description: "PagerDuty authentication cookies (extracted from browser using extract_cookies tool)",
+                },
+                query: {
+                  type: "string",
+                  description: "Search query (searches name, email)",
+                },
+                limit: {
+                  type: "number",
+                  description: "Number of results per page",
+                },
+                offset: {
+                  type: "number",
+                  description: "Offset for pagination",
+                },
+              },
+              required: ["cookies"],
+            },
+          },
+          {
+            name: "pagerduty_get_user_oncall_hours",
+            description: "Calculate total on-call hours for a user within a time range. Requires browser authentication cookies.",
+            inputSchema: {
+              type: "object",
+              properties: {
+                cookies: {
+                  type: "string",
+                  description: "PagerDuty authentication cookies (extracted from browser using extract_cookies tool)",
+                },
+                user_id: {
+                  type: "string",
+                  description: "The user ID",
+                },
+                start_date: {
+                  type: "string",
+                  description: "Start date in ISO 8601 format (e.g., '2025-11-01T00:00:00Z')",
+                },
+                end_date: {
+                  type: "string",
+                  description: "End date in ISO 8601 format (e.g., '2025-11-30T23:59:59Z')",
+                },
+                schedule_ids: {
+                  type: "array",
+                  items: {
+                    type: "string",
+                  },
+                  description: "Optional array of schedule IDs to filter by",
+                },
+              },
+              required: ["cookies", "user_id", "start_date", "end_date"],
+            },
+          },
+          {
+            name: "trello_get_board_id",
+            description: "Get Trello board ID from URL or search by name. Returns both short ID (from URL) and full ID (from API).",
+            inputSchema: {
+              type: "object",
+              properties: {
+                board_identifier: {
+                  type: "string",
+                  description: "Board URL (e.g., 'https://trello.com/b/abc123/board-name'), board ID, or board name to search for",
+                },
+              },
+              required: ["board_identifier"],
+            },
+          },
+          {
+            name: "trello_copy_lists",
+            description: "Copy all lists and their cards from one Trello board to another",
+            inputSchema: {
+              type: "object",
+              properties: {
+                source_board_id: {
+                  type: "string",
+                  description: "Source board ID or URL",
+                },
+                destination_board_id: {
+                  type: "string",
+                  description: "Destination board ID or URL",
+                },
+              },
+              required: ["source_board_id", "destination_board_id"],
+            },
+          },
+          {
+            name: "trello_move_lists_by_pattern",
+            description: "Move lists matching a name pattern from source board to destination board. Lists are moved (not copied) with all their cards.",
+            inputSchema: {
+              type: "object",
+              properties: {
+                source_board_id: {
+                  type: "string",
+                  description: "Source board ID or URL",
+                },
+                destination_board_id: {
+                  type: "string",
+                  description: "Destination board ID or URL",
+                },
+                pattern: {
+                  type: "string",
+                  description: "Name pattern to match (case-insensitive, matches start of list name)",
+                },
+                dry_run: {
+                  type: "boolean",
+                  description: "If true, only preview what would be moved without making changes",
+                  default: false,
+                },
+              },
+              required: ["source_board_id", "destination_board_id", "pattern"],
+            },
+          },
+          {
+            name: "trello_archive_lists_by_pattern",
+            description: "Archive lists matching a name pattern (case-insensitive, matches start of list name)",
+            inputSchema: {
+              type: "object",
+              properties: {
+                board_id: {
+                  type: "string",
+                  description: "Board ID or URL",
+                },
+                pattern: {
+                  type: "string",
+                  description: "Name pattern to match (case-insensitive, matches start of list name)",
+                },
+                dry_run: {
+                  type: "boolean",
+                  description: "If true, only preview what would be archived without making changes",
+                  default: false,
+                },
+              },
+              required: ["board_id", "pattern"],
+            },
+          },
+          {
+            name: "trello_archive_lists_by_range",
+            description: "Archive lists by number range (1-based indexing)",
+            inputSchema: {
+              type: "object",
+              properties: {
+                board_id: {
+                  type: "string",
+                  description: "Board ID or URL",
+                },
+                start_num: {
+                  type: "number",
+                  description: "Start list number (1-based)",
+                },
+                end_num: {
+                  type: "number",
+                  description: "End list number (1-based)",
+                },
+                dry_run: {
+                  type: "boolean",
+                  description: "If true, only preview what would be archived without making changes",
+                  default: false,
+                },
+              },
+              required: ["board_id", "start_num", "end_num"],
+            },
+          },
+          {
+            name: "trello_reset_retro_board",
+            description: "Reset retrospective board by renaming lists with date and creating new empty lists",
+            inputSchema: {
+              type: "object",
+              properties: {
+                source_board_id: {
+                  type: "string",
+                  description: "Source board ID or URL",
+                },
+                destination_board_id: {
+                  type: "string",
+                  description: "Destination board ID or URL for archived lists",
+                },
+                start_list_num: {
+                  type: "number",
+                  description: "Start list number (1-based)",
+                },
+                end_list_num: {
+                  type: "number",
+                  description: "End list number (1-based)",
+                },
+                date: {
+                  type: "string",
+                  description: "Date to append to list names in ISO format (YYYY-MM-DD). Defaults to 2 weeks ago if not provided.",
+                },
+              },
+              required: ["source_board_id", "destination_board_id", "start_list_num", "end_list_num"],
+            },
+          },
         ],
       };
     };
@@ -618,15 +842,7 @@ class LocalMCPServer {
       }
 
       if (name === "pagerduty_list_incidents") {
-        if (!args?.cookies) {
-          throw new Error(
-            "PagerDuty cookies required. Use extract_cookies tool first: " +
-            "url='https://app.pagerduty.com', " +
-            "waitForIndicators=['Incidents', 'Schedules', 'On-Call'], " +
-            "cookieNames=[] (extract all cookies)"
-          );
-        }
-        const pagerdutyClient = new PagerDutyClient(args.cookies);
+        const pagerdutyClient = await this.getPagerDutyClient(args?.cookies);
         const data = await pagerdutyClient.listIncidents({
           statuses: args?.statuses,
           urgencies: args?.urgencies,
@@ -644,18 +860,10 @@ class LocalMCPServer {
       }
 
       if (name === "pagerduty_get_incident") {
-        if (!args?.cookies) {
-          throw new Error(
-            "PagerDuty cookies required. Use extract_cookies tool first: " +
-            "url='https://app.pagerduty.com', " +
-            "waitForIndicators=['Incidents', 'Schedules', 'On-Call'], " +
-            "cookieNames=[] (extract all cookies)"
-          );
-        }
         if (!args?.incident_id) {
           throw new Error("incident_id is required");
         }
-        const pagerdutyClient = new PagerDutyClient(args.cookies);
+        const pagerdutyClient = await this.getPagerDutyClient(args?.cookies);
         const data = await pagerdutyClient.getIncident(args.incident_id);
         return {
           content: [
@@ -668,15 +876,7 @@ class LocalMCPServer {
       }
 
       if (name === "pagerduty_list_schedules") {
-        if (!args?.cookies) {
-          throw new Error(
-            "PagerDuty cookies required. Use extract_cookies tool first: " +
-            "url='https://app.pagerduty.com', " +
-            "waitForIndicators=['Incidents', 'Schedules', 'On-Call'], " +
-            "cookieNames=[] (extract all cookies)"
-          );
-        }
-        const pagerdutyClient = new PagerDutyClient(args.cookies);
+        const pagerdutyClient = await this.getPagerDutyClient(args?.cookies);
         const data = await pagerdutyClient.listSchedules({
           limit: args?.limit,
           offset: args?.offset,
@@ -692,18 +892,10 @@ class LocalMCPServer {
       }
 
       if (name === "pagerduty_get_oncall") {
-        if (!args?.cookies) {
-          throw new Error(
-            "PagerDuty cookies required. Use extract_cookies tool first: " +
-            "url='https://app.pagerduty.com', " +
-            "waitForIndicators=['Incidents', 'Schedules', 'On-Call'], " +
-            "cookieNames=[] (extract all cookies)"
-          );
-        }
         if (!args?.schedule_id) {
           throw new Error("schedule_id is required");
         }
-        const pagerdutyClient = new PagerDutyClient(args.cookies);
+        const pagerdutyClient = await this.getPagerDutyClient(args?.cookies);
         const data = await pagerdutyClient.getOnCall(args.schedule_id, {
           since: args?.since,
           until: args?.until,
@@ -719,15 +911,7 @@ class LocalMCPServer {
       }
 
       if (name === "pagerduty_list_services") {
-        if (!args?.cookies) {
-          throw new Error(
-            "PagerDuty cookies required. Use extract_cookies tool first: " +
-            "url='https://app.pagerduty.com', " +
-            "waitForIndicators=['Incidents', 'Schedules', 'On-Call'], " +
-            "cookieNames=[] (extract all cookies)"
-          );
-        }
-        const pagerdutyClient = new PagerDutyClient(args.cookies);
+        const pagerdutyClient = await this.getPagerDutyClient(args?.cookies);
         const data = await pagerdutyClient.listServices({
           limit: args?.limit,
           offset: args?.offset,
@@ -740,6 +924,169 @@ class LocalMCPServer {
             },
           ],
         };
+      }
+
+      if (name === "pagerduty_list_users") {
+        const pagerdutyClient = await this.getPagerDutyClient(args?.cookies);
+        const data = await pagerdutyClient.listUsers({
+          query: args?.query,
+          limit: args?.limit,
+          offset: args?.offset,
+        });
+        return {
+          content: [
+            {
+              type: "text",
+              text: pagerdutyClient.formatUsers(data),
+            },
+          ],
+        };
+      }
+
+      if (name === "pagerduty_get_user_oncall_hours") {
+        if (!args?.user_id) {
+          throw new Error("user_id is required");
+        }
+        if (!args?.start_date) {
+          throw new Error("start_date is required");
+        }
+        if (!args?.end_date) {
+          throw new Error("end_date is required");
+        }
+        const pagerdutyClient = await this.getPagerDutyClient(args?.cookies);
+        const hours = await pagerdutyClient.calculateOnCallHours(
+          args.user_id,
+          args.start_date,
+          args.end_date,
+          args?.schedule_ids
+        );
+        return {
+          content: [
+            {
+              type: "text",
+              text: `# On-Call Hours\n\n**User ID**: ${args.user_id}\n\n**Time Range**: ${args.start_date} to ${args.end_date}\n\n**Total Hours**: ${hours.toFixed(2)} hours\n\n**Total Days**: ${(hours / 24).toFixed(2)} days`,
+            },
+          ],
+        };
+      }
+
+      // Trello tools
+      if (name === "trello_get_board_id" || 
+          name === "trello_copy_lists" || 
+          name === "trello_move_lists_by_pattern" || 
+          name === "trello_archive_lists_by_range" || 
+          name === "trello_reset_retro_board") {
+        const apiKey = process.env.TRELLO_API_KEY;
+        const apiToken = process.env.TRELLO_API_TOKEN;
+        if (!apiKey || !apiToken) {
+          throw new Error(
+            "Trello configuration required. Set TRELLO_API_KEY and TRELLO_API_TOKEN environment variables. " +
+            "Get your API key from https://trello.com/app-key and generate a token at " +
+            "https://trello.com/1/authorize?key=<your_api_key>&name=TrelloHelper&expiration=never&response_type=token&scope=read,write"
+          );
+        }
+        const trelloClient = new TrelloClient(apiKey, apiToken);
+
+        if (name === "trello_get_board_id") {
+          const boardInfo = await trelloClient.getBoardId(args.board_identifier);
+          return {
+            content: [
+              {
+                type: "text",
+                text: trelloClient.formatBoardId(boardInfo),
+              },
+            ],
+          };
+        }
+
+        if (name === "trello_copy_lists") {
+          const sourceBoardInfo = await trelloClient.getBoardId(args.source_board_id);
+          const destBoardInfo = await trelloClient.getBoardId(args.destination_board_id);
+          const result = await trelloClient.copyLists(sourceBoardInfo.fullId, destBoardInfo.fullId);
+          return {
+            content: [
+              {
+                type: "text",
+                text: trelloClient.formatCopyListsResult(result),
+              },
+            ],
+          };
+        }
+
+        if (name === "trello_move_lists_by_pattern") {
+          const sourceBoardInfo = await trelloClient.getBoardId(args.source_board_id);
+          const destBoardInfo = await trelloClient.getBoardId(args.destination_board_id);
+          const result = await trelloClient.moveListsByPattern(
+            sourceBoardInfo.fullId,
+            destBoardInfo.fullId,
+            args.pattern,
+            args?.dry_run || false
+          );
+          return {
+            content: [
+              {
+                type: "text",
+                text: trelloClient.formatMoveListsResult(result),
+              },
+            ],
+          };
+        }
+
+        if (name === "trello_archive_lists_by_pattern") {
+          const boardInfo = await trelloClient.getBoardId(args.board_id);
+          const result = await trelloClient.archiveListsByPattern(
+            boardInfo.fullId,
+            args.pattern,
+            args?.dry_run || false
+          );
+          return {
+            content: [
+              {
+                type: "text",
+                text: trelloClient.formatArchiveListsResult(result),
+              },
+            ],
+          };
+        }
+
+        if (name === "trello_archive_lists_by_range") {
+          const boardInfo = await trelloClient.getBoardId(args.board_id);
+          const result = await trelloClient.archiveListsByRange(
+            boardInfo.fullId,
+            args.start_num,
+            args.end_num,
+            args?.dry_run || false
+          );
+          return {
+            content: [
+              {
+                type: "text",
+                text: trelloClient.formatArchiveListsResult(result),
+              },
+            ],
+          };
+        }
+
+        if (name === "trello_reset_retro_board") {
+          const sourceBoardInfo = await trelloClient.getBoardId(args.source_board_id);
+          const destBoardInfo = await trelloClient.getBoardId(args.destination_board_id);
+          const date = args?.date ? new Date(args.date) : null;
+          const result = await trelloClient.resetRetroBoard(
+            sourceBoardInfo.fullId,
+            destBoardInfo.fullId,
+            args.start_list_num,
+            args.end_list_num,
+            date
+          );
+          return {
+            content: [
+              {
+                type: "text",
+                text: trelloClient.formatResetRetroResult(result),
+              },
+            ],
+          };
+        }
       }
 
       throw new Error(`Unknown tool: ${name}`);
