@@ -65,6 +65,27 @@
 
 ---
 
+## Shoutouts
+
+### Shoutouts Received ({date_range})
+
+**{Date}** - [`#shoutouts`](https://envato.slack.com/archives/C1234567890)  
+**From**: {Author Name}  
+**Message**: {Shoutout message content}  
+**Link**: [View shoutout](https://envato.slack.com/archives/C1234567890/p1234567890123456)
+
+
+**{Date}** - [`#channel`](https://envato.slack.com/archives/C9876543210)  
+**From**: {Author Name}  
+**Message**: {Shoutout message content}  
+**Link**: [View shoutout](https://envato.slack.com/archives/C9876543210/p9876543210987654)
+
+OR
+
+**No shoutouts found during this period.**
+
+---
+
 ## Jira Activity
 
 ### Issues Updated in Last Week ({date_range})
@@ -193,6 +214,7 @@
 ## Data Sources
 
 - **Slack**: Retrieved via Slack MCP `conversations_search_messages` tool
+- **Shoutouts**: Retrieved via Slack MCP `conversations_search_messages` tool (searches for mentions in `#shoutouts` and other channels)
 - **Jira**: Retrieved via Atlassian MCP `jira_search` tool (accessed via Python script wrapper)
 - **Confluence**: Retrieved via Atlassian MCP `confluence_search` tool (accessed via Python script wrapper)
 
@@ -200,4 +222,12 @@
 
 *Report generated: {generation_date}*  
 *All times converted to Melbourne time (AEDT/AEST)*
+
+
+
+
+
+
+
+
 
