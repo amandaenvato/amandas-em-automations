@@ -14,10 +14,11 @@ Execute these steps in sequence:
 
 1. **Step 1: Get Team Member Information** (see details below)
 2. **Step 2: Collect Slack Activity** (see details below)
-3. **Step 3: Collect Jira Activity** (see details below)
-4. **Step 4: Collect Confluence Activity** (see details below)
-5. **Step 5: Generate Activity Report** (see details below)
-6. **Step 6: Copy Report to Google Drive** (see details below)
+3. **Step 2.5: Collect Shoutouts** (see details below)
+4. **Step 3: Collect Jira Activity** (see details below)
+5. **Step 4: Collect Confluence Activity** (see details below)
+6. **Step 5: Generate Activity Report** (see details below)
+7. **Step 6: Copy Report to Google Drive** (see details below)
 
 If for whatever reason the task cannot be completed, explain the issue and ask if the user wants to retry those failures.
 
@@ -102,6 +103,47 @@ For each message, note:
 - Summary of key activities by date with channel links
 - Identification of main themes and collaborations
 - Links to all referenced documents and resources
+
+## Step 2.5: Collect Shoutouts
+
+### Goal
+Collect all shoutouts from Slack that mention the team member during the specified time period.
+
+### Instructions
+1. Use Slack MCP `conversations_search_messages` tool
+2. Search for messages that mention the team member using their Slack ID or display name
+3. Focus on channels like `#shoutouts` but also search across all channels
+4. Filter by date range using `filter_date_after` and `filter_date_before`
+5. Look for messages that contain recognition, praise, or shoutouts directed at the team member
+
+### Process
+- **Search Method**: Use `search_query` parameter with the team member's Slack ID or display name
+  - Example: `search_query: "@U1234567890"` or `search_query: "Alex Johnson"`
+  - Also search specifically in `#shoutouts` channel: `filter_in_channel: "#shoutouts"`
+- **Date Range**: Use `filter_date_after` and `filter_date_before` parameters
+  - Format: `YYYY-MM-DD` (e.g., `2025-11-13`)
+  - Default: Last 7 days ending yesterday
+- **Limit**: Set `limit` to 100 for comprehensive coverage
+- **Multiple Searches**: 
+  - Search across all channels for mentions
+  - Search specifically in `#shoutouts` channel
+  - Combine results and remove duplicates
+
+### Analysis
+For each shoutout message, extract:
+- Date and time (convert to Melbourne time)
+- Channel name (especially `#shoutouts`)
+- **Channel link** (e.g., `https://envato.slack.com/archives/C1234567890`)
+- **Message link** (e.g., `https://envato.slack.com/archives/C1234567890/p1234567890123456`)
+- Full message content
+- Author of the shoutout
+- Thread context (if applicable)
+- Thread link (if in a thread)
+
+### Expected Output
+- List of shoutout messages with dates, channels, content, and **all relevant links**
+- Organized by date with message links
+- Note if no shoutouts found during the period
 
 ## Step 3: Collect Jira Activity
 
@@ -211,6 +253,7 @@ Create a comprehensive markdown report combining all collected activity.
    - Title and date range
    - Executive Summary
    - Slack Activity (with message count, key channels with links, activities by date with message links, themes)
+   - Shoutouts (with shoutout messages mentioning the person, organized by date with message links)
    - Jira Activity (with issues updated, details, and **Jira issue links for every issue**)
    - Confluence Activity (with pages created/modified with **Confluence page links** or note if none)
    - Pull Requests (if any mentioned, with GitHub PR links)
@@ -252,8 +295,14 @@ Create a comprehensive markdown report combining all collected activity.
    - Use **two blank lines** between each area for clear visual separation
    - Format Related Resources as comma-separated inline links within a bullet point
    - Each area should start with a bold title, followed by bullet points for details
-10. **CRITICAL**: Ensure every piece of information includes its reference link:
+10. **Shoutouts Formatting Requirements**:
+   - Format each shoutout with date, channel, author, message content, and message link
+   - Use **two blank lines** between each shoutout for clear visual separation
+   - Include channel links and message links for every shoutout
+   - If no shoutouts found, note "No shoutouts found during this period."
+11. **CRITICAL**: Ensure every piece of information includes its reference link:
    - Every Slack message/channel → Slack link
+   - Every shoutout → Slack message link
    - Every Jira issue → Jira link
    - Every Confluence page → Confluence link
    - Every PR mentioned → GitHub PR link
@@ -306,6 +355,27 @@ Create a comprehensive markdown report combining all collected activity.
 
 ### Referenced Documents
 - [Document Name](https://docs.google.com/document/d/...) - Referenced in [`#channel`](https://envato.slack.com/archives/C1234567890)
+
+---
+
+## Shoutouts
+
+### Shoutouts Received ({date_range})
+
+**{Date}** - [{Channel}](https://envato.slack.com/archives/C1234567890)  
+**From**: {Author Name}  
+**Message**: {Shoutout message content}  
+**Link**: [View shoutout](https://envato.slack.com/archives/C1234567890/p1234567890123456)
+
+
+**{Date}** - [{Channel}](https://envato.slack.com/archives/C9876543210)  
+**From**: {Author Name}  
+**Message**: {Shoutout message content}  
+**Link**: [View shoutout](https://envato.slack.com/archives/C9876543210/p9876543210987654)
+
+OR
+
+**No shoutouts found during this period.**
 
 ---
 
@@ -416,6 +486,7 @@ OR
 ## Data Sources
 
 - **Slack**: Retrieved via Slack MCP `conversations_search_messages` tool
+- **Shoutouts**: Retrieved via Slack MCP `conversations_search_messages` tool (searches for mentions in `#shoutouts` and other channels)
 - **Jira**: Retrieved via Atlassian MCP `jira_search` tool (accessed via Python script wrapper)
 - **Confluence**: Retrieved via Atlassian MCP `confluence_search` tool (accessed via Python script wrapper)
 
@@ -491,6 +562,7 @@ If user specifies a different date range:
 - If user search by display name fails, try searching by Slack ID
 - If direct user filter doesn't work, search by name and filter results manually
 - Use `search_query` parameter with team member's name
+- For shoutouts, search both in `#shoutouts` channel and across all channels for mentions
 
 ### Jira Search Issues
 - Ensure account_id format is correct (includes the prefix like "123456:")
@@ -512,10 +584,11 @@ If user specifies a different date range:
 To collect activity for Alex Johnson:
 1. Read `people-info.md` to get Alex's details
 2. Search Slack for messages from Alex (U1234567890) from Nov 13-19, 2025
-3. Search Jira for issues assigned to Alex's account_id updated in that period
-4. Search Confluence for pages created/modified by alex.johnson@example.com
-5. Generate report: `files/output/alex-activity-20-11-2025/alex-activity-19-11-2025.md` (end date: Nov 19, 2025)
-6. Copy to: `{Alex's Local Google Drive Path}/Activity/alex-activity-19-11-2025.md`
+3. Search Slack for shoutouts mentioning Alex (U1234567890) from Nov 13-19, 2025
+4. Search Jira for issues assigned to Alex's account_id updated in that period
+5. Search Confluence for pages created/modified by alex.johnson@example.com
+6. Generate report: `files/output/alex-activity-20-11-2025/alex-activity-19-11-2025.md` (end date: Nov 19, 2025)
+7. Copy to: `{Alex's Local Google Drive Path}/Activity/alex-activity-19-11-2025.md`
 
 ## Notes
 
@@ -526,6 +599,7 @@ To collect activity for Alex Johnson:
 - Include context about why work was done (from Slack discussions or Jira descriptions)
 - **IMPORTANT**: Every piece of information must include its reference link:
   - Slack channels and messages must have Slack links
+  - Shoutouts must have Slack message links
   - Jira issues must have Jira links
   - Confluence pages must have Confluence links
   - Pull requests must have GitHub links
