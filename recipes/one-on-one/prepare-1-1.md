@@ -6,6 +6,7 @@ This recipe prepares for a 1-on-1 meeting by collecting activity data and openin
 
 When the user says "1-1 [Person Name]", execute these steps in sequence:
 
+0. **Step 0: MCP Server Preflight Check** (see details below)
 1. **Step 1: Get Team Member Information** (see details below)
 2. **Step 2: Execute Activity Collection** (see details below)
 3. **Step 3: Generate HTML and Open in Browser** (see details below)
@@ -47,6 +48,28 @@ Retrieve all necessary information about the team member from the configuration 
 - Team member's information ready for use in subsequent steps
 - Culture Amp URL (may be empty if not configured)
 - Google Drive URL (may be empty if not configured)
+
+## Step 0: MCP Server Preflight Check
+
+### Goal
+Confirm all required MCP servers are running before starting data collection.
+
+### Required MCP Servers
+- **Slack MCP** (for Slack activity + shoutouts)
+- **Atlassian MCP** (for Jira + Confluence; provided via Docker `mcp-atlassian`)
+
+### Instructions
+1. List MCP resources using `list_mcp_resources`
+2. Verify the Slack MCP server is available
+3. Verify the Atlassian MCP server is available (`mcp-atlassian`)
+4. If Atlassian MCP is missing, check Docker status and **warn the user** that Docker Desktop must be running
+5. If any required MCP server is missing:
+   - Stop the recipe
+   - Tell the user which MCP server is unavailable and how to start it
+
+### Expected Output
+- Confirmation that Slack and Atlassian MCP servers are running
+- If not running, a clear warning and halt before continuing
 
 ## Step 2: Execute Activity Collection
 
