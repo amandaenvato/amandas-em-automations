@@ -52,7 +52,7 @@ Retrieve all necessary information about the team member from the configuration 
 ## Step 0: MCP Server Preflight Check
 
 ### Goal
-Confirm all required MCP servers are running before starting data collection.
+Confirm all required MCP servers are running before starting data collection. If the Atlassian MCP is not running, automatically attempt to fix it.
 
 ### Required MCP Servers
 - **Slack MCP** (for Slack activity + shoutouts)
@@ -62,14 +62,26 @@ Confirm all required MCP servers are running before starting data collection.
 1. List MCP resources using `list_mcp_resources`
 2. Verify the Slack MCP server is available
 3. Verify the Atlassian MCP server is available (`mcp-atlassian`)
-4. If Atlassian MCP is missing, check Docker status and **warn the user** that Docker Desktop must be running
-5. If any required MCP server is missing:
+4. **If Atlassian MCP is missing or not responding**:
+   - **Execute the fix recipe**: `recipes/mcp-servers/fix-atlassian-mcp.md`
+   - Follow all steps in the fix recipe to diagnose and repair the MCP server
+   - After the fix recipe completes, re-check if the MCP server is now available
+   - If still not available after running the fix recipe, stop and ask the user to reload Cursor
+5. If the Slack MCP server is missing:
    - Stop the recipe
-   - Tell the user which MCP server is unavailable and how to start it
+   - Tell the user that the Slack MCP server is unavailable
+
+### Automatic Fix Process
+When Atlassian MCP is detected as unavailable:
+1. Check Docker daemon status (`docker info`)
+2. Pull latest mcp-atlassian image (`docker pull ghcr.io/sooperset/mcp-atlassian:latest`)
+3. Test MCP server connection with JSON-RPC initialize
+4. Instruct user to reload Cursor (`Cmd+Shift+P` → `Developer: Reload Window`)
 
 ### Expected Output
 - Confirmation that Slack and Atlassian MCP servers are running
-- If not running, a clear warning and halt before continuing
+- If Atlassian MCP was fixed, a note that the user may need to reload Cursor
+- If fix failed, a clear error message with troubleshooting steps
 
 ## Step 2: Execute Activity Collection
 
@@ -236,4 +248,10 @@ To prepare for a 1-on-1 with Sam Gold:
 - Refer to troubleshooting section in `recipes/activity-log/collect-activity.md`
 - Common issues: missing Slack IDs, incorrect Jira account IDs, date format issues
 
-
+### Atlassian MCP Server Issues
+- If Jira or Confluence tools are unavailable, the recipe will automatically execute `recipes/mcp-servers/fix-atlassian-mcp.md`
+- Common issues and fixes:
+  - **Docker not running**: Start Docker Desktop
+  - **Outdated image**: Recipe will pull the latest image automatically
+  - **Cursor not detecting MCP**: Reload Cursor window (`Cmd+Shift+P` → `Developer: Reload Window`)
+  - **Expired API tokens**: Generate new tokens at https://id.atlassian.com/manage-profile/security/api-tokens and update `.cursor/mcp.json`
