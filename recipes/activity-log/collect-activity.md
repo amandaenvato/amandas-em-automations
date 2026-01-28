@@ -157,30 +157,15 @@ For each shoutout message, extract:
 - Date and time (convert to Melbourne time)
 - Channel name (especially `#shoutouts`)
 - **Channel link** (e.g., `https://envato.slack.com/archives/C1234567890`)
-- **Message link** - **CRITICAL**: Use correct Slack link format:
-  - For regular messages: `https://envato.slack.com/archives/{CHANNEL_ID}/p{MSG_ID}`
-  - For threaded messages: `https://envato.slack.com/archives/{CHANNEL_ID}/p{MSG_ID}?thread_ts={THREAD_TS}&cid={CHANNEL_ID}`
-  - Extract CHANNEL_ID from the channel data (format: C1234567890)
-  - Extract MSG_ID from the message timestamp (MsgID field, format: 1234567890.123456)
-  - If ThreadTs field is present and not empty, include it in the link as thread_ts parameter
-  - The link must be clickable and work when opened in a browser
-  - Example regular message: `https://envato.slack.com/archives/C0A4NN8D2DP/p1769143219.861829`
-  - Example threaded message: `https://envato.slack.com/archives/C0A4NN8D2DP/p1769143219.861829?thread_ts=1769143219.861829&cid=C0A4NN8D2DP`
-- **Full message content** - **CRITICAL**: Extract the COMPLETE text of the shoutout message, including:
-  - All emojis (e.g., `:heart_hands:`, `:shipitparrot::rocket:`, `:communityspiritnew:`)
-  - All user mentions (keep as Slack IDs if needed for context)
-  - All text content - do NOT truncate or summarize
-  - Preserve the exact wording as it appears in Slack
-- Author of the shoutout (RealName if available, otherwise UserName)
+- **Message link** (e.g., `https://envato.slack.com/archives/C1234567890/p1234567890123456`)
+- Full message content
+- Author of the shoutout
 - Thread context (if applicable)
+- Thread link (if in a thread)
 
 ### Expected Output
-- List of shoutout messages with dates, channels, **FULL text content (including emojis)**, and **correct Slack message links**
+- List of shoutout messages with dates, channels, content, and **all relevant links**
 - Organized by date with message links
-- **CRITICAL**: Each shoutout must include:
-  - Complete, unedited message text (including all emojis)
-  - Correct Slack link format that works when clicked
-  - Channel link for context
 - Note if no shoutouts found during the period
 
 ## Step 3: Collect Jira Activity
@@ -334,13 +319,9 @@ Create a comprehensive markdown report combining all collected activity.
    - Format Related Resources as comma-separated inline links within a bullet point
    - Each area should start with a bold title, followed by bullet points for details
 10. **Shoutouts Formatting Requirements**:
-   - Format each shoutout with date, channel, author, **FULL message content (including emojis)**, and message link
+   - Format each shoutout with date, channel, author, message content, and message link
    - Use **two blank lines** between each shoutout for clear visual separation
-   - Include channel links and **correct Slack message links** for every shoutout
-   - **CRITICAL**: Include the COMPLETE text of each shoutout message - do NOT truncate, summarize, or remove emojis
-   - **CRITICAL**: Use correct Slack link format:
-     - Regular message: `https://envato.slack.com/archives/{CHANNEL_ID}/p{MSG_ID}`
-     - Threaded message: `https://envato.slack.com/archives/{CHANNEL_ID}/p{MSG_ID}?thread_ts={THREAD_TS}&cid={CHANNEL_ID}`
+   - Include channel links and message links for every shoutout
    - If no shoutouts found, note "No shoutouts found during this period."
 11. **CRITICAL**: Ensure every piece of information includes its reference link:
    - Every Slack message/channel → Slack link
@@ -406,14 +387,14 @@ Create a comprehensive markdown report combining all collected activity.
 
 **{Date}** - [{Channel}](https://envato.slack.com/archives/C1234567890)  
 **From**: {Author Name}  
-**Message**: {FULL shoutout message content including all emojis and complete text - do NOT truncate or summarize}  
+**Message**: {Shoutout message content}  
 **Link**: [View shoutout](https://envato.slack.com/archives/C1234567890/p1234567890123456)
 
 
 **{Date}** - [{Channel}](https://envato.slack.com/archives/C9876543210)  
 **From**: {Author Name}  
-**Message**: {FULL shoutout message content including all emojis and complete text - do NOT truncate or summarize}  
-**Link**: [View shoutout](https://envato.slack.com/archives/C9876543210/p9876543210987654?thread_ts=1234567890.123456&cid=C9876543210)
+**Message**: {Shoutout message content}  
+**Link**: [View shoutout](https://envato.slack.com/archives/C9876543210/p9876543210987654)
 
 OR
 
@@ -641,18 +622,13 @@ To collect activity for Alex Johnson:
 - Include context about why work was done (from Slack discussions or Jira descriptions)
 - **IMPORTANT**: Every piece of information must include its reference link:
   - Slack channels and messages must have Slack links
-  - **Shoutouts must have correct Slack message links** (including thread_ts if in a thread)
+  - Shoutouts must have Slack message links
   - Jira issues must have Jira links
   - Confluence pages must have Confluence links
   - Pull requests must have GitHub links
   - Documents mentioned must have their respective links (Google Drive, Confluence, etc.)
 - Links should be formatted as markdown links: `[Display Text](URL)`
 - When extracting information from Slack messages, look for URLs to documents, Jira issues, PRs, etc., and include them in the report
-- **CRITICAL FOR SHOUTOUTS**: Always include the FULL, COMPLETE text of shoutout messages:
-  - Include all emojis (e.g., `:heart_hands:`, `:shipitparrot::rocket:`, `:communityspiritnew:`)
-  - Include all text content - do NOT truncate or summarize
-  - Preserve the exact wording as it appears in Slack
-  - Use correct Slack link format that works when clicked
 - **⚠️ CRITICAL FORMATTING REQUIREMENTS**: When generating reports, you MUST follow the formatting requirements in Step 5:
   - **Jira Activity**: NO bullet points or numbered lists - use line breaks with double spaces, two blank lines between issues
   - **Pull Requests**: NO bullet points or numbered lists - use line breaks with double spaces, two blank lines between PRs
