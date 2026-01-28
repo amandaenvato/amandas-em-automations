@@ -96,7 +96,7 @@ Execute the activity collection recipe to gather all recent activity data for th
    - Collect Confluence Activity
    - Generate Activity Report
    - Copy Report to Google Drive
-3. Use the default date range (last 7 days ending yesterday) unless the user specifies otherwise
+3. Use the default date range (last 14 days ending yesterday) unless the user specifies otherwise
 
 ### Expected Output
 - Activity report generated in `files/output/{firstname}-activity-dd-mm-yyyy/{firstname}-activity-dd-mm-yyyy.md`
@@ -224,7 +224,7 @@ To prepare for a 1-on-1 with Sam Gold:
 
 ## Notes
 
-- The activity collection uses the default date range (last 7 days ending yesterday) unless specified
+- The activity collection uses the default date range (last 14 days ending yesterday) unless specified
 - If Culture Amp or Google Drive URLs are not configured for a team member, those steps will be skipped
 - URLs are opened in the default browser using the macOS `open` command
 - **File Storage**:
