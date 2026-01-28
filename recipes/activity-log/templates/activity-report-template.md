@@ -71,14 +71,14 @@
 
 **{Date}** - [`#shoutouts`](https://envato.slack.com/archives/C1234567890)  
 **From**: {Author Name}  
-**Message**: {Shoutout message content}  
+**Message**: {FULL shoutout message content including all emojis and complete text - do NOT truncate or summarize. Example: "Shoutout to {Name} for an amazing getting to know you session with the team thanks for the understanding and open minds for working together :heart_hands:"}  
 **Link**: [View shoutout](https://envato.slack.com/archives/C1234567890/p1234567890123456)
 
 
 **{Date}** - [`#channel`](https://envato.slack.com/archives/C9876543210)  
 **From**: {Author Name}  
-**Message**: {Shoutout message content}  
-**Link**: [View shoutout](https://envato.slack.com/archives/C9876543210/p9876543210987654)
+**Message**: {FULL shoutout message content including all emojis and complete text - do NOT truncate or summarize. Example: "Shoutout to {Name} for thinking about improving our way we work in the team, reduce repetitive rework by bringing back failure demands and address recent staging data problems that could influence the future us :communityspiritnew:"}  
+**Link**: [View shoutout](https://envato.slack.com/archives/C9876543210/p9876543210987654?thread_ts=1234567890.123456&cid=C9876543210)
 
 OR
 
