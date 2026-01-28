@@ -19,6 +19,7 @@ This repository contains instruction recipes for AI agents (like Claude Code, Cu
    **Slack MCP Server** (`slack-mcp-server`)
    - Configure Slack tokens (XOXC and XOXD), user agent, and cache paths
    - For instructions about how to configure Slack MCP Server, please follow these instructions: https://github.com/korotovsky/slack-mcp-server
+   - For detailed authentication setup, see: https://github.com/korotovsky/slack-mcp-server/blob/master/docs/01-authentication-setup.md
    
    **Google Drive** (`gdrive`)
    - Configure OAuth credentials (CLIENT_ID, CLIENT_SECRET) and credentials directory
