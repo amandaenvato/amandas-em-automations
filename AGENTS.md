@@ -23,6 +23,13 @@ Guidelines for AI agents working in this codebase.
 - **Fallback to direct API**: Only fall back to direct API clients (`jira_api_client.py` and `confluence_api_client.py`) if Docker MCP server fails after attempting to use it
 - **Error handling**: If both Docker and direct API fail, provide clear error messages explaining what failed and what the user should do
 
+## BambooHR MCP Usage
+
+- **MCP-first approach**: Always use BambooHR MCP tools first when querying employee data, time off requests, or other BambooHR information
+- **Available MCP tools**: Use `bamboohr_list_employees`, `bamboohr_get_employee`, `bamboohr_get_current_employee`, and `bamboohr_get_time_off` from the local-mcp server
+- **Fallback to browser**: Only fall back to browser automation (`fetch_page`) if the MCP query returns no results or fails to find the requested information
+- **Error handling**: If MCP returns empty results but you expected data, try browser automation as a fallback. If both fail, provide clear error messages explaining what failed
+
 ## Iterating on Code in `local-mcp/`
 
 - **Restart required**: Remember that the user will need to restart the MCP server tool before you attempt to rerun the tool with new code

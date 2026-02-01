@@ -13,6 +13,7 @@ import { OpenAIClient } from "./src/openai-client.js";
 import { CultureAmpClient } from "./src/cultureamp-client.js";
 import { BrowserClient } from "./src/browser-client.js";
 import { BambooHRClient } from "./src/bamboohr-client.js";
+import { getTimeOffRequests, getTimeOffForEmployees, formatTimeOffRequests } from "./src/bamboohr-timeoff.js";
 import { PagerDutyClient } from "./src/pagerduty-client.js";
 import { PagerDutyOAuth } from "./src/pagerduty-oauth.js";
 import { TrelloClient } from "./src/trello-client.js";
@@ -365,6 +366,36 @@ class LocalMCPServer {
                   description: "Comma-separated list of fields to return (e.g., 'firstName,lastName,workEmail,jobTitle,department')",
                 },
               },
+            },
+          },
+          {
+            name: "bamboohr_get_time_off",
+            description: "Get time off/leave requests from BambooHR for a date range. Optionally filter by employee IDs.",
+            inputSchema: {
+              type: "object",
+              properties: {
+                start_date: {
+                  type: "string",
+                  description: "Start date in YYYY-MM-DD format (e.g., '2025-01-01')",
+                },
+                end_date: {
+                  type: "string",
+                  description: "End date in YYYY-MM-DD format (e.g., '2025-12-31')",
+                },
+                employee_ids: {
+                  type: "array",
+                  items: {
+                    type: "string",
+                  },
+                  description: "Optional array of employee IDs to filter by. If not provided, returns all employees' time off.",
+                },
+                status: {
+                  type: "string",
+                  description: "Filter by status: 'approved', 'pending', 'denied', or 'all' (default: 'approved')",
+                  default: "approved",
+                },
+              },
+              required: ["start_date", "end_date"],
             },
           },
           {
@@ -836,6 +867,65 @@ class LocalMCPServer {
             {
               type: "text",
               text: bamboohrClient.formatEmployee(data),
+            },
+          ],
+        };
+      }
+
+      if (name === "bamboohr_get_time_off") {
+        const subdomain = process.env.BAMBOOHR_SUBDOMAIN;
+        const apiKey = process.env.BAMBOOHR_API_KEY;
+        if (!subdomain || !apiKey) {
+          throw new Error(
+            "BambooHR configuration required. Set BAMBOOHR_SUBDOMAIN and BAMBOOHR_API_KEY environment variables."
+          );
+        }
+        if (!args?.start_date || !args?.end_date) {
+          throw new Error("start_date and end_date are required");
+        }
+        const bamboohrClient = new BambooHRClient(subdomain, apiKey);
+        let requests;
+        if (args?.employee_ids && args.employee_ids.length > 0) {
+          const status = args?.status === "all" ? undefined : (args?.status || "approved");
+          requests = await getTimeOffForEmployees(
+            bamboohrClient,
+            args.employee_ids,
+            args.start_date,
+            args.end_date,
+            status
+          );
+        } else {
+          requests = await getTimeOffRequests(
+            bamboohrClient,
+            args.start_date,
+            args.end_date
+          );
+          // Filter by status if specified
+          if (args?.status && args.status !== "all") {
+            requests = requests.filter(req => req.status?.status === args.status);
+          }
+        }
+        const formatted = formatTimeOffRequests(requests);
+        // Format output as readable text
+        let output = "Time Off Requests:\n\n";
+        for (const [employeeId, data] of Object.entries(formatted)) {
+          output += `${data.name} (ID: ${employeeId}):\n`;
+          data.leave.forEach(leave => {
+            output += `  - ${leave.type}: ${leave.start} to ${leave.end} (${leave.days} days, status: ${leave.status})\n`;
+            if (leave.dates && leave.dates.length > 0) {
+              output += `    Dates: ${leave.dates.join(", ")}\n`;
+            }
+          });
+          output += "\n";
+        }
+        if (Object.keys(formatted).length === 0) {
+          output = "No time off requests found for the specified criteria.";
+        }
+        return {
+          content: [
+            {
+              type: "text",
+              text: output,
             },
           ],
         };
