@@ -1,15 +1,31 @@
 export class PagerDutyClient {
-  constructor(cookies) {
-    // PagerDuty API authentication via browser cookies
-    // Cookies are extracted from browser after logging into PagerDuty
-    if (!cookies) {
+  constructor(authTokenOrCookies) {
+    // PagerDuty API authentication via OAuth token or browser cookies
+    // OAuth token is preferred (Bearer token)
+    // Cookies can be used as fallback but may not work with REST API
+    if (!authTokenOrCookies) {
       throw new Error(
-        "PagerDuty authentication required. Cookies must be provided. " +
-        "Use extract_cookies tool to get authenticated cookies from PagerDuty."
+        "PagerDuty authentication required. Provide either an OAuth access token or cookies. " +
+        "For OAuth: Use getPagerDutyOAuthToken() helper. " +
+        "For cookies: Use extract_cookies tool to get authenticated cookies from PagerDuty."
       );
     }
 
-    this.cookies = typeof cookies === 'string' ? cookies : this.formatCookies(cookies);
+    // Check if it's an OAuth token (starts with token format or is explicitly a token)
+    // OAuth tokens are typically longer strings, cookies are arrays or cookie strings
+    if (typeof authTokenOrCookies === 'string' && 
+        !authTokenOrCookies.includes('=') && 
+        !authTokenOrCookies.includes(';') &&
+        authTokenOrCookies.length > 20) {
+      // Likely an OAuth token
+      this.accessToken = authTokenOrCookies;
+      this.cookies = null;
+    } else {
+      // Likely cookies
+      this.cookies = typeof authTokenOrCookies === 'string' ? authTokenOrCookies : this.formatCookies(authTokenOrCookies);
+      this.accessToken = null;
+    }
+    
     this.baseUrl = "https://api.pagerduty.com";
   }
 
@@ -50,15 +66,25 @@ export class PagerDutyClient {
   async fetchApi(endpoint, options = {}) {
     const url = `${this.baseUrl}${endpoint}`;
 
+    const headers = {
+      "Accept": "application/vnd.pagerduty+json;version=2",
+      "Content-Type": "application/json",
+      ...options.headers,
+    };
+
+    // Use OAuth token if available, otherwise fall back to cookies
+    if (this.accessToken) {
+      headers["Authorization"] = `Bearer ${this.accessToken}`;
+    } else if (this.cookies) {
+      headers["Cookie"] = this.cookies;
+    } else {
+      throw new Error("No authentication method available. Provide either OAuth token or cookies.");
+    }
+
     const response = await fetch(url, {
       ...options,
-      headers: {
-        "Cookie": this.cookies,
-        "Accept": "application/vnd.pagerduty+json;version=2",
-        "Content-Type": "application/json",
-        ...options.headers,
-      },
-      credentials: "include", // Include cookies in request
+      headers,
+      credentials: this.cookies ? "include" : "omit", // Include cookies only if using cookie auth
     });
 
     const text = await response.text();
@@ -174,6 +200,105 @@ export class PagerDutyClient {
     const endpoint = `/services${queryString ? `?${queryString}` : ""}`;
 
     return await this.fetchApi(endpoint);
+  }
+
+  /**
+   * List users
+   * @param {Object} options - Query options
+   * @param {string} options.query - Search query (searches name, email)
+   * @param {string} options.include - Comma-separated list of additional details to include
+   * @param {number} options.limit - Number of results per page
+   * @param {number} options.offset - Offset for pagination
+   * @returns {Promise<Object>} Users data
+   */
+  async listUsers(options = {}) {
+    const params = new URLSearchParams();
+    if (options.query) params.append("query", options.query);
+    if (options.include) params.append("include[]", options.include);
+    if (options.limit) params.append("limit", options.limit.toString());
+    if (options.offset) params.append("offset", options.offset.toString());
+
+    const queryString = params.toString();
+    const endpoint = `/users${queryString ? `?${queryString}` : ""}`;
+
+    return await this.fetchApi(endpoint);
+  }
+
+  /**
+   * Get on-call entries for a user
+   * @param {string} userId - The user ID
+   * @param {Object} options - Query options
+   * @param {string} options.since - Start of the time range (ISO 8601 format)
+   * @param {string} options.until - End of the time range (ISO 8601 format)
+   * @param {string[]} options.schedule_ids - Array of schedule IDs to filter by
+   * @returns {Promise<Object>} On-call entries data
+   */
+  async getUserOnCalls(userId, options = {}) {
+    if (!userId) {
+      throw new Error("userId is required");
+    }
+
+    const params = new URLSearchParams();
+    if (options.since) params.append("since", options.since);
+    if (options.until) params.append("until", options.until);
+    if (options.schedule_ids && Array.isArray(options.schedule_ids)) {
+      options.schedule_ids.forEach(id => params.append("schedule_ids[]", id));
+    }
+
+    const queryString = params.toString();
+    const endpoint = `/users/${userId}/on_calls${queryString ? `?${queryString}` : ""}`;
+
+    return await this.fetchApi(endpoint);
+  }
+
+  /**
+   * Calculate total on-call hours for a user within a time range
+   * @param {string} userId - The user ID
+   * @param {Date|string} startDate - Start date
+   * @param {Date|string} endDate - End date
+   * @param {string[]} scheduleIds - Optional array of schedule IDs to filter by
+   * @returns {Promise<number>} Total hours on-call
+   */
+  async calculateOnCallHours(userId, startDate, endDate, scheduleIds = null) {
+    if (!userId) {
+      throw new Error("userId is required");
+    }
+
+    const start = startDate instanceof Date ? startDate.toISOString() : startDate;
+    const end = endDate instanceof Date ? endDate.toISOString() : endDate;
+
+    const options = {
+      since: start,
+      until: end,
+    };
+    if (scheduleIds) {
+      options.schedule_ids = scheduleIds;
+    }
+
+    const data = await this.getUserOnCalls(userId, options);
+
+    let totalHours = 0;
+
+    if (data.on_calls && Array.isArray(data.on_calls)) {
+      const startTime = new Date(start);
+      const endTime = new Date(end);
+
+      for (const onCall of data.on_calls) {
+        const onCallStart = new Date(onCall.start);
+        const onCallEnd = new Date(onCall.end);
+
+        // Calculate intersection of on-call period with requested time range
+        const intersectionStart = onCallStart > startTime ? onCallStart : startTime;
+        const intersectionEnd = onCallEnd < endTime ? onCallEnd : endTime;
+
+        if (intersectionStart < intersectionEnd) {
+          const hours = (intersectionEnd - intersectionStart) / (1000 * 60 * 60);
+          totalHours += hours;
+        }
+      }
+    }
+
+    return totalHours;
   }
 
   /**
@@ -333,6 +458,40 @@ export class PagerDutyClient {
       });
     } else {
       markdown += `No services found.\n\n`;
+    }
+
+    return markdown;
+  }
+
+  /**
+   * Format users as markdown
+   * @private
+   */
+  formatUsers(data) {
+    let markdown = `# PagerDuty Users\n\n`;
+
+    if (data.users && Array.isArray(data.users)) {
+      markdown += `**Total**: ${data.users.length}\n\n`;
+
+      data.users.forEach((user, index) => {
+        markdown += `## ${index + 1}. ${user.name || user.email || "Unknown"}\n\n`;
+        markdown += `**ID**: ${user.id}\n\n`;
+        if (user.email) {
+          markdown += `**Email**: ${user.email}\n\n`;
+        }
+        if (user.name && user.email && user.name !== user.email) {
+          markdown += `**Name**: ${user.name}\n\n`;
+        }
+        if (user.role) {
+          markdown += `**Role**: ${user.role}\n\n`;
+        }
+        if (user.html_url) {
+          markdown += `**Link**: [View User](${user.html_url})\n\n`;
+        }
+        markdown += `---\n\n`;
+      });
+    } else {
+      markdown += `No users found.\n\n`;
     }
 
     return markdown;

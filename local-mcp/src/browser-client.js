@@ -306,7 +306,7 @@ export class BrowserClient {
    * @param {boolean} headless - Whether to run browser in headless mode (default: false)
    * @returns {Promise<{content: Array, isError?: boolean}>}
    */
-  async addCultureAmpTopic(conversationUrl, topicTitle, waitForIndicators = ['JW'], maxWaitTime = 120000, headless = false) {
+  async addCultureAmpTopic(conversationUrl, topicTitle, topicNotes = null, waitForIndicators = ['JW'], maxWaitTime = 120000, headless = false) {
     let browser = null;
     let context = null;
     let page = null;
@@ -454,6 +454,90 @@ export class BrowserClient {
       // Type the topic title
       await topicInput.type(topicTitle, { delay: 50 });
       await setTimeout(1000);
+
+      // If topic notes are provided, find and fill the notes/description field
+      if (topicNotes && topicNotes.trim() !== '') {
+        const notesSelectors = [
+          'textarea[placeholder*="note" i]',
+          'textarea[placeholder*="description" i]',
+          'textarea[placeholder*="detail" i]',
+          'div[contenteditable="true"]',
+          'textarea:not([placeholder*="topic" i]):not([placeholder*="title" i])',
+          '[data-testid="topic-notes-input"]',
+          '[data-testid="topic-description-input"]',
+          'textarea[name*="note" i]',
+          'textarea[name*="description" i]',
+        ];
+
+        let notesInput = null;
+        for (const selector of notesSelectors) {
+          try {
+            const inputs = await page.$$(selector);
+            for (const input of inputs) {
+              const isVisible = await input.isVisible();
+              if (isVisible) {
+                // Make sure it's not the title input we already found
+                const inputId = await input.evaluate(el => el.id || el.getAttribute('data-testid') || '');
+                const titleInputId = await topicInput.evaluate(el => el.id || el.getAttribute('data-testid') || '');
+                if (inputId !== titleInputId) {
+                  notesInput = input;
+                  break;
+                }
+              }
+            }
+            if (notesInput) break;
+          } catch (e) {
+            continue;
+          }
+        }
+
+        // If no dedicated notes field found, try to find any other textarea or contenteditable
+        if (!notesInput) {
+          const allTextareas = await page.$$('textarea, div[contenteditable="true"]');
+          for (const textarea of allTextareas) {
+            const isVisible = await textarea.isVisible();
+            if (isVisible) {
+              const textareaId = await textarea.evaluate(el => el.id || el.getAttribute('data-testid') || '');
+              const titleInputId = await topicInput.evaluate(el => el.id || el.getAttribute('data-testid') || '');
+              if (textareaId !== titleInputId) {
+                notesInput = textarea;
+                break;
+              }
+            }
+          }
+        }
+
+        if (notesInput) {
+          await notesInput.click();
+          await setTimeout(500);
+          
+          // Clear existing content if any
+          if (await notesInput.evaluate(el => el.tagName === 'TEXTAREA')) {
+            await notesInput.fill('');
+          } else {
+            // For contenteditable divs
+            await notesInput.evaluate(el => el.textContent = '');
+          }
+          await setTimeout(300);
+          
+          // Type the notes
+          if (await notesInput.evaluate(el => el.tagName === 'TEXTAREA')) {
+            await notesInput.type(topicNotes, { delay: 50 });
+          } else {
+            // For contenteditable divs, use evaluate to set content
+            await notesInput.evaluate((el, text) => {
+              el.textContent = text;
+              // Trigger input event for React/other frameworks
+              const event = new Event('input', { bubbles: true });
+              el.dispatchEvent(event);
+            }, topicNotes);
+          }
+          await setTimeout(1000);
+        } else {
+          // If no notes field found, log a warning but continue
+          console.warn('Could not find notes/description field. Topic will be added without notes.');
+        }
+      }
 
       // Find and click the submit/save button
       const submitSelectors = [
