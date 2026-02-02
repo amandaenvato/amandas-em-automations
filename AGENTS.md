@@ -30,6 +30,13 @@ Guidelines for AI agents working in this codebase.
 - **Fallback to browser**: Only fall back to browser automation (`fetch_page`) if the MCP query returns no results or fails to find the requested information
 - **Error handling**: If MCP returns empty results but you expected data, try browser automation as a fallback. If both fail, provide clear error messages explaining what failed
 
+## PagerDuty On-Call Schedule Access
+
+- **Opening schedules**: When the user asks to "open on-call schedules" for a person, use the `open` command (macOS) to open the PagerDuty URL in the user's default browser, NOT in Chromium/Playwright
+- **URL source**: Get the PagerDuty Schedule URL from `files/recipe-config/people-info.md` for the requested person
+- **Command format**: Use `open "https://envato.pagerduty.com/users/{USER_ID}/on-call/month"` to open in the user's existing browser session
+- **Authentication**: This allows the user to authenticate in their own browser and access the schedule directly
+
 ## Iterating on Code in `local-mcp/`
 
 - **Restart required**: Remember that the user will need to restart the MCP server tool before you attempt to rerun the tool with new code

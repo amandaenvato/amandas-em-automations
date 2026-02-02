@@ -115,3 +115,11 @@ To add a private note "Discussed promotion timeline" for Peter Lynch:
 - Make sure the note was saved successfully
 - Check the Culture Amp Personal notes tab manually to verify the note was added
 
+
+
+
+
+
+
+
+

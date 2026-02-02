@@ -18,8 +18,8 @@ export class BambooHRClient {
   async fetchApi(endpoint, options = {}) {
     const url = `${this.baseUrl}${endpoint}`;
     
-    // BambooHR uses Basic Auth with API key as password and empty username
-    const auth = Buffer.from(`:${this.apiKey}`).toString('base64');
+    // BambooHR uses Basic Auth with API key as username and empty password
+    const auth = Buffer.from(`${this.apiKey}:`).toString('base64');
 
     const response = await fetch(url, {
       ...options,
@@ -42,7 +42,9 @@ export class BambooHRClient {
     }
 
     if (!response.ok) {
-      const errorMsg = data?.error?.message || data?.message || response.statusText;
+      // Check for BambooHR-specific error header
+      const errorHeader = response.headers.get('X-BambooHR-Error-Message');
+      const errorMsg = errorHeader || data?.error?.message || data?.message || response.statusText;
       throw new Error(
         `BambooHR API error (${response.status}): ${errorMsg}`
       );
@@ -67,7 +69,7 @@ export class BambooHRClient {
       queryParams.append('fields', params.fields);
     }
 
-    const endpoint = `/employees/directory${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    const endpoint = `/api/v1/employees/directory${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
     return await this.fetchApi(endpoint);
   }
 
@@ -88,7 +90,7 @@ export class BambooHRClient {
       queryParams.append('fields', params.fields);
     }
 
-    const endpoint = `/employees/${employeeId}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+    const endpoint = `/api/v1/employees/${employeeId}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
     return await this.fetchApi(endpoint);
   }
 
