@@ -135,89 +135,95 @@ For each Slack thread URL:
 ## Step 4: Generate Wins Report
 
 ### Goal
-Create a formatted wins report with catchy titles, descriptions, and references.
+Create a formatted wins report in the release-announcement style: emoji + headline, narrative paragraph(s), optional metrics, reference line, and status.
 
 ### Instructions
 
 1. **Analyze Information**
    - Review all fetched information
    - Identify key achievements and wins
-   - Extract metrics and numbers
-   - Note completion status and dates
+   - Extract metrics and numbers (coverage %, counts, batches, days, incidents)
+   - Note completion status (e.g. Released, Done)
 
-2. **Create Catchy Titles**
-   - Each win gets a catchy, summarized title with an emoji
+2. **Create Headlines**
+   - Each win gets a short, outcome-focused headline with an emoji
    - Use celebration emojis: 🎉, 🚀, ✨, 🎊, 🎯, 💪, 🔥, ⚡, 🌟, 🏆
-   - Titles should be concise (5-10 words)
+   - Headlines should be concise and state what is now available or done
    - Examples:
      - "🎉 Photos uplifted stylistic and technical metadata available for downstream systems"
-     - "🚀 Presentation Templates metadata uplift completed with technical and stylistic data"
-     - "✨ Stock Video & Motion Graphics metadata ready for enhanced search filters"
+     - "🚀 3D Previews live on the App for the majority of the 3D catalogue"
 
-3. **Write Descriptions**
-   - Start with "Previously" or similar context if appropriate
-   - Include specific numbers and metrics
-   - Mention completion status and coverage
-   - Explain what was achieved and why it matters
-   - Keep descriptions informative but concise (2-4 sentences)
+3. **Write Narrative Paragraph**
+   - Start with "Previously" or similar context when it fits
+   - Explain what was done and why it matters (e.g. "made available for downstream systems", "ready to be consumed by the New App (and Elements)")
+   - Keep to 1–2 sentences for the main narrative
 
-4. **Add References**
-   - For each win, add references at the end
-   - Format: `Reference: [IN-383](https://envato.atlassian.net/browse/IN-383)` or `References: [IN-383](https://envato.atlassian.net/browse/IN-383), [Slack thread](https://envato.slack.com/archives/...)`
-   - Include all relevant sources for that win
+4. **Add Metrics Paragraph (when available)**
+   - If the source has concrete numbers, add a sentence: coverage %, counts, batches, days, "zero incidents"
+   - Example: "Photos metadata backfill completed with 99.4% coverage - 14,823,862 photos with metadata out of 14,906,644 total distributable photos, processed across 11 batches over 8 days with zero incidents."
+   - Omit this sentence if no such metrics exist
 
-5. **Format Output**
-   - Use markdown format
-   - Each win is a bullet point with:
-     - Emoji + catchy title
-     - Dash separator
-     - Full description
-     - References at the end
+5. **Add Reference Line**
+   - Format: `Reference: KEY: Full Jira issue summary/title`
+   - Example: `Reference: IN-383: Expose Uplifted Metadata for Photos & Presentation Templates Downstream`
+   - Use the exact Jira summary from the ticket. Optionally append a markdown link: `Reference: [IN-383: Expose Uplifted Metadata for Photos & Presentation Templates Downstream](https://envato.atlassian.net/browse/IN-383)`
+
+6. **Add Status**
+   - On its own line after the reference, output the Jira status (e.g. `Released`, `Done`)
+
+7. **Format Output**
+   - Each win is one block: headline - narrative. [Optional metrics sentence]. Reference: KEY: Full title. Then status on the next line.
+   - Separate multiple wins with a blank line.
 
 ### Output Format
 
-Save as `files/output/sprint-report-dd-mm-yyyy/OUTPUT.md`:
+Save as `files/output/sprint-report-dd-mm-yyyy/OUTPUT.md`.
+
+**Structure for each win:**
+
+```
+🎉 [Headline] - [Narrative paragraph explaining what was done and impact, e.g. made available for downstream / ready for New App]. [Optional: metrics sentence - coverage %, counts, batches, days, zero incidents.] Reference: IN-XXX: [Full Jira issue summary]
+Released
+```
+
+**Full example (single win):**
 
 ```markdown
-# Sprint Wins Report
-
-## Wins:
-
-* 🎉 [Catchy Title] - [Full description with metrics and details]. Reference: [IN-XXX](https://envato.atlassian.net/browse/IN-XXX)
-
-* 🚀 [Catchy Title] - [Full description with metrics and details]. References: [IN-XXX](https://envato.atlassian.net/browse/IN-XXX), [Slack thread](https://envato.slack.com/archives/...)
-
-* ✨ [Catchy Title] - [Full description with metrics and details]. Reference: [IN-XXX](https://envato.atlassian.net/browse/IN-XXX)
+🎉 Photos uplifted stylistic and technical metadata available for downstream systems - Previously uplifted stylistic and technical metadata for our over 15.4 million photos has been made available for downstream systems and is now ready to be consumed by the New App (and Elements). Photos metadata backfill completed with 99.4% coverage - 14,823,862 photos with metadata out of 14,906,644 total distributable photos, processed across 11 batches over 8 days with zero incidents. Reference: IN-383: Expose Uplifted Metadata for Photos & Presentation Templates Downstream
+Released
 ```
+
+**Multiple wins:** use the same structure for each win, separated by a blank line. No bullet list or "## Wins" header—plain blocks only.
 
 ### Writing Guidelines
 
-**For Titles:**
-- Use action-oriented language
-- Include the main achievement
-- Keep it concise (5-10 words)
-- Use appropriate celebration emoji
+**For Headlines:**
+- Outcome-focused: what is now available or done
+- Concise (roughly 5–12 words)
+- Use one celebration emoji at the start
 
-**For Descriptions:**
-- Start with context if needed ("Previously uplifted...", "We've completed...")
-- Include specific numbers and metrics
-- Mention completion status and coverage percentages
-- Explain business value or impact
-- Keep to 2-4 sentences
+**For Narrative:**
+- Context first if it helps ("Previously uplifted...", "We've completed...")
+- Clearly state availability/consumption (downstream, New App, Elements)
+- One or two sentences
 
-**For References:**
-- Always include links to sources
-- Use markdown link format: `[text](url)`
-- For Jira: `[IN-XXX](https://envato.atlassian.net/browse/IN-XXX)`
-- For Slack: `[Slack thread](https://envato.slack.com/archives/...)`
-- Use "Reference:" for single source, "References:" for multiple
+**For Metrics (optional):**
+- Include when you have: coverage %, totals, batches, duration, incidents
+- One sentence; omit if no metrics
+
+**For Reference:**
+- Always: `Reference: KEY: Full Jira summary` (use exact summary from Jira)
+- Optionally add markdown link to the Jira browse URL
+
+**For Status:**
+- Single word/phrase on its own line (e.g. `Released`, `Done`)
 
 ### Expected Output
 
 - File: `files/output/sprint-report-dd-mm-yyyy/OUTPUT.md`
-- Format: Markdown with catchy titles, descriptions, and references
+- Format: Release-announcement style blocks (headline - narrative. metrics. Reference: KEY: Title → status)
 - Content: All wins from provided sources, formatted consistently
-- Quality: Clear, informative, with metrics and business value
+- Quality: Clear, informative, with metrics when available
 
 ## Step 5: Create Slack Message
 
