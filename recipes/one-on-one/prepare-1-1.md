@@ -145,9 +145,9 @@ open "files/output/{firstname}-activity-dd-mm-yyyy/{firstname}-activity-dd-mm-yy
   - Two blank lines between each PR for clear visual separation
 - **Key Themes Formatting**: The HTML will display Key Themes from Slack with improved readability:
   - No numbered lists (use bullet points for details within each theme)
-  - Bold theme title followed by bullet points for details
+  - Bold theme title (include Jira ticket in parentheses when relevant) followed by brief description
+  - Bullet points for details, with Related Resources as last line (PR #X, Jira issue KEY, Slack thread in #channel)
   - Two blank lines between each theme for clear visual separation
-  - Related Resources formatted as comma-separated inline links within a bullet point
 - **Notable Achievements Formatting**: The HTML will display Notable Achievements with the same improved readability:
   - No numbered lists (use bullet points for details within each achievement)
   - ✅ emoji and bold achievement title followed by bullet points for details

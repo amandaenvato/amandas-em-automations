@@ -297,10 +297,10 @@ Create a comprehensive markdown report combining all collected activity.
    - Each field should be on its own line with a double space at the end to create a line break in HTML
 6. **Key Themes from Slack Formatting Requirements**:
    - **Do NOT use numbered lists** for themes (use bullet points for details within each theme)
-   - Format each theme with a bold title followed by bullet points for details
+   - Format each theme as: **Theme Name (Jira-123)**: Brief description
+   - Include Jira ticket in parentheses when the theme relates to a specific issue
+   - Use bullet points for details, with "Related Resources:" as the last line (comma-separated: PR #X, Jira issue KEY, Slack thread in #channel)
    - Use **two blank lines** between each theme for clear visual separation
-   - Format Related Resources as comma-separated inline links within a bullet point
-   - Each theme should start with a bold title, followed by bullet points for details
 7. **Notable Achievements Formatting Requirements**:
    - **Do NOT use numbered lists** for achievements (use bullet points for details within each achievement)
    - Format each achievement with ✅ emoji and bold title followed by bullet points for details
@@ -366,15 +366,30 @@ Create a comprehensive markdown report combining all collected activity.
 
 ### Key Themes from Slack
 
-**Theme 1**: Description  
-- Details about theme 1
-- Additional details
-- **Related Resources**: [Related Slack thread](https://envato.slack.com/archives/C1234567890/p1234567890123456), [Related Jira issue](https://envato.atlassian.net/browse/PROJ-123)
+**3D Preview File Development (EC-9078)**: Working on creating a class to generate new 3D preview files  
+- Created WIP PR #515 for EC-9078 implementation
+- Implementing headless Chromium/Puppeteer approach for generating spritesheets
+- Following lottie_to_images.js script pattern
+- Related Resources: PR #515, Jira issue EC-9078, Slack thread in #metadata-unpacking-project
 
 
-**Theme 2**: Description  
-- Details about theme 2
-- **Related Resources**: [Related Slack thread](https://envato.slack.com/archives/C1234567890/p1234567890123456)
+**Technical Architecture & Flow**: Confirming implementation approach for 3D preview uplift process  
+- Verified API call flow: POST to UpliftsController → Sidekiq job → Handler → Node process
+- Discussed Docker requirements for Puppeteer/Chromium integration
+- Related Resources: Slack thread with Sam Gold, Dockerfile reference
+
+
+**Team Collaboration & Support**: Active collaboration with team members on technical work  
+- Requested PR reviews from Ken, Rafael, and Juan
+- Offered support to Ken for next card
+- Coordinated sync with Ken for Monday Planning
+- Related Resources: PR #515 discussion, Slack threads in #metadata-stream-2-3d-preview-tools
+
+
+**Technical Inquiry**: Seeking information about file processing  
+- Asked about largest single file processed for Lottie files
+- Received detailed response with file size statistics (max 6.4 MB, avg 208 KB)
+- Related Resources: Question thread in #metadata-unpacking-project
 
 ### Referenced Documents
 - [Document Name](https://docs.google.com/document/d/...) - Referenced in [`#channel`](https://envato.slack.com/archives/C1234567890)

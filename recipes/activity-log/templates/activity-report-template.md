@@ -38,26 +38,27 @@
 
 ### Key Themes from Slack
 
-**{Theme 1}**: {Description}  
+**{Theme Name (EC-1234)}**: {Brief description of the theme}  
 - {Detail 1}
 - {Detail 2}
-- **Related Resources**: [Related Slack threads](https://envato.slack.com/archives/C1234567890/p1234567890123456), [Related Jira issues](https://envato.atlassian.net/browse/PROJ-123)
+- Related Resources: PR #515, Jira issue EC-1234, Slack thread in #channel-name
 
 
-**{Theme 2}**: {Description}  
-- [Related Jira issue PROJ-123](https://envato.atlassian.net/browse/PROJ-123)
-- {Detail}
-- **Related Resources**: [Related Slack channel](https://envato.slack.com/archives/C1234567890)
+**Technical Architecture & Flow**: {Description}  
+- {Detail 1}
+- {Detail 2}
+- Related Resources: Slack thread with {person}, Dockerfile reference
 
 
-**{Theme 3}**: {Description}  
-- [Related link](https://envato.slack.com/archives/C1234567890/p1234567890123456)
-- {Detail}
+**Team Collaboration & Support**: {Description}  
+- {Detail 1}
+- {Detail 2}
+- Related Resources: PR #515 discussion, Slack threads in #channel-name
 
 
-**{Theme 4}**: {Description}  
-- {Detail}
-- **Related Resources**: [Related Slack channel](https://envato.slack.com/archives/C1234567890)
+**Technical Inquiry**: {Description}  
+- {Detail 1}
+- Related Resources: Question thread in #channel-name
 
 ### Referenced Documents
 - [Document Name](https://docs.google.com/document/d/...) - Referenced in [`#channel`](https://envato.slack.com/archives/C1234567890)
